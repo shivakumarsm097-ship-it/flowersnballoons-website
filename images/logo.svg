@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 420" fill="none">
+
+  <!-- ===== DECORATIVE SERIF F ===== -->
+  <!-- Vertical stem -->
+  <rect x="130" y="110" width="48" height="240" rx="3" fill="#2d0b5a"/>
+  <!-- Top horizontal bar (with right serif) -->
+  <rect x="130" y="110" width="148" height="44" rx="3" fill="#2d0b5a"/>
+  <!-- Top bar right-end serif bump -->
+  <rect x="270" y="110" width="14" height="44" rx="2" fill="#2d0b5a"/>
+  <!-- Middle horizontal bar -->
+  <rect x="130" y="188" width="118" height="38" rx="3" fill="#2d0b5a"/>
+  <!-- Middle bar right-end serif -->
+  <rect x="240" y="188" width="12" height="38" rx="2" fill="#2d0b5a"/>
+  <!-- Serif feet on stem bottom -->
+  <rect x="108" y="322" width="92" height="16" rx="4" fill="#2d0b5a"/>
+  <!-- Serif feet on top of stem -->
+  <rect x="108" y="110" width="92" height="16" rx="4" fill="#2d0b5a"/>
+
+  <!-- Swash / decorative curve at bottom-left of F -->
+  <path d="M154 310 Q100 310 88 340 Q76 368 100 375 Q124 382 142 360"
+        stroke="#2d0b5a" stroke-width="22" fill="none" stroke-linecap="round"/>
+
+  <!-- ===== BALLOON ===== -->
+  <!-- Balloon body -->
+  <ellipse cx="258" cy="72" rx="36" ry="44" fill="#e8adb5"/>
+  <!-- Balloon highlight -->
+  <ellipse cx="245" cy="55" rx="10" ry="14" fill="rgba(255,255,255,0.38)" transform="rotate(-18,245,55)"/>
+  <!-- Balloon knot -->
+  <path d="M258 116 L252 126 L264 126 Z" fill="#e8adb5"/>
+  <!-- Balloon string down to F top-bar -->
+  <path d="M258 126 C252 148, 240 162, 232 175"
+        stroke="#e8adb5" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+
+  <!-- ===== LEAVES / FLOWER ===== -->
+  <!-- Centre leaf (upright) -->
+  <ellipse cx="165" cy="358" rx="12" ry="22" fill="#9cc9a4" transform="rotate(0,165,358)"/>
+  <!-- Left leaf -->
+  <ellipse cx="140" cy="366" rx="11" ry="20" fill="#9cc9a4" transform="rotate(-38,140,366)"/>
+  <!-- Right leaf -->
+  <ellipse cx="190" cy="366" rx="11" ry="20" fill="#9cc9a4" transform="rotate(38,190,366)"/>
+  <!-- Far left leaf -->
+  <ellipse cx="118" cy="375" rx="9" ry="16" fill="#b8d9bc" transform="rotate(-60,118,375)"/>
+  <!-- Far right leaf -->
+  <ellipse cx="212" cy="375" rx="9" ry="16" fill="#b8d9bc" transform="rotate(60,212,375)"/>
+
+</svg>

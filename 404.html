@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, follow">
+  <title>Page Not Found | Flowers N Balloons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'" data-font>
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"></noscript>
+  <style>
+    :root{--primary:#e91e8c;--primary-dark:#c2185b;--secondary:#7b2d8b;--text:#1a1a2e;--text-light:#666;--bg:#fff;--bg-light:#fdf0f8;--font:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+    body{font-family:var(--font);color:var(--text);background:var(--bg);line-height:1.6;overflow-x:hidden;min-height:100vh;display:flex;flex-direction:column;}
+    a{color:inherit;text-decoration:none;}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 26px;border-radius:50px;font-size:.95rem;font-weight:600;cursor:pointer;white-space:nowrap;border:2px solid transparent;font-family:var(--font);}
+    .btn-primary{background:var(--primary);color:#fff;}
+    .btn-outline{background:transparent;color:var(--primary);border-color:var(--primary);}
+    .logo-wordmark{background:linear-gradient(90deg,#e91e8c 0%,#ff9800 48%,#7b2d8b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}
+
+    /* Header */
+    .header{background:#fff;padding:16px 24px;display:flex;align-items:center;border-bottom:1px solid #f0e0f0;}
+    .logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;}
+    .logo-img{height:52px;width:auto;object-fit:contain;}
+
+    /* Main */
+    main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px;}
+    .error-wrap{text-align:center;max-width:540px;margin:0 auto;}
+
+    /* Big 404 */
+    .error-num{font-size:clamp(5rem,20vw,9rem);font-weight:800;line-height:1;background:linear-gradient(135deg,#e91e8c,#7b2d8b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+
+    /* Emoji row */
+    .error-emoji{font-size:2.8rem;margin-bottom:20px;animation:bounce 1.8s ease-in-out infinite;}
+    @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+
+    .error-title{font-size:clamp(1.3rem,4vw,1.8rem);font-weight:700;margin-bottom:12px;}
+    .error-desc{color:var(--text-light);font-size:.95rem;margin-bottom:32px;line-height:1.7;}
+
+    .error-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
+
+    /* Quick links */
+    .quick-links{background:var(--bg-light);border-radius:16px;padding:24px;text-align:left;}
+    .quick-links h3{font-size:.85rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-light);margin-bottom:14px;}
+    .quick-links ul{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .quick-links ul li a{display:flex;align-items:center;gap:8px;font-size:.9rem;font-weight:500;color:var(--text);padding:10px 14px;background:#fff;border-radius:10px;border:1px solid #f0e0f0;transition:border-color .2s,color .2s;}
+    .quick-links ul li a:hover{border-color:var(--primary);color:var(--primary);}
+
+    /* Footer */
+    footer{text-align:center;padding:20px;font-size:.8rem;color:var(--text-light);border-top:1px solid #f0e0f0;}
+    footer a{color:var(--primary);}
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <a href="index.html" class="logo" aria-label="Flowers N Balloons Home">
+      <picture><source srcset="images/logo.webp" type="image/webp"><img src="images/logo.png" alt="Flowers N Balloons" class="logo-img" width="52" height="52"></picture>
+      <span class="logo-wordmark">Flowers 'N' Balloons</span>
+    </a>
+  </header>
+
+  <main>
+    <div class="error-wrap">
+      <div class="error-num">404</div>
+      <div class="error-emoji">🎈</div>
+      <h1 class="error-title">Oops! This page floated away.</h1>
+      <p class="error-desc">The page you're looking for doesn't exist or may have been moved. Let's get you back to planning your next celebration!</p>
+
+      <div class="error-btns">
+        <a href="index.html" class="btn btn-primary">🏠 Back to Home</a>
+        <a href="contact.html" class="btn btn-outline">📞 Contact Us</a>
+      </div>
+
+      <div class="quick-links">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="index.html">🏠 Home</a></li>
+          <li><a href="about.html">💜 About Us</a></li>
+          <li><a href="services.html">✨ Services</a></li>
+          <li><a href="contact.html">📋 Get a Quote</a></li>
+          <li><a href="lp-birthday.html">🎂 Birthday Decor</a></li>
+          <li><a href="tel:+918867121207">📞 Call Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Flowers 'N' Balloons, Bangalore. &nbsp;|&nbsp; <a href="privacy-policy.html">Privacy Policy</a></p>
+  </footer>
+
+</body>
+</html>
