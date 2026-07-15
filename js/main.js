@@ -204,50 +204,6 @@
 
 /* === FORM VALIDATION & SUBMIT === */
 (function () {
-  /* ─── WhatsApp bot lead hook ───────────────────────────────
-     When set, every submitted form also pings the WhatsApp bot, which
-     auto-messages the customer and starts the booking conversation.
-       BOT_LEAD_URL   = https://your-bot-domain/lead
-       BOT_LEAD_TOKEN = same value as LEAD_WEBHOOK_TOKEN in the bot's .env
-     Leave BOT_LEAD_URL empty to disable (form still works normally). */
-  var BOT_LEAD_URL   = '';   // ← paste your deployed bot URL, e.g. https://bot.up.railway.app/lead
-  var BOT_LEAD_TOKEN = '';   // ← paste your LEAD_WEBHOOK_TOKEN
-
-  function pingBot(form) {
-    if (!BOT_LEAD_URL) return;
-    var f = new FormData(form);
-    // service: hidden <input name="service"> on the form, else infer from page
-    var service = f.get('service');
-    if (!service) {
-      var p = location.pathname;
-      if (p.indexOf('wedding') > -1) service = 'wedding';
-      else if (p.indexOf('babyshower') > -1) service = 'babyshower';
-      else if (p.indexOf('birthday') > -1) service = 'birthday';
-      else if (p.indexOf('housewarming') > -1) service = 'housewarming';
-      else if (p.indexOf('engagement') > -1) service = 'engagement';
-      else if (p.indexOf('namingceremony') > -1) service = 'namingceremony';
-      else if (p.indexOf('corporate') > -1) service = 'corporate';
-      else if (p.indexOf('haldi') > -1) service = 'haldi';
-      else if (p.indexOf('babywelcome') > -1) service = 'babywelcome';
-      else if (p.indexOf('community') > -1) service = 'community';
-    }
-    var payload = {
-      name: f.get('name') || '',
-      phone: f.get('phone') || f.get('mobile') || '',
-      service: service || '',
-      source: location.pathname.split('/').pop() || 'homepage',
-    };
-    // fire-and-forget; never blocks the user's redirect
-    try {
-      fetch(BOT_LEAD_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Lead-Token': BOT_LEAD_TOKEN },
-        body: JSON.stringify(payload),
-        keepalive: true,
-      }).catch(function () {});
-    } catch (e) {}
-  }
-
   document.querySelectorAll('.js-quote-form').forEach(form => {
     const successMsg = form.querySelector('.form-success-msg');
 
@@ -288,8 +244,6 @@
           if (typeof gtag === 'function') {
             gtag('event', 'form_submit', { event_category: 'lead', event_label: window.location.pathname });
           }
-          // Tell the WhatsApp bot to reach out & start the conversation
-          pingBot(form);
           // Redirect to thank-you page (Google Ads conversion fires there)
           window.location.href = 'thank-you.html';
         })
