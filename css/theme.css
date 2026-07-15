@@ -1,0 +1,204 @@
+/* ============================================================
+   Flowers 'N' Balloons — "Blush & Champagne" theme (Direction C)
+   Palette: airy blush white · soft coral · champagne gold · sage
+   Depth:   pillowy soft shadows · glass · parallax · tilt · rounded
+   Loads AFTER css/style.min.css and overrides it.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ---- Palette + tokens (variable-driven base flips cleanly) ---- */
+:root{
+  --primary:#dd6580;         /* soft coral (interactive)     */
+  --primary-dark:#c14e6a;
+  --secondary:#6f9d8e;       /* sage                          */
+  --secondary-dark:#557a6d;
+  --accent:#cf9a3f;          /* champagne gold (CTA)          */
+  --accent-dark:#b07f2c;
+  --text:#3a2e33;            /* deep plum-brown ink           */
+  --text-light:#8a7a80;
+  --bg:#fff8f6;              /* airy blush white              */
+  --bg-light:#fffbfa;
+  --bg-purple:#fdeef0;       /* soft blush band               */
+  --border:#f4e2df;
+  --radius:18px;
+  --radius-lg:28px;
+  /* pillowy, coral-tinted depth */
+  --shadow:0 3px 10px rgba(221,101,128,.08), 0 14px 34px rgba(221,101,128,.10);
+  --shadow-md:0 8px 22px rgba(221,101,128,.14), 0 22px 50px rgba(180,90,110,.13);
+  --shadow-lg:0 14px 34px rgba(221,101,128,.18), 0 30px 70px rgba(180,90,110,.18);
+  --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --serif:'Fraunces','Playfair Display',Georgia,serif;
+  --ring:rgba(221,101,128,.4);
+}
+
+/* ---- Base ---- */
+body{background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;}
+/* soft blush depth: blurred colour orbs behind content */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(46rem 46rem at 84% -8%, rgba(221,101,128,.13), transparent 60%),
+    radial-gradient(40rem 40rem at -6% 10%, rgba(207,154,63,.12), transparent 60%),
+    radial-gradient(38rem 38rem at 50% 118%, rgba(111,157,142,.12), transparent 60%);
+}
+
+/* ---- Headings → elegant serif ---- */
+h1,h2,h3,.section-title,.hero h1{font-family:var(--serif);letter-spacing:-.01em;}
+h1,.hero h1{font-weight:600;}
+h2,.section-title{font-weight:600;}
+.hero-sub,.hero-events,p,li,a,button,input,select,textarea{font-family:var(--font);}
+
+/* ---- Hero: soft romantic coral→champagne wash over the photo ---- */
+.hero{
+  background:
+    linear-gradient(120deg, rgba(58,46,51,.60) 0%, rgba(200,84,110,.50) 48%, rgba(207,154,63,.42) 100%),
+    url('../images/hero-bg.webp') center/cover no-repeat !important;
+}
+.hero h1{text-shadow:0 3px 22px rgba(0,0,0,.26);}
+.hero-badge{
+  background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.42);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  color:#fff;box-shadow:0 8px 24px rgba(0,0,0,.16);
+}
+/* floating 3D decorations in hero */
+.hero-float{position:absolute;pointer-events:none;z-index:0;user-select:none;
+  filter:drop-shadow(0 12px 16px rgba(0,0,0,.20));opacity:.92;
+  transition:transform .5s cubic-bezier(.25,.46,.45,.94);}
+.hero-float-inner{display:block;animation:fnbFloat 7s ease-in-out infinite;will-change:transform;}
+@keyframes fnbFloat{
+  0%,100%{transform:translateY(0) rotate(0) scale(1);}
+  33%{transform:translateY(-22px) rotate(6deg) scale(1.06);}
+  66%{transform:translateY(-10px) rotate(-5deg) scale(.97);}
+}
+
+/* ---- Glass, floating header ---- */
+.header{
+  background:rgba(255,248,246,.74)!important;
+  backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);
+  border-bottom:1px solid rgba(244,226,223,.8);
+}
+.header.scrolled{
+  background:rgba(255,251,250,.92)!important;
+  box-shadow:0 6px 26px rgba(221,101,128,.12);
+}
+
+/* ---- Buttons: champagne→coral gradient + tactile depth ---- */
+.btn{border-radius:50px;transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease,filter .25s ease;}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent) 0%,var(--primary) 92%)!important;
+  color:#fff!important;border-color:transparent!important;
+  box-shadow:0 10px 26px rgba(221,101,128,.32),0 2px 6px rgba(0,0,0,.06);
+}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(221,101,128,.42);filter:saturate(106%);}
+.btn-primary:active{transform:translateY(0) scale(.97);}
+.btn-outline{border:2px solid rgba(221,101,128,.5)!important;color:var(--primary-dark)!important;background:rgba(255,255,255,.6)!important;backdrop-filter:blur(4px);}
+.btn-outline:hover{background:var(--primary)!important;color:#fff!important;border-color:var(--primary)!important;transform:translateY(-3px);box-shadow:var(--shadow-md);}
+
+/* ---- 3D perspective on card grids ---- */
+.usp-cards,.services-grid,.testimonials-grid,.stats-grid,.values-grid,.steps-wrap{perspective:1500px;}
+
+/* ---- Cards: soft rounded surface + hover lift (JS adds live tilt) ---- */
+.usp-card,.service-card,.testi-card,.stat-card,.val-card,.step{
+  background:#ffffff!important;
+  border:1px solid var(--border)!important;
+  border-radius:var(--radius-lg)!important;
+  box-shadow:var(--shadow)!important;
+  transform-style:preserve-3d;will-change:transform;backface-visibility:hidden;
+  transition:transform .3s cubic-bezier(.22,1,.36,1),box-shadow .3s ease,border-color .3s ease;
+}
+.usp-card:hover,.service-card:hover,.testi-card:hover,.val-card:hover,.step:hover{
+  box-shadow:var(--shadow-lg)!important;border-color:rgba(221,101,128,.32)!important;
+}
+/* icon pop */
+.usp-icon,.service-card-icon,.val-icon{transition:transform .3s ease;transform:translateZ(30px);}
+
+/* ---- Service cards: coral→champagne accent top edge ---- */
+.service-card{position:relative;overflow:hidden;}
+.service-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+  opacity:0;transition:opacity .3s ease;
+}
+.service-card:hover::before{opacity:1;}
+
+/* ---- Section titles: gradient underline accent ---- */
+.section-title{position:relative;}
+.section-title::after{
+  content:"";display:block;width:74px;height:4px;margin:14px auto 0;border-radius:4px;
+  background:linear-gradient(90deg,var(--primary),var(--accent));
+}
+
+/* ---- Soft blush section bands ---- */
+.bg-light,.bg-purple{background-color:var(--bg-light);}
+
+/* ---- Reveal-on-scroll: gentle 3D entrance (class toggled by main.js) ---- */
+.reveal{opacity:0;transform:perspective(1000px) translateY(28px) rotateX(8deg);
+  transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1);}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ---- Big stat numbers: coral→champagne gradient text ----
+   Only when NOT inside .stat-card — that card already has a coral→gold
+   background, so gradient-clipped text on top of it becomes invisible. */
+.stats-grid strong{
+  background:linear-gradient(135deg,var(--primary),var(--accent-dark));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.stat-card .stat-num{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;background:none!important;
+}
+/* step numbers stay solid white — they sit on a coral→gold circle,
+   so coral text (the old value here) nearly disappeared into it */
+.step-num{color:#fff!important;}
+
+/* ---- Reskin hardcoded-colour spots the variables don't reach ---- */
+.logo-wordmark{
+  background:linear-gradient(90deg,var(--primary) 0,var(--accent) 52%,var(--secondary) 100%)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;
+}
+/* landing-page hero (birthday/wedding/babyshower) — romantic coral→champagne wash over the photo */
+.lp-hero{
+  background:
+    linear-gradient(135deg, rgba(58,46,51,.58) 0%, rgba(200,84,110,.50) 48%, rgba(207,154,63,.40) 100%),
+    url('../images/hero-bg.webp') center/cover no-repeat!important;
+  position:relative;overflow:hidden;
+}
+/* interior page hero band (privacy-policy etc.) — same coral→champagne wash, not coral→sage */
+.page-hero{
+  background:linear-gradient(135deg,#c14e6a 0,#dd6580 42%,#cf9a3f 100%)!important;
+}
+#fnbEpCallBtn{background:var(--primary)!important;}
+#fnbEpCallBtn:hover{background:var(--primary-dark)!important;}
+
+/* ---- CTA band warmth ---- */
+.cta,[class*="cta-band"]{
+  background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 100%)!important;
+}
+
+/* ---- Fix muddy primary→secondary (coral→sage) gradients baked into style.min.css.
+   Coral and sage sit near-opposite on the wheel, so a direct 2-stop gradient
+   between them interpolates through a dull brown-gray. Route through gold instead. ---- */
+.promo-bar{
+  background:linear-gradient(90deg,var(--primary),var(--accent))!important;
+}
+.step-num,.stat-card,.author-av,.info-card,.article-cta-box,.price-badge{
+  background:linear-gradient(135deg,var(--primary),var(--accent))!important;
+}
+.author-av.av2{
+  background:linear-gradient(135deg,var(--secondary),var(--accent-dark))!important;
+}
+.timeline::before{
+  background:linear-gradient(to bottom,var(--primary),var(--accent))!important;
+}
+
+/* ---- Focus ring (a11y) ---- */
+a:focus-visible,button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid var(--ring);outline-offset:2px;
+}
+
+/* ---- Respect reduced motion ---- */
+@media (prefers-reduced-motion:reduce){
+  .hero-float-inner{animation:none;}
+  .reveal{transition:opacity .3s ease;transform:none;}
+  .btn,.usp-card,.service-card,.testi-card,.val-card,.step{transition:box-shadow .2s ease;}
+}

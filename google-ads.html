@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Google Ads Copy — Flowers N Balloons</title>
+  <style>
+    :root {
+      --pink: #dd6580; --purple: #6f9d8e; --gold: #cf9a3f;
+      --dark: #3a2e33; --gray: #8a7a80; --light: #fdeef0; --border: #f4e2df;
+      --green: #2e7d32; --blue: #1565c0; --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      --serif: 'Fraunces', 'Playfair Display', Georgia, serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font); color: var(--dark); background: #fff8f6; line-height: 1.6; }
+    a { color: var(--pink); }
+
+    /* Layout */
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
+
+    /* Header */
+    .doc-header { background: linear-gradient(135deg, var(--pink), var(--gold)); border-radius: 20px; padding: 32px; color: #fff; margin-bottom: 32px; }
+    .doc-header h1 { font-family: var(--serif); font-size: 1.8rem; font-weight: 600; margin-bottom: 8px; }
+    .doc-header p { opacity: .85; font-size: 1rem; }
+    .doc-header .badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .badge { background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3); border-radius: 50px; padding: 4px 14px; font-size: .8rem; font-weight: 600; }
+
+    /* Setup checklist */
+    .setup-box { background: #fff3e0; border: 2px solid #ff9800; border-radius: 12px; padding: 20px 24px; margin-bottom: 32px; }
+    .setup-box h2 { color: #e65100; font-size: 1rem; margin-bottom: 12px; }
+    .setup-box ol { padding-left: 20px; font-size: .9rem; color: #5d4037; display: grid; gap: 6px; }
+    .setup-box li strong { color: #e65100; }
+
+    /* Campaign block */
+    .campaign { background: #fff; border-radius: 20px; border: 1px solid var(--border); margin-bottom: 32px; overflow: hidden; box-shadow: 0 3px 10px rgba(221,101,128,.06); }
+    .campaign-header { padding: 20px 28px; display: flex; align-items: center; gap: 14px; border-bottom: 1px solid var(--border); }
+    .campaign-header .emoji { font-size: 2rem; }
+    .campaign-header h2 { font-size: 1.25rem; font-weight: 800; color: var(--dark); margin-bottom: 2px; }
+    .campaign-header p { font-size: .85rem; color: var(--gray); }
+    .campaign-header .lp-tag { margin-left: auto; background: var(--light); border: 1px solid var(--border); border-radius: 8px; padding: 6px 14px; font-size: .78rem; font-weight: 600; color: var(--purple); white-space: nowrap; }
+    .campaign-body { padding: 24px 28px; display: grid; gap: 28px; }
+
+    /* Sections */
+    .section-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--gray); margin-bottom: 10px; }
+
+    /* Keywords */
+    .kw-group { margin-bottom: 16px; }
+    .kw-group h4 { font-size: .82rem; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .kw-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .kw { border-radius: 6px; padding: 4px 10px; font-size: .8rem; font-weight: 500; font-family: monospace; }
+    .kw-exact { background: #e8f5e9; color: #1b5e20; border: 1px solid #a5d6a7; }
+    .kw-phrase { background: #e3f2fd; color: #0d47a1; border: 1px solid #90caf9; }
+    .kw-broad  { background: #f3e5f5; color: #4a148c; border: 1px solid #ce93d8; }
+    .kw-neg    { background: #fce4ec; color: #880e4f; border: 1px solid #f48fb1; }
+
+    /* Ad copy */
+    .ad-preview { background: #f8f9ff; border: 1px solid #ddd; border-radius: 10px; padding: 16px 20px; margin-bottom: 16px; }
+    .ad-preview .ad-label { font-size: .7rem; background: var(--dark); color: #fff; border-radius: 3px; padding: 1px 5px; font-weight: 700; letter-spacing: .05em; display: inline-block; margin-bottom: 8px; }
+    .ad-preview .ad-url { font-size: .85rem; color: var(--green); margin-bottom: 4px; font-weight: 500; }
+    .ad-preview .ad-title { font-size: 1.05rem; color: var(--blue); font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+    .ad-preview .ad-desc { font-size: .85rem; color: #333; }
+
+    .copy-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .copy-table th { background: var(--light); text-align: left; padding: 8px 12px; font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--gray); border-bottom: 2px solid var(--border); }
+    .copy-table td { padding: 9px 12px; border-bottom: 1px solid #f0e8f8; vertical-align: top; }
+    .copy-table tr:last-child td { border-bottom: none; }
+    .copy-table .char-count { font-size: .75rem; color: var(--gray); white-space: nowrap; }
+    .copy-table .char-ok { color: #2e7d32; }
+    .copy-table .pin { font-size: .7rem; background: #fff3e0; color: #e65100; border-radius: 4px; padding: 1px 6px; font-weight: 700; }
+    .copy-table code { font-family: monospace; font-size: .82rem; background: #f4f0f8; padding: 1px 5px; border-radius: 3px; }
+
+    /* Extensions */
+    .ext-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .ext-card { background: var(--light); border-radius: 10px; padding: 14px 16px; border: 1px solid var(--border); }
+    .ext-card .ext-type { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--purple); margin-bottom: 6px; }
+    .ext-card p { font-size: .82rem; color: var(--dark); font-weight: 500; }
+    .ext-card span { font-size: .77rem; color: var(--gray); }
+
+    /* Budget */
+    .budget-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .budget-card { border-radius: 10px; padding: 18px; text-align: center; border: 1px solid var(--border); }
+    .budget-card .budget-amount { font-size: 1.5rem; font-weight: 800; color: var(--pink); margin: 6px 0; }
+    .budget-card p { font-size: .8rem; color: var(--gray); }
+
+    /* Tips */
+    .tips { background: #e8f5e9; border-left: 4px solid #43a047; border-radius: 0 10px 10px 0; padding: 16px 20px; }
+    .tips h3 { color: #1b5e20; font-size: .9rem; margin-bottom: 8px; }
+    .tips ul { padding-left: 16px; font-size: .85rem; color: #2e7d32; display: grid; gap: 4px; }
+
+    @media print {
+      body { background: white; }
+      .campaign { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <h1>🎯 Google Ads Campaign Playbook</h1>
+    <p>Flowers 'N' Balloons — Bangalore · Complete copy, keywords, extensions & budget guide</p>
+    <div class="badges">
+      <span class="badge">3 Campaigns</span>
+      <span class="badge">RSA Format</span>
+      <span class="badge">Lead Gen Optimised</span>
+      <span class="badge">India Market</span>
+      <span class="badge">Last Updated: May 2026</span>
+    </div>
+  </div>
+
+  <!-- Setup Checklist -->
+  <div class="setup-box">
+    <h2>⚠️ Complete These Steps Before Running Ads</h2>
+    <ol>
+      <li>Get your <strong>Google Ads account ID</strong> and replace <code>AW-XXXXXXXXXX</code> in <code>js/main.js</code></li>
+      <li>Get your <strong>GA4 Measurement ID</strong> and replace <code>G-XXXXXXXXXX</code> in <code>js/main.js</code></li>
+      <li>Create a <strong>Conversion Action</strong> in Google Ads → Tools → Conversions → "Thank You Page visit" → paste the label in <code>thank-you.html</code></li>
+      <li>Connect your <strong>Google Business Profile</strong> for free location extensions</li>
+      <li>Deploy the site on <strong>HTTPS hosting</strong> (Hostinger / Netlify / Vercel) — Google Ads won't run on HTTP</li>
+      <li>Upload <strong>real decoration photos</strong> to <code>images/</code> for better Quality Score</li>
+    </ol>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CAMPAIGN 1: BIRTHDAY
+  ═══════════════════════════════════════════════ -->
+  <div class="campaign">
+    <div class="campaign-header">
+      <span class="emoji">🎂</span>
+      <div>
+        <h2>Campaign 1 — Birthday Decoration Bangalore</h2>
+        <p>Goal: Form leads + Call leads &nbsp;·&nbsp; Bidding: Maximise Conversions (start), then Target CPA ₹400–600</p>
+      </div>
+      <div class="lp-tag">↗ lp-birthday.html</div>
+    </div>
+    <div class="campaign-body">
+
+      <!-- Keywords -->
+      <div>
+        <div class="section-label">Keywords — Ad Group 1: Birthday Decoration (Main)</div>
+        <div class="kw-group">
+          <h4>🟢 Exact Match — highest intent, lowest waste</h4>
+          <div class="kw-list">
+            <span class="kw kw-exact">[birthday decoration bangalore]</span>
+            <span class="kw kw-exact">[birthday decorator bangalore]</span>
+            <span class="kw kw-exact">[birthday balloon decoration bangalore]</span>
+            <span class="kw kw-exact">[birthday party decoration bangalore]</span>
+            <span class="kw kw-exact">[balloon decoration for birthday bangalore]</span>
+          </div>
+        </div>
+        <div class="kw-group">
+          <h4>🔵 Phrase Match — broader coverage</h4>
+          <div class="kw-list">
+            <span class="kw kw-phrase">"birthday decoration in bangalore"</span>
+            <span class="kw kw-phrase">"birthday theme decoration bangalore"</span>
+            <span class="kw kw-phrase">"birthday balloon decorator near me"</span>
+            <span class="kw kw-phrase">"birthday decoration home bangalore"</span>
+            <span class="kw kw-phrase">"cheap birthday decoration bangalore"</span>
+            <span class="kw kw-phrase">"best birthday decorator bangalore"</span>
+          </div>
+        </div>
+        <div class="kw-group">
+          <h4>🔴 Negative Keywords — block irrelevant clicks</h4>
+          <div class="kw-list">
+            <span class="kw kw-neg">-DIY</span>
+            <span class="kw kw-neg">-how to</span>
+            <span class="kw kw-neg">-ideas</span>
+            <span class="kw kw-neg">-youtube</span>
+            <span class="kw kw-neg">-free</span>
+            <span class="kw kw-neg">-download</span>
+            <span class="kw kw-neg">-wholesale</span>
+            <span class="kw kw-neg">-supply</span>
+            <span class="kw kw-neg">-mumbai</span>
+            <span class="kw kw-neg">-delhi</span>
+            <span class="kw kw-neg">-chennai</span>
+            <span class="kw kw-neg">-hyderabad</span>
+            <span class="kw kw-neg">-course</span>
+            <span class="kw kw-neg">-training</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ad Preview -->
+      <div>
+        <div class="section-label">Google Search Ad Preview</div>
+        <div class="ad-preview">
+          <span class="ad-label">Ad</span>
+          <div class="ad-url">flowersnballoons.com/birthday-decoration-bangalore</div>
+          <div class="ad-title">Birthday Decoration Bangalore · From ₹4500 · Free Quote in 2 Hrs</div>
+          <div class="ad-desc">Top-rated birthday decorator in Bangalore since 2015. Balloon arches, flower setups &amp; photo booths. 1500+ happy families. No hidden charges. Book today.</div>
+        </div>
+      </div>
+
+      <!-- RSA Headlines -->
+      <div>
+        <div class="section-label">RSA Headlines — Add all 15 (Google picks the best combos)</div>
+        <table class="copy-table">
+          <thead><tr><th>#</th><th>Headline</th><th>Chars</th><th>Pin</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Birthday Decoration Bangalore</strong></td><td class="char-count char-ok">29</td><td><span class="pin">PIN 1</span></td></tr>
+            <tr><td>2</td><td><strong>Balloons &amp; Flowers From ₹4500</strong></td><td class="char-count char-ok">29</td><td><span class="pin">PIN 2</span></td></tr>
+            <tr><td>3</td><td>Free Quote in 2 Hours</td><td class="char-count char-ok">21</td><td></td></tr>
+            <tr><td>4</td><td>1500+ Birthdays Decorated</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>5</td><td>No Hidden Charges. Ever.</td><td class="char-count char-ok">24</td><td></td></tr>
+            <tr><td>6</td><td>Call Now — Same-Day Setup</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>7</td><td>All Bangalore Areas Covered</td><td class="char-count char-ok">27</td><td></td></tr>
+            <tr><td>8</td><td>5-Star Rated Since 2015</td><td class="char-count char-ok">23</td><td></td></tr>
+            <tr><td>9</td><td>Unicorn, Princess &amp; More</td><td class="char-count char-ok">24</td><td></td></tr>
+            <tr><td>10</td><td>Balloon Arch + Photo Booth</td><td class="char-count char-ok">26</td><td></td></tr>
+            <tr><td>11</td><td>#1 Birthday Decorator BLR</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>12</td><td>Book Your Date — Limited Slots</td><td class="char-count char-ok">30</td><td></td></tr>
+            <tr><td>13</td><td>WhatsApp for Instant Quote</td><td class="char-count char-ok">26</td><td></td></tr>
+            <tr><td>14</td><td>Themed Setups from ₹4500</td><td class="char-count char-ok">24</td><td></td></tr>
+            <tr><td>15</td><td>Transform Any Venue Today</td><td class="char-count char-ok">25</td><td></td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:.75rem;color:var(--gray);margin-top:6px;">💡 <strong>PIN tip:</strong> Pin Headline 1 to position 1 and Headline 2 to position 2 so your brand + price always shows. Leave the rest unpinned.</p>
+      </div>
+
+      <!-- Descriptions -->
+      <div>
+        <div class="section-label">RSA Descriptions — Add all 4</div>
+        <table class="copy-table">
+          <thead><tr><th>#</th><th>Description (90 chars max)</th><th>Chars</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>Top birthday decorator in Bangalore since 2015. Free quote in 2 hrs. No hidden charges ever.</td><td class="char-count char-ok">91→trim: "Free quote in 2 hrs. No hidden charges. 1500+ families trust us."</td></tr>
+            <tr><td>1</td><td><strong>Free quote in 2 hrs. Balloon arches, flower décor &amp; photo booths. No hidden charges.</strong></td><td class="char-count char-ok">87</td></tr>
+            <tr><td>2</td><td><strong>1500+ birthdays decorated in Bangalore. Unicorn, princess &amp; superhero themes. Book today!</strong></td><td class="char-count char-ok">90</td></tr>
+            <tr><td>3</td><td><strong>Serving Whitefield, Koramangala, HSR, Indiranagar &amp; all Bangalore. Same-day quotes.</strong></td><td class="char-count char-ok">88</td></tr>
+            <tr><td>4</td><td><strong>Transparent pricing from ₹4500. 5-star rated team. On-time setup guaranteed. Call now!</strong></td><td class="char-count char-ok">89</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Extensions -->
+      <div>
+        <div class="section-label">Ad Extensions (Add All — they're free &amp; boost CTR by 20–30%)</div>
+        <div class="ext-grid">
+          <div class="ext-card">
+            <div class="ext-type">📞 Call Extension</div>
+            <p>+91 8867121207</p>
+            <span>Show on mobile — direct call from ad</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">🔗 Sitelink 1</div>
+            <p>Birthday Packages</p>
+            <span>lp-birthday.html#price-heading</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">🔗 Sitelink 2</div>
+            <p>Popular Themes</p>
+            <span>lp-birthday.html#themes-heading</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">🔗 Sitelink 3</div>
+            <p>Get Free Quote</p>
+            <span>lp-birthday.html#lp-form</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">🔗 Sitelink 4</div>
+            <p>WhatsApp Us Now</p>
+            <span>wa.me/918867121207</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">✅ Callout 1</div>
+            <p>No Hidden Charges</p>
+            <span>Short USP shown below ad</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">✅ Callout 2</div>
+            <p>Same-Day Quotes</p>
+            <span></span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">✅ Callout 3</div>
+            <p>5-Star Rated Team</p>
+            <span></span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">✅ Callout 4</div>
+            <p>All Bangalore Areas</p>
+            <span></span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">💰 Price Extension</div>
+            <p>Starter: ₹4,500 · Premium: ₹8,000 · Grand: ₹20,000</p>
+            <span>Shows pricing directly in ad</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">📋 Structured Snippet</div>
+            <p>Types: Unicorn · Princess · Superhero · Jungle · Frozen · Minions</p>
+            <span>Header: "Themes"</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CAMPAIGN 2: WEDDING
+  ═══════════════════════════════════════════════ -->
+  <div class="campaign">
+    <div class="campaign-header">
+      <span class="emoji">💍</span>
+      <div>
+        <h2>Campaign 2 — Wedding Decoration Bangalore</h2>
+        <p>Goal: Form leads &nbsp;·&nbsp; Bidding: Maximise Conversions · Higher CPC expected (₹40–80/click)</p>
+      </div>
+      <div class="lp-tag">↗ lp-wedding.html</div>
+    </div>
+    <div class="campaign-body">
+
+      <div>
+        <div class="section-label">Keywords</div>
+        <div class="kw-group">
+          <h4>🟢 Exact Match</h4>
+          <div class="kw-list">
+            <span class="kw kw-exact">[wedding decoration bangalore]</span>
+            <span class="kw kw-exact">[wedding decorator bangalore]</span>
+            <span class="kw kw-exact">[wedding stage decoration bangalore]</span>
+            <span class="kw kw-exact">[wedding flower decoration bangalore]</span>
+            <span class="kw kw-exact">[mandap decoration bangalore]</span>
+          </div>
+        </div>
+        <div class="kw-group">
+          <h4>🔵 Phrase Match</h4>
+          <div class="kw-list">
+            <span class="kw kw-phrase">"wedding decor bangalore"</span>
+            <span class="kw kw-phrase">"best wedding decorator in bangalore"</span>
+            <span class="kw kw-phrase">"wedding stage decorator bangalore"</span>
+            <span class="kw kw-phrase">"floral wedding decoration bangalore"</span>
+            <span class="kw kw-phrase">"wedding decoration at home bangalore"</span>
+          </div>
+        </div>
+        <div class="kw-group">
+          <h4>🔴 Negative Keywords</h4>
+          <div class="kw-list">
+            <span class="kw kw-neg">-DIY</span>
+            <span class="kw kw-neg">-how to</span>
+            <span class="kw kw-neg">-ideas</span>
+            <span class="kw kw-neg">-pinterest</span>
+            <span class="kw kw-neg">-free</span>
+            <span class="kw kw-neg">-wholesale</span>
+            <span class="kw kw-neg">-rental</span>
+            <span class="kw kw-neg">-venue</span>
+            <span class="kw kw-neg">-caterer</span>
+            <span class="kw kw-neg">-photographer</span>
+            <span class="kw kw-neg">-invitation</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">RSA Headlines — All 15</div>
+        <table class="copy-table">
+          <thead><tr><th>#</th><th>Headline</th><th>Chars</th><th>Pin</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Wedding Decoration Bangalore</strong></td><td class="char-count char-ok">28</td><td><span class="pin">PIN 1</span></td></tr>
+            <tr><td>2</td><td><strong>Stage &amp; Mandap from ₹15,000</strong></td><td class="char-count char-ok">27</td><td><span class="pin">PIN 2</span></td></tr>
+            <tr><td>3</td><td>Free Consultation &amp; Quote</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>4</td><td>Fresh Flowers. Grand Décor.</td><td class="char-count char-ok">26</td><td></td></tr>
+            <tr><td>5</td><td>1500+ Weddings Decorated</td><td class="char-count char-ok">24</td><td></td></tr>
+            <tr><td>6</td><td>No Hidden Charges. Ever.</td><td class="char-count char-ok">24</td><td></td></tr>
+            <tr><td>7</td><td>All Bangalore Venues Covered</td><td class="char-count char-ok">28</td><td></td></tr>
+            <tr><td>8</td><td>5-Star Rated Wedding Decorator</td><td class="char-count char-ok">30</td><td></td></tr>
+            <tr><td>9</td><td>Royal, Floral &amp; Boho Themes</td><td class="char-count char-ok">28</td><td></td></tr>
+            <tr><td>10</td><td>Stage + Mandap + Full Venue</td><td class="char-count char-ok">26</td><td></td></tr>
+            <tr><td>11</td><td>Book Your Wedding Date Today</td><td class="char-count char-ok">28</td><td></td></tr>
+            <tr><td>12</td><td>Trusted Since 2015 in BLR</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>13</td><td>WhatsApp for Instant Quote</td><td class="char-count char-ok">26</td><td></td></tr>
+            <tr><td>14</td><td>Floral Arch + Selfie Wall</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>15</td><td>Call Now — Limited Dates Left</td><td class="char-count char-ok">29</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <div class="section-label">RSA Descriptions — All 4</div>
+        <table class="copy-table">
+          <thead><tr><th>#</th><th>Description</th><th>Chars</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Stunning wedding stage, mandap &amp; full venue décor in Bangalore. Free quote. No hidden charges.</strong></td><td class="char-count char-ok">90</td></tr>
+            <tr><td>2</td><td><strong>Fresh flowers, fabric draping, fairy lights &amp; selfie walls. All wedding styles &amp; budgets.</strong></td><td class="char-count char-ok">88</td></tr>
+            <tr><td>3</td><td><strong>Royal, garden, minimalist &amp; traditional South Indian themes. Serving all Bangalore venues.</strong></td><td class="char-count char-ok">88</td></tr>
+            <tr><td>4</td><td><strong>5-star rated wedding decorator since 2015. On-time setup, transparent pricing. Book today!</strong></td><td class="char-count char-ok">89</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <div class="section-label">Ad Extensions</div>
+        <div class="ext-grid">
+          <div class="ext-card">
+            <div class="ext-type">📞 Call Extension</div>
+            <p>+91 8867121207</p>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">🔗 Sitelink 1</div>
+            <p>Wedding Packages</p>
+            <span>lp-wedding.html#price-heading</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">🔗 Sitelink 2</div>
+            <p>Popular Themes</p>
+            <span>lp-wedding.html#themes-heading</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">🔗 Sitelink 3</div>
+            <p>Get Free Quote</p>
+            <span>lp-wedding.html#lp-form</span>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">✅ Callout</div>
+            <p>Fresh Flowers Only · On-Time Setup · All Venues · 10+ Yrs Exp</p>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">💰 Price Extension</div>
+            <p>Essential ₹15,000 · Grand ₹40,000 · Royal ₹1,00,000</p>
+          </div>
+          <div class="ext-card">
+            <div class="ext-type">📋 Structured Snippet</div>
+            <p>Themes: Royal · Floral · Minimalist · Traditional · Rustic · Pastel</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       CAMPAIGN 3: BABY SHOWER
+  ═══════════════════════════════════════════════ -->
+  <div class="campaign">
+    <div class="campaign-header">
+      <span class="emoji">🍼</span>
+      <div>
+        <h2>Campaign 3 — Baby Shower Decoration Bangalore</h2>
+        <p>Goal: Form leads &nbsp;·&nbsp; Bidding: Maximise Conversions · Lower competition = cheaper clicks</p>
+      </div>
+      <div class="lp-tag">↗ lp-babyshower.html</div>
+    </div>
+    <div class="campaign-body">
+
+      <div>
+        <div class="section-label">Keywords</div>
+        <div class="kw-group">
+          <h4>🟢 Exact Match</h4>
+          <div class="kw-list">
+            <span class="kw kw-exact">[baby shower decoration bangalore]</span>
+            <span class="kw kw-exact">[baby shower decorator bangalore]</span>
+            <span class="kw kw-exact">[baby shower balloon decoration bangalore]</span>
+          </div>
+        </div>
+        <div class="kw-group">
+          <h4>🔵 Phrase Match</h4>
+          <div class="kw-list">
+            <span class="kw kw-phrase">"baby shower decor bangalore"</span>
+            <span class="kw kw-phrase">"baby shower theme decoration bangalore"</span>
+            <span class="kw kw-phrase">"baby shower setup bangalore"</span>
+            <span class="kw kw-phrase">"baby shower decorator near me bangalore"</span>
+            <span class="kw kw-phrase">"it's a girl decoration bangalore"</span>
+            <span class="kw kw-phrase">"it's a boy decoration bangalore"</span>
+          </div>
+        </div>
+        <div class="kw-group">
+          <h4>🔴 Negative Keywords</h4>
+          <div class="kw-list">
+            <span class="kw kw-neg">-DIY</span>
+            <span class="kw kw-neg">-how to</span>
+            <span class="kw kw-neg">-ideas</span>
+            <span class="kw kw-neg">-games</span>
+            <span class="kw kw-neg">-invitations</span>
+            <span class="kw kw-neg">-gifts</span>
+            <span class="kw kw-neg">-free</span>
+            <span class="kw kw-neg">-wholesale</span>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">RSA Headlines — All 15</div>
+        <table class="copy-table">
+          <thead><tr><th>#</th><th>Headline</th><th>Chars</th><th>Pin</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Baby Shower Decoration BLR</strong></td><td class="char-count char-ok">27</td><td><span class="pin">PIN 1</span></td></tr>
+            <tr><td>2</td><td><strong>Adorable Themes from ₹5,000</strong></td><td class="char-count char-ok">28</td><td><span class="pin">PIN 2</span></td></tr>
+            <tr><td>3</td><td>Free Quote in 2 Hours</td><td class="char-count char-ok">21</td><td></td></tr>
+            <tr><td>4</td><td>It's a Boy / Girl Themes</td><td class="char-count char-ok">24</td><td></td></tr>
+            <tr><td>5</td><td>Balloons, Backdrop &amp; More</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>6</td><td>Dessert Table Setup Included</td><td class="char-count char-ok">28</td><td></td></tr>
+            <tr><td>7</td><td>No Hidden Charges. Ever.</td><td class="char-count char-ok">24</td><td></td></tr>
+            <tr><td>8</td><td>All Bangalore Areas Covered</td><td class="char-count char-ok">27</td><td></td></tr>
+            <tr><td>9</td><td>Jungle, Teddy &amp; Fairy Themes</td><td class="char-count char-ok">29</td><td></td></tr>
+            <tr><td>10</td><td>5-Star Rated Baby Decorators</td><td class="char-count char-ok">28</td><td></td></tr>
+            <tr><td>11</td><td>Book Date — Limited Slots</td><td class="char-count char-ok">25</td><td></td></tr>
+            <tr><td>12</td><td>Mama-to-Be Deserves the Best</td><td class="char-count char-ok">28</td><td></td></tr>
+            <tr><td>13</td><td>WhatsApp for Instant Quote</td><td class="char-count char-ok">26</td><td></td></tr>
+            <tr><td>14</td><td>Photo Booth &amp; Welcome Board</td><td class="char-count char-ok">27</td><td></td></tr>
+            <tr><td>15</td><td>Trusted by 1500+ Families BLR</td><td class="char-count char-ok">29</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <div class="section-label">RSA Descriptions — All 4</div>
+        <table class="copy-table">
+          <thead><tr><th>#</th><th>Description</th><th>Chars</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Adorable baby shower decorations in Bangalore from ₹5000. Free quote in 2 hrs. No hidden charges.</strong></td><td class="char-count char-ok">90→ trim: </strong>Baby shower décor in Bangalore from ₹5000. Themes, balloons &amp; dessert tables. Free quote!</strong></td></tr>
+            <tr><td>1</td><td><strong>Baby shower décor from ₹5000. It's a Boy/Girl, Jungle, Teddy &amp; more. Free quote in 2 hrs.</strong></td><td class="char-count char-ok">88</td></tr>
+            <tr><td>2</td><td><strong>Themed backdrops, balloon arches, dessert tables &amp; welcome boards. All Bangalore areas.</strong></td><td class="char-count char-ok">87</td></tr>
+            <tr><td>3</td><td><strong>1500+ happy families in Bangalore. 5-star rated. On-time setup. Transparent pricing always.</strong></td><td class="char-count char-ok">89</td></tr>
+            <tr><td>4</td><td><strong>Serving Sarjapur, Whitefield, Koramangala &amp; all BLR. WhatsApp for an instant quote today!</strong></td><td class="char-count char-ok">89</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       BUDGET & BIDDING RECOMMENDATIONS
+  ═══════════════════════════════════════════════ -->
+  <div class="campaign">
+    <div class="campaign-header">
+      <span class="emoji">💰</span>
+      <div>
+        <h2>Budget &amp; Bidding Recommendations</h2>
+        <p>Start conservative, scale what works. Review every 7 days.</p>
+      </div>
+    </div>
+    <div class="campaign-body">
+      <div>
+        <div class="section-label">Daily Budget (Starting Month)</div>
+        <div class="budget-grid">
+          <div class="budget-card" style="background:#fce4ec;">
+            <p style="font-size:.8rem;color:#888;">Birthday Campaign</p>
+            <div class="budget-amount">₹500/day</div>
+            <p>~15,000/month · Highest volume</p>
+          </div>
+          <div class="budget-card" style="background:#e8f0ee;">
+            <p style="font-size:.8rem;color:#888;">Wedding Campaign</p>
+            <div class="budget-amount" style="color:#6f9d8e;">₹600/day</div>
+            <p>~18,000/month · Higher ticket</p>
+          </div>
+          <div class="budget-card" style="background:#e8f5e9;">
+            <p style="font-size:.8rem;color:#888;">Baby Shower Campaign</p>
+            <div class="budget-amount" style="color:#2e7d32;">₹300/day</div>
+            <p>~9,000/month · Lower competition</p>
+          </div>
+          <div class="budget-card" style="background:#fff3e0;border:2px solid #ff9800;">
+            <p style="font-size:.8rem;color:#888;">Total Monthly</p>
+            <div class="budget-amount" style="color:#e65100;">~₹42,000</div>
+            <p>Expected: 80–120 leads/month</p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Bidding Strategy (Phase-by-Phase)</div>
+        <table class="copy-table">
+          <thead><tr><th>Phase</th><th>Duration</th><th>Strategy</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Phase 1</strong></td><td>First 2–3 weeks</td><td>Maximise Clicks (set max CPC ₹30)</td><td>Collect conversion data — Google needs 30+ conversions to learn</td></tr>
+            <tr><td><strong>Phase 2</strong></td><td>Month 2+</td><td>Maximise Conversions</td><td>Once you have data, Google auto-optimises for leads</td></tr>
+            <tr><td><strong>Phase 3</strong></td><td>Month 3+</td><td>Target CPA (set ₹400–500)</td><td>Tell Google exactly what you want to pay per lead</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <div class="section-label">Remarketing Campaign (Add After Month 1)</div>
+        <table class="copy-table">
+          <thead><tr><th>Audience</th><th>Ad Type</th><th>Message</th><th>Budget</th></tr></thead>
+          <tbody>
+            <tr><td>Visited LP but didn't fill form</td><td>Display / Search</td><td>"Still planning? Get your free quote — takes 2 minutes"</td><td>₹150/day</td></tr>
+            <tr><td>Visited thank-you page (converted)</td><td>Exclude from ads</td><td>—</td><td>Saves budget</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tips -->
+  <div class="tips">
+    <h3>🏆 Top 5 Tips to Maximise Your Ad ROI</h3>
+    <ul>
+      <li><strong>Add real photos ASAP</strong> — Ads with responsive display images get 3× more conversions. Even 5 real decoration photos help massively.</li>
+      <li><strong>Reply within 30 minutes</strong> — Leads go cold fast. The team that calls back first wins the booking 80% of the time.</li>
+      <li><strong>Pause ads on days you're fully booked</strong> — Never pay for leads you can't fulfil. Set ad schedules in Google Ads.</li>
+      <li><strong>Run ads 8 AM–8 PM only</strong> — Event planning decisions happen during the day. Save budget by scheduling off overnight.</li>
+      <li><strong>Track which keywords convert</strong> — After 2 weeks, pause keywords with 0 conversions and increase budgets on winners.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

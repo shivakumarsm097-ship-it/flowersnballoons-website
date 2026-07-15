@@ -1,6 +1,51 @@
 /* Flowers 'N' Balloons — main.js */
 'use strict';
 
+/* ═══════════════════════════════════════════════════════════════
+   GOOGLE ANALYTICS 4 + GOOGLE ADS TRACKING
+   ─────────────────────────────────────────────────────────────
+   SETUP STEPS (do this before running ads):
+   1. Create a Google Analytics 4 property → get your Measurement ID (G-XXXXXXXXXX)
+   2. Create a Google Ads account → get your Conversion ID (AW-XXXXXXXXXX)
+   3. Replace both placeholders below with your real IDs
+   4. In Google Ads, create a "Website" conversion action and copy the
+      Conversion Label — paste it in thank-you.html where indicated
+═══════════════════════════════════════════════════════════════ */
+(function () {
+  var GA4_ID  = 'G-XXXXXXXXXX';   // ← Replace with your GA4 Measurement ID
+  var GADS_ID = 'AW-XXXXXXXXXX';  // ← Replace with your Google Ads Conversion ID
+
+  // Don't load on localhost (dev environment)
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
+
+  // Inject gtag.js script
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA4_ID;
+  document.head.appendChild(s);
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', GA4_ID);   // GA4 pageview
+  gtag('config', GADS_ID);  // Google Ads remarketing
+
+  // Track phone call clicks
+  document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      gtag('event', 'phone_call_click', { event_category: 'lead', event_label: window.location.pathname });
+    });
+  });
+
+  // Track WhatsApp clicks
+  document.querySelectorAll('a[href*="wa.me"]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      gtag('event', 'whatsapp_click', { event_category: 'lead', event_label: window.location.pathname });
+    });
+  });
+})();
+
 /* === HEADER SCROLL SHADOW === */
 (function () {
   const header = document.querySelector('.header');
@@ -81,8 +126,128 @@
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 })();
 
+/* === 3D CARD TILT === */
+(function () {
+  const MAX_TILT = 14;
+  const sel = '.usp-card, .service-card, .testi-card, .stat-card, .val-card, .step';
+
+  function onMove(e) {
+    const card = e.currentTarget;
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    const ry =  x * MAX_TILT;
+    const rx = -y * MAX_TILT;
+    card.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(14px)`;
+    card.style.boxShadow = `${-ry * 2}px ${rx * 2}px 40px rgba(233,30,140,.2), 0 8px 32px rgba(0,0,0,.1)`;
+    const icon = card.querySelector('.usp-icon,.service-card-icon,.stars,.val-icon,.step-num');
+    if (icon) icon.style.transform = 'translateZ(30px)';
+  }
+
+  function onLeave(e) {
+    const card = e.currentTarget;
+    card.style.transform = '';
+    card.style.boxShadow = '';
+    const icon = card.querySelector('.usp-icon,.service-card-icon,.stars,.val-icon,.step-num');
+    if (icon) icon.style.transform = '';
+  }
+
+  document.querySelectorAll(sel).forEach(card => {
+    card.addEventListener('mousemove', onMove);
+    card.addEventListener('mouseleave', onLeave);
+  });
+})();
+
+/* === HERO 3D FLOATING ELEMENTS === */
+(function () {
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+
+  const items = [
+    { e: '🎈', s: '2.4rem', t: '12%', l: '7%',   d: '0s',    dr: '6s'   },
+    { e: '🌸', s: '2rem',   t: '65%', l: '5%',   d: '1.2s',  dr: '7.5s' },
+    { e: '🎊', s: '2.2rem', t: '20%', r: '7%',   d: '0.6s',  dr: '5.5s' },
+    { e: '💐', s: '1.8rem', t: '72%', r: '6%',   d: '1.8s',  dr: '8s'   },
+    { e: '🎉', s: '2rem',   t: '40%', l: '3%',   d: '2.4s',  dr: '6.5s' },
+    { e: '🌺', s: '1.6rem', t: '8%',  r: '16%',  d: '3s',    dr: '7s'   },
+  ];
+
+  items.forEach((item, i) => {
+    const outer = document.createElement('span');
+    outer.className = 'hero-float';
+    outer.style.cssText = `top:${item.t};${item.l?'left:'+item.l:'right:'+item.r};font-size:${item.s};`;
+
+    const inner = document.createElement('span');
+    inner.className = 'hero-float-inner';
+    inner.textContent = item.e;
+    inner.style.cssText = `animation-delay:${item.d};animation-duration:${item.dr};`;
+
+    outer.appendChild(inner);
+    hero.appendChild(outer);
+  });
+
+  // Mouse parallax: each float moves at a different depth
+  hero.addEventListener('mousemove', e => {
+    const r = hero.getBoundingClientRect();
+    const mx = (e.clientX - r.left) / r.width  - 0.5;
+    const my = (e.clientY - r.top)  / r.height - 0.5;
+    hero.querySelectorAll('.hero-float').forEach((el, i) => {
+      const depth = (i % 3 + 1) * 14;
+      el.style.transform = `translate(${mx * depth}px, ${my * depth}px)`;
+    });
+  });
+
+  hero.addEventListener('mouseleave', () => {
+    hero.querySelectorAll('.hero-float').forEach(el => { el.style.transform = ''; });
+  });
+})();
+
 /* === FORM VALIDATION & SUBMIT === */
 (function () {
+  /* ─── WhatsApp bot lead hook ───────────────────────────────
+     When set, every submitted form also pings the WhatsApp bot, which
+     auto-messages the customer and starts the booking conversation.
+       BOT_LEAD_URL   = https://your-bot-domain/lead
+       BOT_LEAD_TOKEN = same value as LEAD_WEBHOOK_TOKEN in the bot's .env
+     Leave BOT_LEAD_URL empty to disable (form still works normally). */
+  var BOT_LEAD_URL   = '';   // ← paste your deployed bot URL, e.g. https://bot.up.railway.app/lead
+  var BOT_LEAD_TOKEN = '';   // ← paste your LEAD_WEBHOOK_TOKEN
+
+  function pingBot(form) {
+    if (!BOT_LEAD_URL) return;
+    var f = new FormData(form);
+    // service: hidden <input name="service"> on the form, else infer from page
+    var service = f.get('service');
+    if (!service) {
+      var p = location.pathname;
+      if (p.indexOf('wedding') > -1) service = 'wedding';
+      else if (p.indexOf('babyshower') > -1) service = 'babyshower';
+      else if (p.indexOf('birthday') > -1) service = 'birthday';
+      else if (p.indexOf('housewarming') > -1) service = 'housewarming';
+      else if (p.indexOf('engagement') > -1) service = 'engagement';
+      else if (p.indexOf('namingceremony') > -1) service = 'namingceremony';
+      else if (p.indexOf('corporate') > -1) service = 'corporate';
+      else if (p.indexOf('haldi') > -1) service = 'haldi';
+      else if (p.indexOf('babywelcome') > -1) service = 'babywelcome';
+      else if (p.indexOf('community') > -1) service = 'community';
+    }
+    var payload = {
+      name: f.get('name') || '',
+      phone: f.get('phone') || f.get('mobile') || '',
+      service: service || '',
+      source: location.pathname.split('/').pop() || 'homepage',
+    };
+    // fire-and-forget; never blocks the user's redirect
+    try {
+      fetch(BOT_LEAD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Lead-Token': BOT_LEAD_TOKEN },
+        body: JSON.stringify(payload),
+        keepalive: true,
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   document.querySelectorAll('.js-quote-form').forEach(form => {
     const successMsg = form.querySelector('.form-success-msg');
 
@@ -119,13 +284,14 @@
       fetch('https://api.web3forms.com/submit', { method: 'POST', body: data })
         .then(res => res.json())
         .then(json => {
-          form.reset();
-          submitBtn.disabled = false;
-          submitBtn.textContent = origLabel;
-          if (successMsg) {
-            successMsg.classList.add('show');
-            successMsg.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          // Fire GA4 lead event before redirect
+          if (typeof gtag === 'function') {
+            gtag('event', 'form_submit', { event_category: 'lead', event_label: window.location.pathname });
           }
+          // Tell the WhatsApp bot to reach out & start the conversation
+          pingBot(form);
+          // Redirect to thank-you page (Google Ads conversion fires there)
+          window.location.href = 'thank-you.html';
         })
         .catch(() => {
           submitBtn.disabled = false;

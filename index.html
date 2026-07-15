@@ -46,13 +46,13 @@
     .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:#fff;height:var(--header-h);}
     .header-inner{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1200px;margin:0 auto;padding:0 20px;}
     .logo{display:flex;align-items:center;gap:8px;color:var(--text);font-weight:700;font-size:1.1rem;}
-    .logo-icon{font-size:2rem;filter:drop-shadow(0 2px 6px rgba(233,30,140,.4));transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
+    .logo-icon{font-size:2rem;filter:drop-shadow(0 2px 6px rgba(221,101,128,.4));transition:transform .35s cubic-bezier(.34,1.56,.64,1);}
     .logo-wordmark{background:linear-gradient(90deg,#e91e8c 0%,#ff9800 48%,#7b2d8b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}.logo-wordmark span{-webkit-text-fill-color:transparent;}
     .nav{display:none;}
     .header-actions{display:none;}
     .hamburger{display:flex;flex-direction:column;gap:5px;padding:8px;cursor:pointer;border:none;background:none;}
     .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;}
-    .hero{min-height:92vh;display:flex;align-items:center;background:linear-gradient(135deg,rgba(233,30,140,.72) 0%,rgba(74,16,96,.82) 100%),url('images/hero-bg.webp') center/cover no-repeat;position:relative;overflow:hidden;padding-top:var(--header-h);}
+    .hero{min-height:92vh;display:flex;align-items:center;background:linear-gradient(135deg,rgba(221,101,128,.72) 0%,rgba(74,16,96,.82) 100%),url('images/hero-bg.webp') center/cover no-repeat;position:relative;overflow:hidden;padding-top:var(--header-h);}
     .hero-content{position:relative;z-index:1;text-align:center;padding:40px 20px 100px;max-width:800px;margin:0 auto;}
     .hero h1{color:#fff;font-size:clamp(1.9rem,5vw,3rem);font-weight:700;line-height:1.2;margin-bottom:14px;text-shadow:0 2px 16px rgba(0,0,0,.15);}
     .promo-bar{background:linear-gradient(90deg,var(--secondary),var(--primary));color:#fff;text-align:center;padding:9px 20px;font-size:.875rem;font-weight:500;}
@@ -108,6 +108,7 @@
     "hasMap": "https://maps.google.com/?q=Sarjapura+Main+Road+Bangalore"
   }
   </script>
+  <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 
@@ -199,6 +200,76 @@
         </div>
       </div>
     </div>
+
+    <!-- ===== EXPLORE BY OCCASION ===== -->
+    <section class="section" id="occasions" aria-labelledby="occasions-heading">
+      <div class="container">
+        <h2 class="section-title" id="occasions-heading">Decorations For Every Celebration</h2>
+        <p class="section-sub">Tap your occasion for themes, pricing, and a same-day quote</p>
+        <div class="usp-cards" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));">
+          <div class="usp-card reveal">
+            <div class="usp-icon" aria-hidden="true">🎂</div>
+            <h3>Birthday</h3>
+            <p>From ₹4,500 — balloon arches, themes &amp; photo booths.</p>
+            <a href="lp-birthday.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal reveal-delay-1">
+            <div class="usp-icon" aria-hidden="true">💍</div>
+            <h3>Wedding</h3>
+            <p>From ₹15,000 — stage, mandap &amp; fresh-flower styling.</p>
+            <a href="lp-wedding.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal reveal-delay-2">
+            <div class="usp-icon" aria-hidden="true">🍼</div>
+            <h3>Baby Shower</h3>
+            <p>From ₹5,000 — soft themes, props &amp; welcome boards.</p>
+            <a href="lp-babyshower.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal reveal-delay-3">
+            <div class="usp-icon" aria-hidden="true">🏡</div>
+            <h3>Housewarming</h3>
+            <p>From ₹6,000 — Griha Pravesh décor, torans &amp; rangoli.</p>
+            <a href="lp-housewarming.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal">
+            <div class="usp-icon" aria-hidden="true">💎</div>
+            <h3>Engagement</h3>
+            <p>From ₹8,000 — stage backdrop &amp; ring ceremony décor.</p>
+            <a href="lp-engagement.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal reveal-delay-1">
+            <div class="usp-icon" aria-hidden="true">👶</div>
+            <h3>Naming Ceremony</h3>
+            <p>From ₹5,000 — cradle décor &amp; welcome backdrops.</p>
+            <a href="lp-namingceremony.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal reveal-delay-2">
+            <div class="usp-icon" aria-hidden="true">🏢</div>
+            <h3>Corporate Events</h3>
+            <p>From ₹10,000 — stage branding &amp; product launches.</p>
+            <a href="lp-corporate.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal reveal-delay-3">
+            <div class="usp-icon" aria-hidden="true">🌼</div>
+            <h3>Haldi Ceremony</h3>
+            <p>From ₹7,000 — marigold backdrops &amp; floral swings.</p>
+            <a href="lp-haldi.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal">
+            <div class="usp-icon" aria-hidden="true">🎀</div>
+            <h3>Baby Welcome Home</h3>
+            <p>From ₹4,000 — welcome banners &amp; nursery styling.</p>
+            <a href="lp-babywelcome.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+          <div class="usp-card reveal reveal-delay-1">
+            <div class="usp-icon" aria-hidden="true">🎪</div>
+            <h3>Community Events</h3>
+            <p>From ₹8,000 — apartment festivals &amp; RWA celebrations.</p>
+            <a href="lp-community.html" class="btn btn-primary btn-sm" style="margin-top:12px;">Explore</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ===== ABOUT (Brief) ===== -->
     <section class="section bg-light" id="about" aria-labelledby="about-heading">
@@ -534,8 +605,16 @@
               <li><a href="services.html#photography">Photography</a></li>
               <li><a href="services.html#catering">Catering Services</a></li>
               <li><a href="services.html#activities">Fun Activities</a></li>
-              <li><a href="services.html">Baby Shower Decor</a></li>
-              <li><a href="services.html">Wedding Decoration</a></li>
+              <li><a href="lp-babyshower.html">Baby Shower Decor</a></li>
+              <li><a href="lp-birthday.html">Birthday Decoration</a></li>
+              <li><a href="lp-wedding.html">Wedding Decoration</a></li>
+              <li><a href="lp-housewarming.html">Housewarming Decor</a></li>
+              <li><a href="lp-engagement.html">Engagement Decoration</a></li>
+              <li><a href="lp-namingceremony.html">Naming Ceremony</a></li>
+              <li><a href="lp-corporate.html">Corporate Events</a></li>
+              <li><a href="lp-haldi.html">Haldi Ceremony</a></li>
+              <li><a href="lp-babywelcome.html">Baby Welcome Home</a></li>
+              <li><a href="lp-community.html">Community Events</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -577,5 +656,6 @@
 
   <script src="js/main.min.js" defer></script>
   <script src="js/exit-popup.min.js" defer></script>
+  <script src="js/theme.js" defer></script>
 </body>
 </html>

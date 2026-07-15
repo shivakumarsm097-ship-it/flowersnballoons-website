@@ -31,7 +31,7 @@
     .header{position:fixed;top:0;left:0;right:0;z-index:1000;background:#fff;height:var(--header-h);}
     .header-inner{display:flex;align-items:center;justify-content:space-between;height:100%;max-width:1200px;margin:0 auto;padding:0 20px;}
     .logo{display:flex;align-items:center;gap:8px;color:var(--text);font-weight:700;font-size:1.1rem;}
-    .logo-icon{font-size:2rem;filter:drop-shadow(0 2px 6px rgba(233,30,140,.4));transition:transform .35s cubic-bezier(.34,1.56,.64,1);}.logo-wordmark{background:linear-gradient(90deg,#e91e8c 0%,#ff9800 48%,#7b2d8b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}.logo-wordmark span{-webkit-text-fill-color:transparent;}
+    .logo-icon{font-size:2rem;filter:drop-shadow(0 2px 6px rgba(221,101,128,.4));transition:transform .35s cubic-bezier(.34,1.56,.64,1);}.logo-wordmark{background:linear-gradient(90deg,#e91e8c 0%,#ff9800 48%,#7b2d8b 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-weight:700;}.logo-wordmark span{-webkit-text-fill-color:transparent;}
     .nav{display:none;}.header-actions{display:none;}
     .hamburger{display:flex;flex-direction:column;gap:5px;padding:8px;cursor:pointer;border:none;background:none;}
     .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;}
@@ -94,6 +94,7 @@
     ]
   }
   </script>
+  <link rel="stylesheet" href="css/theme.css">
 </head>
 <body>
 
@@ -376,7 +377,7 @@
     </section>
 
     <!-- CTA -->
-    <section class="section" style="background:linear-gradient(135deg,var(--primary),var(--secondary));text-align:center;" aria-label="Call to action">
+    <section class="section" style="background:linear-gradient(135deg,var(--primary),var(--accent));text-align:center;" aria-label="Call to action">
       <div class="container">
         <h2 style="color:#fff;margin-bottom:12px;">Planning an Event in Bangalore?</h2>
         <p style="color:rgba(255,255,255,.85);max-width:520px;margin:0 auto 32px;font-size:1.05rem;">Let us handle the decorations while you enjoy the celebration. Free quote, transparent pricing, no hidden charges.</p>
@@ -449,6 +450,15 @@
               <li><a href="#catering">Catering Services</a></li>
               <li><a href="#activities">Fun Activities</a></li>
               <li><a href="lp-birthday.html">Birthday Decoration</a></li>
+              <li><a href="lp-wedding.html">Wedding Decoration</a></li>
+              <li><a href="lp-babyshower.html">Baby Shower Decor</a></li>
+              <li><a href="lp-housewarming.html">Housewarming Decor</a></li>
+              <li><a href="lp-engagement.html">Engagement Decoration</a></li>
+              <li><a href="lp-namingceremony.html">Naming Ceremony</a></li>
+              <li><a href="lp-corporate.html">Corporate Events</a></li>
+              <li><a href="lp-haldi.html">Haldi Ceremony</a></li>
+              <li><a href="lp-babywelcome.html">Baby Welcome Home</a></li>
+              <li><a href="lp-community.html">Community Events</a></li>
             </ul>
           </div>
           <div class="footer-col">
@@ -477,5 +487,6 @@
 
   <script src="js/main.min.js" defer></script>
   <script src="js/exit-popup.min.js" defer></script>
+  <script src="js/theme.js" defer></script>
 </body>
 </html>
