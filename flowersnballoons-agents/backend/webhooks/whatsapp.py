@@ -47,14 +47,14 @@ async def receive(request: Request):
                         await handle_vendor_reply(vendor, text)
                         continue
 
-                    # customer / new lead
-                    existing = await db.find_lead_by_phone(sender)
-                    if existing:
-                        log_action("lead_quote", actions_taken=[f"inbound WhatsApp from existing lead {existing['id']}"])
-                    else:
+                    # customer / new lead → Lead & Quote agent owns the reply
+                    lead = await db.find_lead_by_phone(sender)
+                    if not lead:
                         lead = await db.create_lead(source="whatsapp", phone=sender, raw_message=text[:2000])
                         log_action("lead_quote", actions_taken=[f"new WhatsApp lead {lead['id']} ({sender})"])
                         await slack_alert(f"💬 New WhatsApp lead {sender}: {text[:120]}")
+                    from modules.lead_quote.agent import handle_inbound
+                    await handle_inbound(lead, text)
     except Exception as e:
         log_action("lead_quote", errors=[f"whatsapp webhook parse error: {e}"])
     return {"ok": True}

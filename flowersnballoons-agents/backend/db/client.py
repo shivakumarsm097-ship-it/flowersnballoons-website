@@ -86,6 +86,39 @@ async def recent_duplicate_lead(phone: str, hours: int = 12) -> bool:
     return bool(rows)
 
 
+async def touch_lead(lead_id: str, **extra: Any) -> None:
+    await _update("leads", {"id": f"eq.{lead_id}"}, {"last_contact_at": _now().isoformat(), **extra})
+
+
+async def leads_needing_followup(hours: float = 24) -> list[dict[str, Any]]:
+    cutoff = (_now() - timedelta(hours=hours)).isoformat()
+    return await _get(
+        "leads",
+        {"status": "in.(engaged,quoted)", "followup_sent": "eq.false", "last_contact_at": f"lt.{cutoff}"},
+    )
+
+
+async def leads_gone_cold(days: float = 3) -> list[dict[str, Any]]:
+    cutoff = (_now() - timedelta(days=days)).isoformat()
+    return await _get(
+        "leads",
+        {"status": "in.(new,engaged,quoted)", "last_contact_at": f"lt.{cutoff}"},
+    )
+
+
+# ── conversations ─────────────────────────────────────────────────────
+async def add_message(lead_id: str, role: str, content: str) -> None:
+    await _insert("conversations", {"lead_id": lead_id, "role": role, "content": content})
+
+
+async def conversation_history(lead_id: str, limit: int = 20) -> list[dict[str, Any]]:
+    rows = await _get(
+        "conversations",
+        {"lead_id": f"eq.{lead_id}", "order": "created_at.desc", "limit": str(limit)},
+    )
+    return list(reversed(rows))
+
+
 # ── calendar_holds ─────────────────────────────────────────────────────
 async def active_holds_on(d: date) -> list[dict[str, Any]]:
     return await _get(

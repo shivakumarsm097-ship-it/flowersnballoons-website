@@ -59,6 +59,9 @@ async def web_form(request: Request):
         lead = await db.create_lead(**fields)
         log_action("lead_quote", actions_taken=[f"stored web lead {lead['id']} ({fields['phone']})"])
         await slack_alert(f"🌐 New web lead: {fields['name'] or '—'} {fields['phone'] or ''} — {fields['event_type'] or 'unspecified'}")
+        # spec: never leave a form submission one-way — open on WhatsApp now
+        from modules.lead_quote.agent import start_outbound
+        await start_outbound(lead)
         return {"ok": True, "lead_id": lead["id"]}
     except Exception as e:
         FALLBACK.parent.mkdir(parents=True, exist_ok=True)

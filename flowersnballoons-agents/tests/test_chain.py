@@ -23,7 +23,7 @@ os.environ.setdefault("HOLD_TTL_HOURS", "2")
 from backend.db import client as db  # noqa: E402
 
 # ── in-memory fake PostgREST ──────────────────────────────────────────
-TABLES: dict[str, list[dict]] = {"leads": [], "vendors": [], "calendar_holds": [], "bookings": [], "vendor_assignments": []}
+TABLES: dict[str, list[dict]] = {"leads": [], "vendors": [], "calendar_holds": [], "bookings": [], "vendor_assignments": [], "conversations": []}
 
 
 def _match(row: dict, params: dict[str, str]) -> bool:

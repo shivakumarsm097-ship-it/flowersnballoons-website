@@ -46,6 +46,28 @@ async def unpaid_quote_followups() -> None:
             log_action("booking_payment", errors=[f"follow-up send failed for {lead['id']}: {e}"])
 
 
+async def lead_followups() -> None:
+    """Spec: one gentle nudge at 24h of silence, mark cold at 3 days. Never nag."""
+    for lead in await db.leads_needing_followup(24):
+        if not lead.get("phone"):
+            continue
+        try:
+            name = f" {lead['name']}" if lead.get("name") else ""
+            await send_whatsapp(
+                lead["phone"],
+                f"Hi{name}! Just checking in about your event — happy to answer any questions "
+                f"or adjust the plan. No rush at all 🎈",
+            )
+            await db.touch_lead(lead["id"], followup_sent=True)
+            log_action("lead_quote", actions_taken=[f"24h follow-up sent to lead {lead['id']}"])
+        except Exception as e:
+            log_action("lead_quote", errors=[f"follow-up failed for {lead['id']}: {e}"])
+
+    for lead in await db.leads_gone_cold(3):
+        await db.set_lead_status(lead["id"], "cold")
+        log_action("lead_quote", actions_skipped_or_escalated=[f"lead {lead['id']} marked cold after 3 days silence — no further contact"])
+
+
 async def vendor_escalations() -> None:
     """Spec §7: a paid booking stuck without full vendor acceptance past the
     escalation window triggers proactive refund-or-reschedule outreach —
@@ -106,7 +128,7 @@ async def marketing_tick() -> None:
 
 
 async def main() -> None:
-    for job in (sweep_holds, unpaid_quote_followups, vendor_escalations, review_requests, marketing_tick):
+    for job in (sweep_holds, unpaid_quote_followups, lead_followups, vendor_escalations, review_requests, marketing_tick):
         try:
             await job()
         except Exception as e:

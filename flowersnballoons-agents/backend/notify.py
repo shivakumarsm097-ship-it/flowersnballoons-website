@@ -28,6 +28,34 @@ async def send_whatsapp(to: str, text: str) -> None:
         r.raise_for_status()
 
 
+IG_TOKEN = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "")
+IG_USER_ID = os.environ.get("INSTAGRAM_USER_ID", "")
+
+
+async def send_instagram_dm(recipient_id: str, text: str) -> None:
+    if not (IG_TOKEN and IG_USER_ID):
+        raise RuntimeError("Instagram Graph API not configured")
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.post(
+            f"https://graph.facebook.com/v21.0/{IG_USER_ID}/messages",
+            params={"access_token": IG_TOKEN},
+            json={"recipient": {"id": recipient_id}, "message": {"text": text}},
+        )
+        r.raise_for_status()
+
+
+async def reply_instagram_comment(comment_id: str, text: str) -> None:
+    if not IG_TOKEN:
+        raise RuntimeError("Instagram Graph API not configured")
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.post(
+            f"https://graph.facebook.com/v21.0/{comment_id}/replies",
+            params={"access_token": IG_TOKEN},
+            json={"message": text},
+        )
+        r.raise_for_status()
+
+
 async def slack_alert(text: str) -> None:
     """Fire-and-forget ops alert. Never raises — alerting must not break flows."""
     if not SLACK_WEBHOOK:

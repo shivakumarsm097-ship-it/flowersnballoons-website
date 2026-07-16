@@ -15,11 +15,24 @@ create table if not exists leads (
   budget_range  text,
   raw_message   text,
   status        text not null default 'new'
-                check (status in ('new','engaged','quoted','converted','lost')),
+                check (status in ('new','engaged','quoted','converted','cold','lost','escalated')),
+  last_contact_at timestamptz not null default now(),  -- last message either direction
+  followup_sent boolean not null default false,        -- one 24h nudge max
   created_at    timestamptz not null default now()
 );
 create index if not exists leads_phone_idx  on leads (phone);
 create index if not exists leads_status_idx on leads (status);
+
+-- ── conversations ────────────────────────────────────────────────────
+-- Full message history per lead — the Lead & Quote agent's memory.
+create table if not exists conversations (
+  id          uuid primary key default gen_random_uuid(),
+  lead_id     uuid not null references leads(id),
+  role        text not null check (role in ('user','assistant')),
+  content     text not null,
+  created_at  timestamptz not null default now()
+);
+create index if not exists conversations_lead_idx on conversations (lead_id, created_at);
 
 -- ── vendors ──────────────────────────────────────────────────────────
 create table if not exists vendors (
