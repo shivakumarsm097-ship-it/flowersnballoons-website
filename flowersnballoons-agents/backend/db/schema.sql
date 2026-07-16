@@ -83,6 +83,10 @@ create table if not exists bookings (
   total_price     integer,                  -- ₹ full quote (balance = total - price)
   balance_reminder_sent boolean not null default false,
   at_risk_at      timestamptz,              -- when escalation flipped it at_risk
+  tag_permission  boolean not null default false,  -- explicit yes to tag on IG
+  review_requested_at timestamptz,
+  review_followup_sent boolean not null default false,
+  review_outcome  text check (review_outcome in ('reviewed','no_response','dissatisfied')),
   payment_status  text not null default 'paid'
                   check (payment_status in ('paid','refund_initiated','refunded')),
   razorpay_payment_id text,
@@ -93,6 +97,32 @@ create table if not exists bookings (
 );
 create index if not exists bookings_date_idx   on bookings (date);
 create index if not exists bookings_status_idx on bookings (status);
+
+-- ── event_photos ─────────────────────────────────────────────────────
+-- Vendors send finished-setup photos on WhatsApp at wrap-up; the
+-- Marketing agent posts the best ones. url must be publicly fetchable
+-- (Supabase storage) before it can be published to Instagram.
+create table if not exists event_photos (
+  id          uuid primary key default gen_random_uuid(),
+  booking_id  uuid not null references bookings(id),
+  vendor_id   uuid references vendors(id),
+  url         text,                         -- public URL once moved to storage
+  wa_media_id text,                         -- WhatsApp media id as received
+  created_at  timestamptz not null default now()
+);
+create index if not exists photos_booking_idx on event_photos (booking_id);
+
+-- ── ig_posts ─────────────────────────────────────────────────────────
+create table if not exists ig_posts (
+  id                 uuid primary key default gen_random_uuid(),
+  booking_id         uuid references bookings(id),
+  ig_media_id        text,
+  caption            text,
+  posted_at          timestamptz not null default now(),
+  engagement_checked boolean not null default false,
+  likes              integer,
+  comments           integer
+);
 
 -- ── vendor_assignments ───────────────────────────────────────────────
 -- Junction table: which vendor was asked to cover which role on which

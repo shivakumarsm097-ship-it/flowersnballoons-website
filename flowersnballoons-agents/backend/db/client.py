@@ -325,6 +325,70 @@ async def accepted_assignments_for_event_date(d: date) -> list[dict[str, Any]]:
     return out
 
 
+# ── event photos + IG posts (marketing) ───────────────────────────────
+async def add_event_photo(booking_id: str, vendor_id: str | None, wa_media_id: str | None, url: str | None = None) -> dict[str, Any]:
+    return await _insert("event_photos", {"booking_id": booking_id, "vendor_id": vendor_id, "wa_media_id": wa_media_id, "url": url})
+
+
+async def photos_for_booking(booking_id: str) -> list[dict[str, Any]]:
+    return await _get("event_photos", {"booking_id": f"eq.{booking_id}"})
+
+
+async def create_ig_post(**fields: Any) -> dict[str, Any]:
+    return await _insert("ig_posts", fields)
+
+
+async def unchecked_ig_posts_older_than(hours: float = 48) -> list[dict[str, Any]]:
+    cutoff = (_now() - timedelta(hours=hours)).isoformat()
+    return await _get("ig_posts", {"engagement_checked": "eq.false", "posted_at": f"lt.{cutoff}"})
+
+
+async def set_ig_post(post_id: str, **patch: Any) -> None:
+    await _update("ig_posts", {"id": f"eq.{post_id}"}, patch)
+
+
+async def recent_ig_posts(limit: int = 5) -> list[dict[str, Any]]:
+    return await _get("ig_posts", {"order": "posted_at.desc", "limit": str(limit)})
+
+
+# ── review sequence ───────────────────────────────────────────────────
+async def bookings_due_review_request(days_after: int = 2) -> list[dict[str, Any]]:
+    d = (_now() - timedelta(days=days_after)).date().isoformat()
+    return await _get(
+        "bookings",
+        {"date": f"eq.{d}", "status": "in.(confirmed,done)", "review_requested_at": "is.null"},
+    )
+
+
+async def bookings_due_review_followup(days_after_request: int = 5) -> list[dict[str, Any]]:
+    cutoff = (_now() - timedelta(days=days_after_request)).isoformat()
+    return await _get(
+        "bookings",
+        {"review_requested_at": f"lt.{cutoff}", "review_followup_sent": "eq.false", "review_outcome": "is.null"},
+    )
+
+
+async def booking_awaiting_review_reply(phone: str) -> dict[str, Any] | None:
+    lead = await find_lead_by_phone(phone)
+    if not lead:
+        return None
+    rows = await _get(
+        "bookings",
+        {"lead_id": f"eq.{lead['id']}", "review_requested_at": "not.is.null",
+         "review_outcome": "is.null", "order": "created_at.desc", "limit": "1"},
+    )
+    return rows[0] if rows else None
+
+
+async def completed_bookings_between(days_back: int = 7) -> list[dict[str, Any]]:
+    lo = (_now() - timedelta(days=days_back)).date().isoformat()
+    hi = _now().date().isoformat()
+    return await _get(
+        "bookings",
+        {"date": f"gte.{lo}", "and": f"(date.lt.{hi})", "status": "in.(confirmed,done)"},
+    )
+
+
 async def declines_since(days: int = 7) -> list[dict[str, Any]]:
     cutoff = (_now() - timedelta(days=days)).isoformat()
     return await _get(

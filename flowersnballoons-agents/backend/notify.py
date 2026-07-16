@@ -56,6 +56,39 @@ async def reply_instagram_comment(comment_id: str, text: str) -> None:
         r.raise_for_status()
 
 
+async def publish_instagram_post(image_url: str, caption: str) -> str:
+    """Two-step Graph publish: create media container → publish. Returns IG media id."""
+    if not (IG_TOKEN and IG_USER_ID):
+        raise RuntimeError("Instagram Graph API not configured")
+    async with httpx.AsyncClient(timeout=30) as c:
+        r = await c.post(
+            f"https://graph.facebook.com/v21.0/{IG_USER_ID}/media",
+            params={"access_token": IG_TOKEN},
+            json={"image_url": image_url, "caption": caption},
+        )
+        r.raise_for_status()
+        container_id = r.json()["id"]
+        r = await c.post(
+            f"https://graph.facebook.com/v21.0/{IG_USER_ID}/media_publish",
+            params={"access_token": IG_TOKEN},
+            json={"creation_id": container_id},
+        )
+        r.raise_for_status()
+        return r.json()["id"]
+
+
+async def instagram_media_insights(media_id: str) -> dict:
+    """Likes + comments counts for a published post."""
+    async with httpx.AsyncClient(timeout=15) as c:
+        r = await c.get(
+            f"https://graph.facebook.com/v21.0/{media_id}",
+            params={"access_token": IG_TOKEN, "fields": "like_count,comments_count"},
+        )
+        r.raise_for_status()
+        d = r.json()
+        return {"likes": d.get("like_count", 0), "comments": d.get("comments_count", 0)}
+
+
 async def slack_alert(text: str) -> None:
     """Fire-and-forget ops alert. Never raises — alerting must not break flows."""
     if not SLACK_WEBHOOK:

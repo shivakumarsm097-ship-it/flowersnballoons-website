@@ -45,15 +45,8 @@ async def receive(request: Request):
                 )
                 log_action("lead_quote", actions_taken=[f"new Instagram DM lead {lead['id']}"])
                 await slack_alert(f"📸 New Instagram DM lead: {text[:120]}")
-                try:
-                    from backend.notify import send_instagram_dm
-                    await send_instagram_dm(
-                        sender_id,
-                        "Thanks for reaching out! 🎈 For dates, packages and a quick quote, "
-                        "message us on WhatsApp — we reply within minutes: https://wa.me/918867121207",
-                    )
-                except Exception as e:
-                    log_action("lead_quote", errors=[f"IG DM reply failed: {e}"])
+                from modules.marketing.agent import handle_ig_dm
+                await handle_ig_dm(sender_id, text)
             # comments — short public steer to DM/WhatsApp, never quote publicly
             for change in entry.get("changes", []) or []:
                 if change.get("field") != "comments":
@@ -68,14 +61,8 @@ async def receive(request: Request):
                 )
                 log_action("lead_quote", actions_taken=[f"new Instagram comment lead {lead['id']}"])
                 if comment_id:
-                    try:
-                        from backend.notify import reply_instagram_comment
-                        await reply_instagram_comment(
-                            comment_id,
-                            "Thank you! 🎈 DM us or WhatsApp +91 88671 21207 for packages & dates!",
-                        )
-                    except Exception as e:
-                        log_action("lead_quote", errors=[f"IG comment reply failed: {e}"])
+                    from modules.marketing.agent import handle_ig_comment
+                    await handle_ig_comment(comment_id, text)
     except Exception as e:
         log_action("lead_quote", errors=[f"instagram webhook parse error: {e}"])
     return {"ok": True}

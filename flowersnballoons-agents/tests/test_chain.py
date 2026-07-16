@@ -23,7 +23,7 @@ os.environ.setdefault("HOLD_TTL_HOURS", "2")
 from backend.db import client as db  # noqa: E402
 
 # ── in-memory fake PostgREST ──────────────────────────────────────────
-TABLES: dict[str, list[dict]] = {"leads": [], "vendors": [], "calendar_holds": [], "bookings": [], "vendor_assignments": [], "conversations": []}
+TABLES: dict[str, list[dict]] = {"leads": [], "vendors": [], "calendar_holds": [], "bookings": [], "vendor_assignments": [], "conversations": [], "event_photos": [], "ig_posts": []}
 
 
 def _match(row: dict, params: dict[str, str]) -> bool:
@@ -49,6 +49,12 @@ def _match(row: dict, params: dict[str, str]) -> bool:
         elif cond.startswith("not.in.("):
             if str(val) in cond[8:-1].split(","):
                 return False
+        elif cond == "is.null":
+            if val is not None:
+                return False
+        elif cond == "not.is.null":
+            if val is None:
+                return False
     return True
 
 
@@ -64,6 +70,11 @@ async def fake_insert(table, row):
     row.setdefault("status", {"leads": "new", "bookings": "pending_vendors", "vendor_assignments": "requested", "calendar_holds": "active"}.get(table))
     if table == "vendor_assignments":
         row.setdefault("requested_at", row["created_at"])  # mirrors Postgres default now()
+    if table == "bookings":  # mirror schema column defaults
+        for col, default in (("balance_reminder_sent", False), ("tag_permission", False),
+                             ("review_followup_sent", False), ("review_outcome", None),
+                             ("review_requested_at", None), ("at_risk_at", None)):
+            row.setdefault(col, default)
     row.setdefault("active", True) if table == "vendors" else None
     TABLES[table].append(row)
     return row

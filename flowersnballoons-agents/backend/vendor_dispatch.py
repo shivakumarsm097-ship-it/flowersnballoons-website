@@ -271,11 +271,12 @@ async def vendor_reminders() -> None:
                 continue
             b = a["booking"]
             try:
+                photo_ask = " After the setup, send 2-3 photos of the finished work here 📸 — we feature the best ones." if tag == "TODAY" else ""
                 await send_whatsapp(
                     vendor["contact"],
                     f"Reminder: your {a['role']} job is {tag} — {b['event_type']} on {b['date']}, "
                     f"{b.get('location') or 'Bangalore'}. Any problem, reply CANCEL {b['id'][:8]} "
-                    f"NOW so we can cover it — not on the day. 🎈",
+                    f"NOW so we can cover it — not on the day. 🎈{photo_ask}",
                 )
                 log_action("vendor_coordination", actions_taken=[f"reminder ({tag}) to {vendor['name']} for booking {b['id']}"])
             except Exception as e:

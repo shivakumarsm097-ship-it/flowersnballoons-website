@@ -37,9 +37,18 @@ async def receive(request: Request):
         for entry in payload.get("entry", []):
             for change in entry.get("changes", []):
                 for msg in change.get("value", {}).get("messages", []) or []:
+                    sender = "+" + msg["from"]
+
+                    # vendor photo upload (event wrap-up) → marketing intake
+                    if msg.get("type") == "image":
+                        vendor = await db.vendor_by_contact(sender)
+                        if vendor:
+                            from modules.marketing.agent import intake_vendor_photo
+                            await intake_vendor_photo(vendor, msg["image"].get("id"))
+                        continue
+
                     if msg.get("type") != "text":
                         continue
-                    sender = "+" + msg["from"]
                     text = msg["text"]["body"]
 
                     vendor = await db.vendor_by_contact(sender)
@@ -63,6 +72,13 @@ async def receive(request: Request):
                         continue
                     if lead.get("status") == "quoted" and await handle_confirmation(lead, text):
                         continue
+
+                    # reply to a pending review request → marketing owns it
+                    review_booking = await db.booking_awaiting_review_reply(sender)
+                    if review_booking:
+                        from modules.marketing.agent import handle_review_reply
+                        if await handle_review_reply(review_booking, lead, text):
+                            continue
 
                     from modules.lead_quote.agent import handle_inbound
                     await handle_inbound(lead, text)

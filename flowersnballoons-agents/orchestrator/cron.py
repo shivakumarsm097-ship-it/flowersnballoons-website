@@ -13,14 +13,11 @@ Run every 30 min on Railway cron: python -m orchestrator.cron
 from __future__ import annotations
 
 import asyncio
-import os
 
 from backend.db import client as db
 from backend.notify import send_whatsapp, slack_alert
-from backend.vendor_dispatch import ESCALATION_HOURS, escalation_window_hours, required_roles
+from backend.vendor_dispatch import escalation_window_hours, required_roles
 from orchestrator.logger import log_action
-
-OWNER_REVIEW_LINK = os.environ.get("GOOGLE_REVIEW_LINK", "")
 
 
 async def sweep_holds() -> None:
@@ -130,42 +127,30 @@ async def balance_reminders() -> None:
             log_action("booking_payment", errors=[f"balance reminder failed for {b['id']}: {e}"])
 
 
-async def review_requests() -> None:
-    done = await db.bookings_finished_yesterday()
-    for b in done:
-        lead = await db.get_lead(b["lead_id"])
-        if not (lead and lead.get("phone")):
-            continue
-        try:
-            link = f"\n{OWNER_REVIEW_LINK}" if OWNER_REVIEW_LINK else ""
-            await send_whatsapp(
-                lead["phone"],
-                f"Hope your {b['event_type']} was wonderful! 🎈 If you have a moment, a short review "
-                f"would mean the world to our small studio.{link}",
-            )
+async def mark_done() -> None:
+    """Flip yesterday's confirmed events to done."""
+    for b in await db.bookings_finished_yesterday():
+        if b["status"] != "done":
             await db.set_booking(b["id"], status="done")
-            log_action("marketing", actions_taken=[f"review request sent for booking {b['id']}"])
-        except Exception as e:
-            log_action("marketing", errors=[f"review request failed for {b['id']}: {e}"])
-
-
-async def marketing_tick() -> None:
-    """Posting calendar hook — the Marketing agent (modules/marketing/AGENT.md)
-    owns content; cron just flags that a scheduled slot is due."""
-    log_action("marketing", actions_taken=["marketing calendar tick"])
 
 
 async def main() -> None:
     from datetime import datetime, timezone
 
     from backend.vendor_dispatch import advance_stale_assignments, vendor_reminders, weekly_decline_summary
+    from modules.marketing.agent import (
+        engagement_check,
+        send_review_followups,
+        send_review_requests,
+        weekly_posting,
+    )
 
     jobs = [sweep_holds, unpaid_quote_followups, lead_followups,
             advance_stale_assignments, vendor_escalations,
             at_risk_default_refunds, balance_reminders, vendor_reminders,
-            review_requests, marketing_tick]
+            mark_done, send_review_requests, send_review_followups, engagement_check]
     if datetime.now(timezone.utc).weekday() == 0:  # Mondays
-        jobs.append(weekly_decline_summary)
+        jobs += [weekly_decline_summary, weekly_posting]
     for job in jobs:
         try:
             await job()
