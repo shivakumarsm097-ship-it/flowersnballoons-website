@@ -204,6 +204,33 @@
 
 /* === FORM VALIDATION & SUBMIT === */
 (function () {
+  /* Backend lead capture — every submission also lands in the agent
+     backend's database (flowersnballoons-agents on Railway), which runs
+     lead follow-up automatically. Web3Forms below stays as the email
+     fallback so no lead is ever lost even if the backend is down.
+     Set to '<railway-domain>/webhooks/web-form' after deploy. */
+  var BACKEND_FORM_URL = '';
+
+  function postToBackend(form) {
+    if (!BACKEND_FORM_URL) return;
+    var f = new FormData(form);
+    try {
+      fetch(BACKEND_FORM_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: f.get('name') || '',
+          phone: f.get('phone') || f.get('mobile') || '',
+          email: f.get('email') || '',
+          service: f.get('service') || '',
+          message: f.get('message') || '',
+          source: location.pathname.split('/').pop() || 'homepage',
+        }),
+        keepalive: true,
+      }).catch(function () {});
+    } catch (e) {}
+  }
+
   document.querySelectorAll('.js-quote-form').forEach(form => {
     const successMsg = form.querySelector('.form-success-msg');
 
@@ -244,6 +271,8 @@
           if (typeof gtag === 'function') {
             gtag('event', 'form_submit', { event_category: 'lead', event_label: window.location.pathname });
           }
+          // Also store the lead in the agent backend (fire-and-forget)
+          postToBackend(form);
           // Redirect to thank-you page (Google Ads conversion fires there)
           window.location.href = 'thank-you.html';
         })
