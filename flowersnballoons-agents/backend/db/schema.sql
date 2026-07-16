@@ -12,6 +12,7 @@ create table if not exists leads (
   email         text,
   event_type    text,                       -- birthday | wedding | babyshower | ...
   event_date    date,                       -- date the customer asked for
+  area          text,                       -- Bangalore locality (Koramangala, HSR, ...)
   budget_range  text,
   raw_message   text,
   status        text not null default 'new'
@@ -54,6 +55,7 @@ create table if not exists calendar_holds (
   date              date not null,
   event_type        text not null,
   lead_id           uuid not null references leads(id),
+  package           text,                   -- package tier quoted (drives vendor roles)
   quoted_price      integer,                -- full quote total (₹)
   advance_price     integer,                -- advance asked to lock in (₹)
   razorpay_link_id  text,                   -- payment link tied to this hold
@@ -75,6 +77,7 @@ create table if not exists bookings (
   lead_id         uuid not null references leads(id),
   date            date not null,
   event_type      text not null,
+  location        text,                     -- copied from the lead's area at conversion
   package         text,
   price           integer,                  -- ₹ advance actually paid
   total_price     integer,                  -- ₹ full quote (balance = total - price)

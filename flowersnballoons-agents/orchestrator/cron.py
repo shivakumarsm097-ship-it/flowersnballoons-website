@@ -72,16 +72,19 @@ async def vendor_escalations() -> None:
     """Spec §7: a paid booking stuck without full vendor acceptance past the
     escalation window triggers proactive refund-or-reschedule outreach —
     never a silent exposed customer."""
+    from datetime import datetime, timedelta, timezone
+
+    from modules.booking_payment.agent import mark_at_risk_and_notify
+
     stuck = await db.bookings_pending_vendors_since(0)  # window applied per booking below
     for b in stuck:
-        from datetime import datetime, timedelta, timezone
         window = escalation_window_hours(b["date"])
         if b["created_at"] > (datetime.now(timezone.utc) - timedelta(hours=window)).isoformat():
             continue  # still inside this booking's window
 
         assignments = await db.assignments_for_booking(b["id"])
         accepted = {a["role"] for a in assignments if a["status"] == "accepted"}
-        missing = [r for r in required_roles(b["event_type"]) if r not in accepted]
+        missing = [r for r in required_roles(b["event_type"], b.get("package")) if r not in accepted]
         if not missing:
             continue  # webhook confirm path probably racing; skip
 
@@ -90,21 +93,7 @@ async def vendor_escalations() -> None:
             if a["status"] == "requested":
                 await db.set_assignment_status(a["id"], "no_response")
 
-        await db.set_booking(b["id"], status="at_risk", at_risk_at=datetime.now(timezone.utc).isoformat())
-        lead = await db.get_lead(b["lead_id"])
-        if lead and lead.get("phone"):
-            await send_whatsapp(
-                lead["phone"],
-                f"I want to be upfront with you: I'm still confirming the team for your "
-                f"{b['event_type']} on {b['date']}. You have my word — if I can't lock everyone in "
-                f"within a few hours, I'll offer you a nearby date or a full refund, your choice. "
-                f"Reply RESCHEDULE or REFUND anytime, or hold tight and I'll update you.",
-            )
-        log_action(
-            "vendor_coordination",
-            actions_skipped_or_escalated=[f"booking {b['id']} at_risk — missing roles {missing}, customer notified"],
-        )
-        await slack_alert(f"🚨 Booking {b['id']} AT RISK — no vendor for {missing} after {ESCALATION_HOURS}h. Customer offered refund/reschedule.")
+        await mark_at_risk_and_notify(b, missing, "booking-level escalation window blown")
 
 
 async def at_risk_default_refunds() -> None:
@@ -167,8 +156,17 @@ async def marketing_tick() -> None:
 
 
 async def main() -> None:
-    for job in (sweep_holds, unpaid_quote_followups, lead_followups, vendor_escalations,
-                at_risk_default_refunds, balance_reminders, review_requests, marketing_tick):
+    from datetime import datetime, timezone
+
+    from backend.vendor_dispatch import advance_stale_assignments, vendor_reminders, weekly_decline_summary
+
+    jobs = [sweep_holds, unpaid_quote_followups, lead_followups,
+            advance_stale_assignments, vendor_escalations,
+            at_risk_default_refunds, balance_reminders, vendor_reminders,
+            review_requests, marketing_tick]
+    if datetime.now(timezone.utc).weekday() == 0:  # Mondays
+        jobs.append(weekly_decline_summary)
+    for job in jobs:
         try:
             await job()
         except Exception as e:

@@ -291,3 +291,43 @@ async def set_assignment_status(assignment_id: str, status: str) -> None:
         {"id": f"eq.{assignment_id}"},
         {"status": status, "responded_at": _now().isoformat()},
     )
+
+
+async def all_requested_assignments() -> list[dict[str, Any]]:
+    return await _get("vendor_assignments", {"status": "eq.requested"})
+
+
+async def assignments_for_booking_role(booking_id: str, role: str) -> list[dict[str, Any]]:
+    return await _get("vendor_assignments", {"booking_id": f"eq.{booking_id}", "role": f"eq.{role}"})
+
+
+async def vendor_ids_busy_on(d: date) -> set[str]:
+    """Vendors already committed (requested or accepted) to any live booking on this date."""
+    bookings = await _get(
+        "bookings",
+        {"date": f"eq.{d.isoformat()}", "status": "in.(pending_vendors,confirmed,at_risk,rescheduling)"},
+    )
+    busy: set[str] = set()
+    for b in bookings:
+        for a in await _get(
+            "vendor_assignments",
+            {"booking_id": f"eq.{b['id']}", "status": "in.(requested,accepted)"},
+        ):
+            busy.add(a["vendor_id"])
+    return busy
+
+
+async def accepted_assignments_for_event_date(d: date) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    for b in await _get("bookings", {"date": f"eq.{d.isoformat()}", "status": "in.(confirmed,pending_vendors)"}):
+        for a in await _get("vendor_assignments", {"booking_id": f"eq.{b['id']}", "status": "eq.accepted"}):
+            out.append({**a, "booking": b})
+    return out
+
+
+async def declines_since(days: int = 7) -> list[dict[str, Any]]:
+    cutoff = (_now() - timedelta(days=days)).isoformat()
+    return await _get(
+        "vendor_assignments",
+        {"status": "in.(declined,no_response)", "responded_at": f"gte.{cutoff}"},
+    )

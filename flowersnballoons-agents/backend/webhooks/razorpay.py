@@ -62,10 +62,13 @@ async def razorpay_webhook(request: Request):
 
     total = hold.get("quoted_price") or amount_inr
     balance = max(total - amount_inr, 0)
+    lead_row = await db.get_lead(hold["lead_id"])
     booking = await db.create_booking(
         lead_id=hold["lead_id"],
         date=hold["date"],
         event_type=hold["event_type"],
+        location=(lead_row or {}).get("area"),
+        package=hold.get("package"),
         price=amount_inr,
         total_price=total,
         payment_status="paid",

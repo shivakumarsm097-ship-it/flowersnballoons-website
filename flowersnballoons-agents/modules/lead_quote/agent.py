@@ -69,6 +69,7 @@ TOOLS = [
                     "items": {"type": "string"},
                     "description": "Itemized breakdown, e.g. ['Base birthday package — ₹4,500', 'Balloon arch add-on — ₹1,500']. Itemization makes the no-hidden-charges promise concrete.",
                 },
+                "package_name": {"type": "string", "description": "Package tier, e.g. 'Basic', 'Premium' — premium tiers add photographer + activity staff to the vendor plan."},
             },
             "required": ["date", "event_type", "total_price_inr", "line_items"],
         },
@@ -82,6 +83,7 @@ TOOLS = [
                 "name": {"type": "string"},
                 "event_type": {"type": "string", "enum": list(catalog.STARTING_PRICES.keys())},
                 "event_date": {"type": "string", "description": "ISO date the customer is asking about"},
+                "area": {"type": "string", "description": "Bangalore locality (Koramangala, HSR, Whitefield...) — drives which vendors can serve them"},
                 "budget_range": {"type": "string"},
             },
         },
@@ -144,6 +146,7 @@ async def _run_tool(name: str, inp: dict, lead: dict) -> str:
         hold = await availability.try_hold(
             d, inp["event_type"], lead["id"],
             quoted_price=inp["total_price_inr"], advance_price=advance,
+            package=inp.get("package_name"),
         )
         if not hold:
             alts = await availability.nearest_available(d, 3)
@@ -162,7 +165,7 @@ async def _run_tool(name: str, inp: dict, lead: dict) -> str:
         )
 
     if name == "save_lead_details":
-        patch = {k: v for k, v in inp.items() if v and k in ("name", "event_type", "event_date", "budget_range")}
+        patch = {k: v for k, v in inp.items() if v and k in ("name", "event_type", "event_date", "area", "budget_range")}
         if patch:
             await db._update("leads", {"id": f"eq.{lead['id']}"}, patch)  # noqa: SLF001
             lead.update(patch)

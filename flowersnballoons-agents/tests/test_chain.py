@@ -61,7 +61,9 @@ async def fake_get(table, params):
 
 async def fake_insert(table, row):
     row = {"id": str(uuid.uuid4()), "created_at": datetime.now(timezone.utc).isoformat(), **row}
-    row.setdefault("status", {"leads": "new", "bookings": "pending_vendors", "vendor_assignments": "requested"}.get(table))
+    row.setdefault("status", {"leads": "new", "bookings": "pending_vendors", "vendor_assignments": "requested", "calendar_holds": "active"}.get(table))
+    if table == "vendor_assignments":
+        row.setdefault("requested_at", row["created_at"])  # mirrors Postgres default now()
     row.setdefault("active", True) if table == "vendors" else None
     TABLES[table].append(row)
     return row

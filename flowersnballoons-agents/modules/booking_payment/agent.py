@@ -190,6 +190,30 @@ async def _refund(booking: dict, lead: dict, reason: str) -> None:
     log_action("booking_payment", actions_taken=[f"refund initiated for booking {booking['id']} — {reason}"])
 
 
+# ── shared at-risk escalation (called by vendor coordination + cron) ──
+async def mark_at_risk_and_notify(booking: dict, missing_roles: list[str], why: str) -> None:
+    """Flip a paid booking to at_risk and give the customer the honest
+    refund-or-reschedule choice. Idempotent: already at_risk → no re-send."""
+    if booking.get("status") == "at_risk":
+        return
+    await db.set_booking(booking["id"], status="at_risk", at_risk_at=datetime.now(timezone.utc).isoformat())
+    booking["status"] = "at_risk"
+    lead = await db.get_lead(booking["lead_id"])
+    if lead and lead.get("phone"):
+        await send_whatsapp(
+            lead["phone"],
+            f"I want to be upfront with you: I'm still confirming the team for your "
+            f"{booking['event_type']} on {booking['date']}. You have my word — if I can't lock "
+            f"everyone in within a few hours, I'll offer you a nearby date or a full refund, "
+            f"your choice. Reply RESCHEDULE or REFUND anytime, or hold tight and I'll update you.",
+        )
+    log_action(
+        "booking_payment",
+        actions_skipped_or_escalated=[f"booking {booking['id']} at_risk ({why}) — missing {missing_roles}, customer notified"],
+    )
+    await slack_alert(f"🚨 Booking {booking['id']} AT RISK ({why}) — missing {missing_roles}. Customer offered refund/reschedule.")
+
+
 # ── double-book near-miss detector (spec hard limit) ──────────────────
 async def near_miss_check(booking: dict) -> None:
     d = date.fromisoformat(booking["date"])
