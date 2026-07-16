@@ -20,10 +20,21 @@ passage of time: response timeouts, reminders, weekly analytics.
 ## Candidate selection (per role)
 Active vendors for the role, filtered to those who:
 1. service the booking's location (`service_areas` overlap; empty = serves all),
-2. aren't already requested/accepted on another live booking that date,
+2. have day capacity left: accepted+requested jobs that date <
+   `max_events_per_day` (per-vendor, default 1 — NOT a hardcoded global),
 3. haven't already been asked for this booking+role.
-Ranked least-loaded first so requests rotate across the roster instead of
-hammering the same one or two vendors.
+
+**Ranking: `reliability_score` first, proximity (exact area match) second.**
+Candidates within ~5 points of the top scorer rotate by least-loaded, so
+near-equal vendors share work instead of the top scorer taking everything.
+
+## Reliability scoring (computed, never hand-entered)
+`reliability_score` = 100 × (0.25·accept_rate + 0.45·on_time_rate +
+0.30·complaint_factor) — on-time and complaints weigh more than raw accepts.
+Recomputed after every response and every completed event over a **rolling
+window of the last ~15 jobs** — one bad event doesn't permanently tank a
+reliable vendor. `arrived_on_time` defaults to true at event close (mark_done)
+unless a dissatisfied review flips it false and increments `complaint_count`.
 
 ## Assignment protocol (WhatsApp)
 Job brief: date, event type, package, location, role, expected pay

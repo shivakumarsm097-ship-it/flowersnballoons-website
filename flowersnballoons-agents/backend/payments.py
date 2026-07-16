@@ -17,28 +17,42 @@ def configured() -> bool:
 
 async def create_payment_link(amount_inr: int, description: str, customer_phone: str, reference_id: str) -> dict[str, Any]:
     """Returns the Razorpay payment_link object (id + short_url)."""
-    async with httpx.AsyncClient(timeout=20, auth=(RZP_KEY, RZP_SECRET)) as c:
-        r = await c.post(
-            f"{BASE}/payment_links",
-            json={
-                "amount": amount_inr * 100,  # paise
-                "currency": "INR",
-                "description": description,
-                "reference_id": reference_id,
-                "customer": {"contact": customer_phone},
-                "notify": {"sms": True},
-                "reminder_enable": True,
-            },
-        )
-        r.raise_for_status()
-        return r.json()
+    async def _raw() -> dict[str, Any]:
+        async with httpx.AsyncClient(timeout=20, auth=(RZP_KEY, RZP_SECRET)) as c:
+            r = await c.post(
+                f"{BASE}/payment_links",
+                json={
+                    "amount": amount_inr * 100,  # paise
+                    "currency": "INR",
+                    "description": description,
+                    "reference_id": reference_id,
+                    "customer": {"contact": customer_phone},
+                    "notify": {"sms": True},
+                    "reminder_enable": True,
+                },
+            )
+            r.raise_for_status()
+            return r.json()
+
+    from backend.actions import execute_or_shadow
+    return await execute_or_shadow(
+        "razorpay.payment_link", customer_phone, description, _raw, amount=amount_inr,
+        shadow_result={"id": f"shadow_plink_{reference_id[:8]}", "short_url": "https://rzp.io/shadow-mode-no-charge"},
+    )
 
 
 async def refund_payment(payment_id: str, amount_inr: int | None = None) -> dict[str, Any]:
-    body: dict[str, Any] = {}
-    if amount_inr is not None:
-        body["amount"] = amount_inr * 100
-    async with httpx.AsyncClient(timeout=20, auth=(RZP_KEY, RZP_SECRET)) as c:
-        r = await c.post(f"{BASE}/payments/{payment_id}/refund", json=body)
-        r.raise_for_status()
-        return r.json()
+    async def _raw() -> dict[str, Any]:
+        body: dict[str, Any] = {}
+        if amount_inr is not None:
+            body["amount"] = amount_inr * 100
+        async with httpx.AsyncClient(timeout=20, auth=(RZP_KEY, RZP_SECRET)) as c:
+            r = await c.post(f"{BASE}/payments/{payment_id}/refund", json=body)
+            r.raise_for_status()
+            return r.json()
+
+    from backend.actions import execute_or_shadow
+    return await execute_or_shadow(
+        "razorpay.refund", payment_id, f"refund {payment_id}", _raw, amount=amount_inr,
+        shadow_result={"id": f"shadow_rfnd_{payment_id[:12]}"},
+    )

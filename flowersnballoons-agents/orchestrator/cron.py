@@ -128,10 +128,46 @@ async def balance_reminders() -> None:
 
 
 async def mark_done() -> None:
-    """Flip yesterday's confirmed events to done."""
+    """Flip yesterday's confirmed events to done; close the reliability loop:
+    accepted assignments default to arrived_on_time=true (no complaint =
+    on time — a dissatisfied review flips it), then recompute scores."""
+    from backend.vendor_dispatch import recompute_reliability
+
     for b in await db.bookings_finished_yesterday():
         if b["status"] != "done":
             await db.set_booking(b["id"], status="done")
+        for a in await db.assignments_for_booking(b["id"]):
+            if a["status"] == "accepted" and a.get("arrived_on_time") is None:
+                await db.set_assignment(a["id"], arrived_on_time=True)
+                await recompute_reliability(a["vendor_id"])
+
+
+async def repeat_customer_nudges() -> None:
+    """Weekly: occasions ~11 months old (anniversary a month away) get ONE
+    personal nudge referencing the specific past event. No follow-up ever.
+    Skipped entirely for customers whose booking ended dissatisfied."""
+    for b in await db.bookings_due_repeat_nudge(7):
+        await db.set_booking(b["id"], repeat_nudge_sent=True)  # one shot, even if send fails partway
+        if b.get("review_outcome") == "dissatisfied":
+            log_action("marketing", actions_skipped_or_escalated=[f"repeat nudge SKIPPED for booking {b['id']} — customer was dissatisfied"])
+            continue
+        lead = await db.get_lead(b["lead_id"])
+        if not (lead and lead.get("phone")):
+            continue
+        from backend.catalog import LABELS
+        label = LABELS.get(b["event_type"], b["event_type"])
+        who = f"{lead['name']}'s" if lead.get("name") else "your"
+        try:
+            await send_whatsapp(
+                lead["phone"],
+                f"Hi! Flowers 'N' Balloons here 🎈 We had the joy of decorating {who} "
+                f"{label.lower()} on {b['recurring_occasion_date']} — hard to believe it's "
+                f"almost that time of year again!\n\nWant to make this year's just as special? "
+                f"Reply here and I'll share dates & fresh ideas.",
+            )
+            log_action("marketing", actions_taken=[f"repeat-occasion nudge sent for booking {b['id']} ({b['event_type']})"])
+        except Exception as e:
+            log_action("marketing", errors=[f"repeat nudge failed for {b['id']}: {e}"])
 
 
 async def main() -> None:
@@ -150,13 +186,15 @@ async def main() -> None:
             at_risk_default_refunds, balance_reminders, vendor_reminders,
             mark_done, send_review_requests, send_review_followups, engagement_check]
     if datetime.now(timezone.utc).weekday() == 0:  # Mondays
-        jobs += [weekly_decline_summary, weekly_posting]
+        jobs += [weekly_decline_summary, weekly_posting, repeat_customer_nudges]
     for job in jobs:
         try:
             await job()
         except Exception as e:
             log_action("orchestrator", errors=[f"{job.__name__} crashed: {e}"])
             await slack_alert(f"⚠️ cron job {job.__name__} crashed: {e}")
+            from backend.notify import send_owner_alert
+            await send_owner_alert(f"System error: cron job {job.__name__} crashed — {str(e)[:150]}")
 
 
 if __name__ == "__main__":

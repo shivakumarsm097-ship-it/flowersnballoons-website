@@ -15,7 +15,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Any
 
 from backend.db import client as db
-from backend.notify import send_whatsapp, slack_alert
+from backend.notify import send_owner_alert, send_whatsapp, slack_alert
 from orchestrator.logger import log_action
 
 ESCALATION_HOURS = float(os.environ.get("VENDOR_ESCALATION_HOURS", "24"))
@@ -59,11 +59,45 @@ def escalation_window_hours(event_date_iso: str) -> float:
     return ESCALATION_HOURS * 2
 
 
+# ── reliability scoring ───────────────────────────────────────────────
+# on-time performance and complaint history weigh more than raw accept rate
+SCORE_WEIGHTS = {"accept": 0.25, "on_time": 0.45, "complaints": 0.30}
+ROTATION_BAND = 5.0  # candidates within this many points of the top rotate
+
+
+def compute_reliability(accept_rate: float | None, on_time_rate: float | None, complaint_count: int) -> float:
+    a = accept_rate if accept_rate is not None else 0.8   # neutral prior for new vendors
+    o = on_time_rate if on_time_rate is not None else 1.0
+    c = max(0.0, 1.0 - 0.2 * complaint_count)
+    return round(100 * (SCORE_WEIGHTS["accept"] * a + SCORE_WEIGHTS["on_time"] * o + SCORE_WEIGHTS["complaints"] * c), 1)
+
+
+async def recompute_reliability(vendor_id: str) -> float:
+    """Rolling window of the last ~15 jobs — one bad event doesn't
+    permanently tank an otherwise reliable vendor."""
+    window = await db.recent_assignments_for_vendor(vendor_id, 15)
+    accept_rate = on_time_rate = None
+    if window:
+        accepted = [a for a in window if a["status"] == "accepted"]
+        accept_rate = len(accepted) / len(window)
+        judged = [a for a in accepted if a.get("arrived_on_time") is not None]
+        if judged:
+            on_time_rate = sum(1 for a in judged if a["arrived_on_time"]) / len(judged)
+    vendor = next((v for v in await db.active_vendors() if v["id"] == vendor_id), None)
+    complaints = (vendor or {}).get("complaint_count") or 0
+    score = compute_reliability(accept_rate, on_time_rate, complaints)
+    await db.set_vendor(vendor_id, accept_rate=accept_rate, on_time_rate=on_time_rate, reliability_score=score)
+    log_action("vendor_coordination", actions_taken=[f"reliability recomputed for {(vendor or {}).get('name', vendor_id)}: {score} (window {len(window)} jobs)"])
+    return score
+
+
 # ── candidate selection ───────────────────────────────────────────────
 async def _candidates(booking: dict[str, Any], role: str) -> list[dict[str, Any]]:
-    """Active vendors for the role who service the location, aren't already
-    committed on that date, and haven't already been asked for this
-    booking+role. Least-loaded first so requests rotate across the roster."""
+    """Active vendors for the role who service the location, have day
+    capacity left (max_events_per_day, not a hardcoded one), and haven't
+    already been asked for this booking+role. Ranked reliability-score
+    first, proximity (exact area match) second; candidates within
+    ROTATION_BAND points of the top rotate by least-loaded."""
     vendors = await db.active_vendors(role)
 
     location = (booking.get("location") or "").strip().lower()
@@ -74,19 +108,44 @@ async def _candidates(booking: dict[str, Any], role: str) -> list[dict[str, Any]
             or any(location in a.lower() or a.lower() in location for a in v["service_areas"])
         ]
 
-    busy = await db.vendor_ids_busy_on(date.fromisoformat(booking["date"]))
+    d = date.fromisoformat(booking["date"])
     tried = {a["vendor_id"] for a in await db.assignments_for_booking_role(booking["id"], role)}
-    vendors = [v for v in vendors if v["id"] not in busy and v["id"] not in tried]
 
-    loads: list[tuple[int, dict]] = []
+    eligible: list[dict[str, Any]] = []
     for v in vendors:
+        if v["id"] in tried:
+            continue
+        if await db.accepted_count_for_vendor_on(v["id"], d) >= (v.get("max_events_per_day") or 1):
+            continue  # per-vendor daily capacity, not one-per-day for everyone
+        eligible.append(v)
+    if not eligible:
+        return []
+
+    def proximity(v: dict) -> int:  # exact-area vendors ahead of serve-everywhere ones
+        if location and v.get("service_areas") and any(location in a.lower() or a.lower() in location for a in v["service_areas"]):
+            return 0
+        return 1
+
+    def score(v: dict) -> float:
+        s = v.get("reliability_score")
+        return s if s is not None else compute_reliability(v.get("accept_rate"), v.get("on_time_rate"), v.get("complaint_count") or 0)
+
+    eligible.sort(key=lambda v: (-score(v), proximity(v)))
+
+    # rotation: within ROTATION_BAND of the top, least-loaded goes first so
+    # near-equal vendors share the work instead of the top scorer taking all
+    top = score(eligible[0])
+    band = [v for v in eligible if top - score(v) <= ROTATION_BAND]
+    rest = [v for v in eligible if top - score(v) > ROTATION_BAND]
+    loads: list[tuple[int, int, dict]] = []
+    for i, v in enumerate(band):
         open_jobs = await db._get(  # noqa: SLF001 — internal helper reuse
             "vendor_assignments",
             {"vendor_id": f"eq.{v['id']}", "status": "in.(requested,accepted)"},
         )
-        loads.append((len(open_jobs), v))
-    loads.sort(key=lambda t: t[0])
-    return [v for _, v in loads]
+        loads.append((len(open_jobs), i, v))
+    loads.sort(key=lambda t: (t[0], t[1]))
+    return [v for _, _, v in loads] + rest
 
 
 def _job_brief(booking: dict[str, Any], role: str) -> str:
@@ -116,6 +175,10 @@ async def _escalate_role_exhausted(booking: dict[str, Any], role: str) -> None:
     log_action(
         "vendor_coordination",
         actions_skipped_or_escalated=[f"roster EXHAUSTED for {role} on booking {booking['id']} — escalating to booking_payment"],
+    )
+    await send_owner_alert(
+        f"Roster EXHAUSTED: no {role} available for {booking['event_type']} on {booking['date']} "
+        f"(booking {booking['id'][:8]}). Customer is being offered refund/reschedule."
     )
     from modules.booking_payment.agent import mark_at_risk_and_notify
     await mark_at_risk_and_notify(booking, [role], f"roster exhausted for {role}")
@@ -156,6 +219,7 @@ async def handle_vendor_reply(vendor: dict[str, Any], text: str) -> bool:
 
     if answer == "yes":
         await db.set_assignment_status(match["id"], "accepted")
+        await recompute_reliability(vendor["id"])
         tta = _time_to_assignment(booking)
         log_action("vendor_coordination", actions_taken=[f"{vendor['name']} accepted {match['role']} for booking {match['booking_id']} (time-to-assignment {tta})"])
         await send_whatsapp(
@@ -169,6 +233,7 @@ async def handle_vendor_reply(vendor: dict[str, Any], text: str) -> bool:
 
     # NO on a request, or CANCEL on an accepted job
     await db.set_assignment_status(match["id"], "declined")
+    await recompute_reliability(vendor["id"])
     verb = "cancelled (after accepting)" if answer == "cancel" else "declined"
     log_action("vendor_coordination", actions_taken=[f"{vendor['name']} {verb} {match['role']} for booking {match['booking_id']}"])
     await send_whatsapp(vendor["contact"], "Noted — thanks for telling me quickly.")
@@ -182,6 +247,10 @@ async def handle_vendor_reply(vendor: dict[str, Any], text: str) -> bool:
         await slack_alert(
             f"🚨 {vendor['name']} CANCELLED accepted {match['role']} for booking {booking['id']} "
             f"(event {booking['date']}) — re-dispatching with urgency."
+        )
+        await send_owner_alert(
+            f"{vendor['name']} CANCELLED their accepted {match['role']} job for {booking['date']} "
+            f"(booking {booking['id'][:8]}). Re-dispatching now."
         )
         if booking["status"] == "confirmed":
             await db.set_booking(booking["id"], status="pending_vendors", confirmed_at=None)
@@ -246,6 +315,7 @@ async def advance_stale_assignments() -> None:
             continue
 
         await db.set_assignment_status(a["id"], "no_response")
+        await recompute_reliability(a["vendor_id"])
         vendor = next((v for v in await db.active_vendors() if v["id"] == a["vendor_id"]), None)
         log_action("vendor_coordination", actions_taken=[f"{(vendor or {}).get('name', a['vendor_id'])} timed out ({window}h) on {a['role']} for booking {a['booking_id']}"])
 

@@ -17,7 +17,7 @@ from datetime import date, datetime, timezone
 
 from backend import availability, catalog, payments
 from backend.db import client as db
-from backend.notify import send_whatsapp, slack_alert
+from backend.notify import send_owner_alert, send_whatsapp, slack_alert
 from orchestrator.logger import log_action
 
 ADVANCE_PCT = float(os.environ.get("ADVANCE_PERCENT", "0.30"))  # 25-30% per site language
@@ -159,6 +159,10 @@ async def handle_booking_message(booking: dict, lead: dict, text: str) -> bool:
                 f"same package, advance carries over. Re-confirming the team now. 🎈",
             )
             log_action("booking_payment", actions_taken=[f"booking {booking['id']} rescheduled {booking['date']} → {new_d.isoformat()}"])
+            await send_owner_alert(
+                f"Booking {booking['id'][:8]} rescheduled to {new_d.isoformat()} "
+                f"({booking['event_type']}) — vendors being re-dispatched."
+            )
             from backend.vendor_dispatch import dispatch_for_booking
             fresh = await db.get_booking(booking["id"])
             await dispatch_for_booking(fresh or booking)
@@ -181,6 +185,10 @@ async def _refund(booking: dict, lead: dict, reason: str) -> None:
         await slack_alert(f"🚨 Refund needed for booking {booking['id']} but Razorpay unavailable — manual refund required.")
 
     await db.set_booking(booking["id"], status="refunded", payment_status="refund_initiated" if ok else "refund_initiated")
+    await send_owner_alert(
+        f"Refund issued: ₹{booking.get('price') or 0:,} for {booking['event_type']} on {booking['date']} "
+        f"(booking {booking['id'][:8]}) — {reason}."
+    )
     await send_whatsapp(
         lead["phone"],
         f"Your refund of {_inr(booking.get('price') or 0)} is on its way — it typically reaches your "
@@ -212,6 +220,10 @@ async def mark_at_risk_and_notify(booking: dict, missing_roles: list[str], why: 
         actions_skipped_or_escalated=[f"booking {booking['id']} at_risk ({why}) — missing {missing_roles}, customer notified"],
     )
     await slack_alert(f"🚨 Booking {booking['id']} AT RISK ({why}) — missing {missing_roles}. Customer offered refund/reschedule.")
+    await send_owner_alert(
+        f"Booking {booking['id'][:8]} ({booking['event_type']}, {booking['date']}) is AT RISK — "
+        f"{why}. Customer has been offered refund/reschedule."
+    )
 
 
 # ── double-book near-miss detector (spec hard limit) ──────────────────

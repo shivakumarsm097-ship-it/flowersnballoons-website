@@ -84,4 +84,6 @@ async def receive(request: Request):
                     await handle_inbound(lead, text)
     except Exception as e:
         log_action("lead_quote", errors=[f"whatsapp webhook parse error: {e}"])
+        from backend.notify import send_owner_alert
+        await send_owner_alert(f"System error in WhatsApp webhook — {str(e)[:150]}")
     return {"ok": True}

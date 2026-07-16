@@ -40,6 +40,13 @@ vendor commitments — but the same discipline. Runtime: `agent.py`
      customer for a public review is worse than not asking.
    - positive/"done" → outcome `reviewed`, warm thanks.
 
+## Repeat-customer nudges (weekly cron)
+`recurring_occasion_date` is set at booking time for genuinely yearly event
+types (birthday, naming ceremony, baby welcome) — never weddings/one-offs.
+~11 months later: ONE personal WhatsApp nudge referencing the specific past
+event by name and date. No follow-up ever. Skipped entirely if the original
+booking's review outcome was `dissatisfied`.
+
 ## Definition of done
 Weekly cadence maintained; inbound IG answered same-day; every completed
 event gets exactly one review sequence (1-2 messages, never more); no

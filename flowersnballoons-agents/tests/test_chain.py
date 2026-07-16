@@ -23,12 +23,32 @@ os.environ.setdefault("HOLD_TTL_HOURS", "2")
 from backend.db import client as db  # noqa: E402
 
 # ── in-memory fake PostgREST ──────────────────────────────────────────
-TABLES: dict[str, list[dict]] = {"leads": [], "vendors": [], "calendar_holds": [], "bookings": [], "vendor_assignments": [], "conversations": [], "event_photos": [], "ig_posts": []}
+TABLES: dict[str, list[dict]] = {"leads": [], "vendors": [], "calendar_holds": [], "bookings": [], "vendor_assignments": [], "conversations": [], "event_photos": [], "ig_posts": [], "shadow_actions": [], "seasonal_pricing": []}
+
+
+def _op_check(val, op: str, ref: str) -> bool:
+    if op == "eq":
+        return str(val).lower() == ref.lower()
+    if op == "gt":
+        return bool(val) and str(val) > ref
+    if op == "gte":
+        return bool(val) and str(val) >= ref
+    if op == "lt":
+        return bool(val) and str(val) < ref
+    if op == "lte":
+        return bool(val) and str(val) <= ref
+    return True
 
 
 def _match(row: dict, params: dict[str, str]) -> bool:
     for key, cond in params.items():
-        if key in ("order", "limit", "and"):
+        if key in ("order", "limit"):
+            continue
+        if key == "and":  # e.g. "(date.lte.2026-01-01)" — PostgREST applies these too
+            inner = cond.strip("()")
+            field, op, ref = inner.split(".", 2)
+            if not _op_check(row.get(field), op, ref):
+                return False
             continue
         val = row.get(key)
         if cond.startswith("eq."):
@@ -73,7 +93,12 @@ async def fake_insert(table, row):
     if table == "bookings":  # mirror schema column defaults
         for col, default in (("balance_reminder_sent", False), ("tag_permission", False),
                              ("review_followup_sent", False), ("review_outcome", None),
-                             ("review_requested_at", None), ("at_risk_at", None)):
+                             ("review_requested_at", None), ("at_risk_at", None),
+                             ("recurring_occasion_date", None), ("repeat_nudge_sent", False)):
+            row.setdefault(col, default)
+    if table == "vendors":  # mirror schema column defaults
+        for col, default in (("max_events_per_day", 1), ("complaint_count", 0),
+                             ("accept_rate", None), ("on_time_rate", None), ("reliability_score", None)):
             row.setdefault(col, default)
     row.setdefault("active", True) if table == "vendors" else None
     TABLES[table].append(row)

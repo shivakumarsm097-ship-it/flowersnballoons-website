@@ -235,6 +235,13 @@ async def handle_review_reply(booking: dict, lead: dict, text: str) -> bool:
             "marketing",
             actions_skipped_or_escalated=[f"booking {booking['id']} flagged dissatisfied — review sequence stopped, escalated to resolution"],
         )
+        # feed the reliability loop: complaint lands on the vendors who worked it
+        from backend.vendor_dispatch import recompute_reliability
+        for a in await db.assignments_for_booking(booking["id"]):
+            if a["status"] == "accepted":
+                await db.increment_vendor_complaints(a["vendor_id"])
+                await db.set_assignment(a["id"], arrived_on_time=False)
+                await recompute_reliability(a["vendor_id"])
         return True
     if _REVIEWED.search(text):
         await db.set_booking(booking["id"], review_outcome="reviewed", review_followup_sent=True)

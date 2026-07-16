@@ -63,7 +63,11 @@ async def razorpay_webhook(request: Request):
     total = hold.get("quoted_price") or amount_inr
     balance = max(total - amount_inr, 0)
     lead_row = await db.get_lead(hold["lead_id"])
+    # yearly-recurring occasions only — never weddings/housewarmings/one-offs
+    RECURRING_TYPES = {"birthday", "namingceremony", "babywelcome"}
+    recurring = hold["date"] if hold["event_type"] in RECURRING_TYPES else None
     booking = await db.create_booking(
+        recurring_occasion_date=recurring,
         lead_id=hold["lead_id"],
         date=hold["date"],
         event_type=hold["event_type"],
@@ -106,5 +110,7 @@ async def razorpay_webhook(request: Request):
     except Exception as e:
         log_action("vendor_coordination", errors=[f"immediate dispatch failed for {booking['id']}: {e}"])
         await slack_alert(f"🚨 Vendor dispatch failed for paid booking {booking['id']}: {e}")
+        from backend.notify import send_owner_alert
+        await send_owner_alert(f"System error: vendor dispatch failed for PAID booking {booking['id'][:8]} — {str(e)[:150]}")
 
     return {"ok": True, "booking_id": booking["id"]}

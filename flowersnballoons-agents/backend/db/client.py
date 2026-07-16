@@ -325,6 +325,68 @@ async def accepted_assignments_for_event_date(d: date) -> list[dict[str, Any]]:
     return out
 
 
+# ── vendor reliability (rolling-window scoring) ───────────────────────
+async def recent_assignments_for_vendor(vendor_id: str, limit: int = 15) -> list[dict[str, Any]]:
+    """Last N resolved assignments, newest first — the rolling window."""
+    return await _get(
+        "vendor_assignments",
+        {"vendor_id": f"eq.{vendor_id}", "status": "in.(accepted,declined,no_response)",
+         "order": "requested_at.desc", "limit": str(limit)},
+    )
+
+
+async def accepted_count_for_vendor_on(vendor_id: str, d: date) -> int:
+    """Live jobs (requested or accepted) this vendor already holds that date."""
+    count = 0
+    for b in await _get(
+        "bookings",
+        {"date": f"eq.{d.isoformat()}", "status": "in.(pending_vendors,confirmed,at_risk,rescheduling)"},
+    ):
+        rows = await _get(
+            "vendor_assignments",
+            {"booking_id": f"eq.{b['id']}", "vendor_id": f"eq.{vendor_id}", "status": "in.(requested,accepted)"},
+        )
+        count += len(rows)
+    return count
+
+
+async def set_vendor(vendor_id: str, **patch: Any) -> None:
+    await _update("vendors", {"id": f"eq.{vendor_id}"}, patch)
+
+
+async def increment_vendor_complaints(vendor_id: str) -> int:
+    rows = await _get("vendors", {"id": f"eq.{vendor_id}"})
+    n = (rows[0].get("complaint_count") or 0) + 1 if rows else 1
+    await _update("vendors", {"id": f"eq.{vendor_id}"}, {"complaint_count": n})
+    return n
+
+
+async def set_assignment(assignment_id: str, **patch: Any) -> None:
+    await _update("vendor_assignments", {"id": f"eq.{assignment_id}"}, patch)
+
+
+# ── seasonal pricing ──────────────────────────────────────────────────
+async def seasonal_for(d: date) -> dict[str, Any] | None:
+    rows = await _get(
+        "seasonal_pricing",
+        {"date_range_start": f"lte.{d.isoformat()}", "date_range_end": f"gte.{d.isoformat()}", "limit": "1"},
+    )
+    return rows[0] if rows else None
+
+
+# ── repeat-customer nudges ────────────────────────────────────────────
+async def bookings_due_repeat_nudge(window_days: int = 7) -> list[dict[str, Any]]:
+    """Occasion was ~11 months ago (anniversary ~1 month away). Weekly job →
+    7-day window so nothing is missed or double-hit."""
+    lo = (_now() - timedelta(days=335 + window_days // 2)).date().isoformat()
+    hi = (_now() - timedelta(days=335 - window_days // 2)).date().isoformat()
+    return await _get(
+        "bookings",
+        {"recurring_occasion_date": f"gte.{lo}", "and": f"(recurring_occasion_date.lte.{hi})",
+         "repeat_nudge_sent": "eq.false"},
+    )
+
+
 # ── event photos + IG posts (marketing) ───────────────────────────────
 async def add_event_photo(booking_id: str, vendor_id: str | None, wa_media_id: str | None, url: str | None = None) -> dict[str, Any]:
     return await _insert("event_photos", {"booking_id": booking_id, "vendor_id": vendor_id, "wa_media_id": wa_media_id, "url": url})

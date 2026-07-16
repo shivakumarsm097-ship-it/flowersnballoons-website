@@ -25,6 +25,12 @@ Quotes scale with guest count, theme, add-ons, venue. **Never below floor** —
 blocked twice: in the `quote_and_hold` tool AND a regex post-check on every
 outbound message.
 
+**Seasonal pricing:** if the event date falls in a `seasonal_pricing` range,
+the multiplier applies to the base package price BEFORE add-ons and the
+effective floor rises with it (enforced in `quote_and_hold`). The quote
+message must state it plainly ("Diwali season pricing applies") — never
+folded in silently, so the site's stated starting prices stay honest.
+
 ## Decision process
 1. Extract/ask: event type, date, rough guest count, location/venue, budget,
    theme/must-haves (`save_lead_details` as learned).

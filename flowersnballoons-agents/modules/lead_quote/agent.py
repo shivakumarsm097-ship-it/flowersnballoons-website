@@ -128,8 +128,16 @@ async def _run_tool(name: str, inp: dict, lead: dict) -> str:
             return "Invalid date format — ask the customer to clarify the date."
         if d <= date.today():
             return "That date is in the past (or today — too late to book). Ask for a future date."
+        season = await db.seasonal_for(d)
+        season_note = ""
+        if season:
+            season_note = (
+                f" NOTE: {season['label']} pricing applies to this date — base package price is "
+                f"multiplied by {season['multiplier']}x BEFORE add-ons, and you must state this "
+                f"plainly in the quote (e.g. \"{season['label']} pricing applies\"), never fold it in silently."
+            )
         if await availability.is_available(d):
-            return f"{d.isoformat()} has capacity — you may quote it via quote_and_hold."
+            return f"{d.isoformat()} has capacity — you may quote it via quote_and_hold.{season_note}"
         alts = await availability.nearest_available(d, 3)
         return (
             f"{d.isoformat()} is at capacity — do NOT quote it. "
@@ -139,9 +147,13 @@ async def _run_tool(name: str, inp: dict, lead: dict) -> str:
     if name == "quote_and_hold":
         d = date.fromisoformat(inp["date"])
         floor = catalog.floor_for(inp["event_type"])
+        season = await db.seasonal_for(d)
+        if season and floor:
+            floor = round(floor * season["multiplier"])  # multiplier applies to base BEFORE add-ons
         if floor and inp["total_price_inr"] < floor:
-            log_action("lead_quote", actions_skipped_or_escalated=[f"blocked below-floor quote ₹{inp['total_price_inr']} < ₹{floor} for lead {lead['id']}"])
-            return f"REFUSED: ₹{inp['total_price_inr']:,} is below the ₹{floor:,} floor for {inp['event_type']}. Quote at or above the floor, or suggest trimming add-ons."
+            season_why = f" ({season['label']} pricing: base × {season['multiplier']})" if season else ""
+            log_action("lead_quote", actions_skipped_or_escalated=[f"blocked below-floor quote ₹{inp['total_price_inr']} < ₹{floor}{season_why} for lead {lead['id']}"])
+            return f"REFUSED: ₹{inp['total_price_inr']:,} is below the ₹{floor:,} floor for {inp['event_type']}{season_why}. Quote at or above the floor, or suggest trimming add-ons."
         advance = max(500, round(inp["total_price_inr"] * float(os.environ.get("ADVANCE_PERCENT", "0.30")) / 100) * 100)
         hold = await availability.try_hold(
             d, inp["event_type"], lead["id"],
@@ -153,12 +165,13 @@ async def _run_tool(name: str, inp: dict, lead: dict) -> str:
             return f"REFUSED: {d.isoformat()} lost capacity (another lead holds it). Offer: {', '.join(a.isoformat() for a in alts)}."
 
         await db.set_lead_status(lead["id"], "quoted")
+        season_line = f" {season['label']} pricing (×{season['multiplier']}) applies — STATE THIS PLAINLY in the message." if season else ""
         log_action(
             "lead_quote",
-            actions_taken=[f"quote ₹{inp['total_price_inr']:,} for {inp['event_type']} on {d.isoformat()}, hold {hold['id']} created, lead {lead['id']}"],
+            actions_taken=[f"quote ₹{inp['total_price_inr']:,} for {inp['event_type']} on {d.isoformat()}, hold {hold['id']} created, lead {lead['id']}{' [' + season['label'] + ']' if season else ''}"],
         )
         return (
-            f"Quote registered. Hold expires: {hold['expires_at']}. Advance to lock in: ₹{advance:,}.\n"
+            f"Quote registered. Hold expires: {hold['expires_at']}. Advance to lock in: ₹{advance:,}.{season_line}\n"
             f"Now write the customer message: itemized quote ({'; '.join(inp['line_items'])}), "
             f"that a small advance of ₹{advance:,} locks the date in (payment link comes the moment "
             f"they reply YES), and that the date is held until the expiry time."

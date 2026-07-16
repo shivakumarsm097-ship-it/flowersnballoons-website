@@ -43,6 +43,12 @@ create table if not exists vendors (
   contact       text not null,              -- WhatsApp number, +91XXXXXXXXXX
   service_areas text[] not null default '{}',
   active        boolean not null default true,
+  -- reliability scoring — computed by recompute_reliability(), never hand-entered
+  max_events_per_day integer not null default 1,
+  accept_rate        real,                  -- rolling window, 0..1
+  on_time_rate       real,                  -- rolling window, 0..1
+  complaint_count    integer not null default 0,
+  reliability_score  real,                  -- 0..100 weighted blend
   created_at    timestamptz not null default now()
 );
 create index if not exists vendors_role_idx on vendors (role) where active;
@@ -87,6 +93,8 @@ create table if not exists bookings (
   review_requested_at timestamptz,
   review_followup_sent boolean not null default false,
   review_outcome  text check (review_outcome in ('reviewed','no_response','dissatisfied')),
+  recurring_occasion_date date,             -- set for yearly-recurring event types only
+  repeat_nudge_sent boolean not null default false,
   payment_status  text not null default 'paid'
                   check (payment_status in ('paid','refund_initiated','refunded')),
   razorpay_payment_id text,
@@ -124,6 +132,28 @@ create table if not exists ig_posts (
   comments           integer
 );
 
+-- ── shadow_actions ───────────────────────────────────────────────────
+-- SHADOW_MODE=true: every outbound side effect lands here instead of
+-- actually firing. Review this table for a week before going live.
+create table if not exists shadow_actions (
+  id                  uuid primary key default gen_random_uuid(),
+  module              text not null,        -- whatsapp | instagram | razorpay
+  action_type         text not null,        -- whatsapp.send | instagram.post | razorpay.payment_link | ...
+  recipient           text,
+  content             text,
+  would_charge_amount integer,              -- ₹, for razorpay actions
+  created_at          timestamptz not null default now()
+);
+
+-- ── seasonal_pricing ─────────────────────────────────────────────────
+create table if not exists seasonal_pricing (
+  id               uuid primary key default gen_random_uuid(),
+  date_range_start date not null,
+  date_range_end   date not null,
+  label            text not null,           -- "Diwali season", "Wedding season" ...
+  multiplier       real not null            -- e.g. 1.25
+);
+
 -- ── vendor_assignments ───────────────────────────────────────────────
 -- Junction table: which vendor was asked to cover which role on which
 -- booking. (This is the "vendor_assignments FK" on bookings — modelled
@@ -136,7 +166,8 @@ create table if not exists vendor_assignments (
   status        text not null default 'requested'
                 check (status in ('requested','accepted','declined','no_response')),
   requested_at  timestamptz not null default now(),
-  responded_at  timestamptz
+  responded_at  timestamptz,
+  arrived_on_time boolean                   -- filled in after the event
 );
 create index if not exists assignments_booking_idx on vendor_assignments (booking_id);
 create index if not exists assignments_vendor_idx  on vendor_assignments (vendor_id, status);
