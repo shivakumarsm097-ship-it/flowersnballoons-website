@@ -51,7 +51,7 @@ async def nearest_available(after: date, count: int = 3, horizon_days: int = 60)
     return out
 
 
-async def try_hold(d: date, event_type: str, lead_id: str) -> dict[str, Any] | None:
+async def try_hold(d: date, event_type: str, lead_id: str, **extra: Any) -> dict[str, Any] | None:
     """Atomically-enough reserve a slot before quoting.
 
     Insert the hold first, then re-count; if the insert pushed the date
@@ -61,7 +61,7 @@ async def try_hold(d: date, event_type: str, lead_id: str) -> dict[str, Any] | N
     """
     if not await is_available(d):
         return None
-    hold = await db.create_hold(d, event_type, lead_id, HOLD_TTL_HOURS)
+    hold = await db.create_hold(d, event_type, lead_id, HOLD_TTL_HOURS, **extra)
     if await slots_taken(d) > await capacity_for(d):
         await db.delete_hold(hold["id"])
         return None

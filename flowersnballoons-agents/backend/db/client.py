@@ -123,24 +123,43 @@ async def conversation_history(lead_id: str, limit: int = 20) -> list[dict[str, 
 async def active_holds_on(d: date) -> list[dict[str, Any]]:
     return await _get(
         "calendar_holds",
-        {"date": f"eq.{d.isoformat()}", "expires_at": f"gt.{_now().isoformat()}"},
+        {"date": f"eq.{d.isoformat()}", "status": "eq.active", "expires_at": f"gt.{_now().isoformat()}"},
     )
 
 
-async def create_hold(d: date, event_type: str, lead_id: str, ttl_hours: float) -> dict[str, Any]:
+async def create_hold(d: date, event_type: str, lead_id: str, ttl_hours: float, **extra: Any) -> dict[str, Any]:
     return await _insert(
         "calendar_holds",
         {
             "date": d.isoformat(),
             "event_type": event_type,
             "lead_id": lead_id,
+            "status": "active",
             "expires_at": (_now() + timedelta(hours=ttl_hours)).isoformat(),
+            **extra,
         },
     )
 
 
 async def delete_hold(hold_id: str) -> None:
     await _delete("calendar_holds", {"id": f"eq.{hold_id}"})
+
+
+async def convert_hold(hold_id: str) -> None:
+    """Paid: mark converted — an audit trail, not a deletion (spec §3)."""
+    await _update("calendar_holds", {"id": f"eq.{hold_id}"}, {"status": "converted"})
+
+
+async def expire_hold(hold_id: str) -> None:
+    await _update("calendar_holds", {"id": f"eq.{hold_id}"}, {"status": "expired"})
+
+
+async def active_hold_for_lead(lead_id: str) -> dict[str, Any] | None:
+    rows = await _get(
+        "calendar_holds",
+        {"lead_id": f"eq.{lead_id}", "status": "eq.active", "order": "created_at.desc", "limit": "1"},
+    )
+    return rows[0] if rows else None
 
 
 async def attach_payment_link(hold_id: str, link_id: str) -> None:
@@ -153,7 +172,11 @@ async def hold_by_payment_link(link_id: str) -> dict[str, Any] | None:
 
 
 async def sweep_expired_holds() -> None:
-    await _delete("calendar_holds", {"expires_at": f"lt.{_now().isoformat()}"})
+    await _update(
+        "calendar_holds",
+        {"status": "eq.active", "expires_at": f"lt.{_now().isoformat()}"},
+        {"status": "expired"},
+    )
 
 
 async def holds_expiring_within(hours: float) -> list[dict[str, Any]]:
@@ -161,6 +184,7 @@ async def holds_expiring_within(hours: float) -> list[dict[str, Any]]:
     return await _get(
         "calendar_holds",
         {
+            "status": "eq.active",
             "expires_at": f"gt.{now.isoformat()}",
             "and": f"(expires_at.lt.{(now + timedelta(hours=hours)).isoformat()})",
         },
@@ -199,6 +223,33 @@ async def bookings_pending_vendors_since(hours: float) -> list[dict[str, Any]]:
 async def bookings_finished_yesterday() -> list[dict[str, Any]]:
     y = (_now() - timedelta(days=1)).date().isoformat()
     return await _get("bookings", {"date": f"eq.{y}", "status": "in.(confirmed,done)"})
+
+
+async def active_booking_for_phone(phone: str) -> dict[str, Any] | None:
+    lead = await find_lead_by_phone(phone)
+    if not lead:
+        return None
+    rows = await _get(
+        "bookings",
+        {"lead_id": f"eq.{lead['id']}", "status": "in.(pending_vendors,confirmed,at_risk,rescheduling)",
+         "order": "created_at.desc", "limit": "1"},
+    )
+    return rows[0] if rows else None
+
+
+async def bookings_due_balance_reminder(days_min: int = 3, days_max: int = 5) -> list[dict[str, Any]]:
+    lo = (_now() + timedelta(days=days_min)).date().isoformat()
+    hi = (_now() + timedelta(days=days_max)).date().isoformat()
+    return await _get(
+        "bookings",
+        {"status": "eq.confirmed", "balance_reminder_sent": "eq.false",
+         "date": f"gte.{lo}", "and": f"(date.lte.{hi})"},
+    )
+
+
+async def at_risk_bookings_older_than(hours: float) -> list[dict[str, Any]]:
+    cutoff = (_now() - timedelta(hours=hours)).isoformat()
+    return await _get("bookings", {"status": "eq.at_risk", "at_risk_at": f"lt.{cutoff}"})
 
 
 # ── vendors ────────────────────────────────────────────────────────────

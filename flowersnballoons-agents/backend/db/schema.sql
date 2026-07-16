@@ -54,7 +54,11 @@ create table if not exists calendar_holds (
   date              date not null,
   event_type        text not null,
   lead_id           uuid not null references leads(id),
+  quoted_price      integer,                -- full quote total (₹)
+  advance_price     integer,                -- advance asked to lock in (₹)
   razorpay_link_id  text,                   -- payment link tied to this hold
+  status            text not null default 'active'
+                    check (status in ('active','converted','expired')),
   expires_at        timestamptz not null,   -- now() + HOLD_TTL_HOURS at creation
   created_at        timestamptz not null default now()
 );
@@ -72,7 +76,10 @@ create table if not exists bookings (
   date            date not null,
   event_type      text not null,
   package         text,
-  price           integer,                  -- ₹, what was actually paid
+  price           integer,                  -- ₹ advance actually paid
+  total_price     integer,                  -- ₹ full quote (balance = total - price)
+  balance_reminder_sent boolean not null default false,
+  at_risk_at      timestamptz,              -- when escalation flipped it at_risk
   payment_status  text not null default 'paid'
                   check (payment_status in ('paid','refund_initiated','refunded')),
   razorpay_payment_id text,

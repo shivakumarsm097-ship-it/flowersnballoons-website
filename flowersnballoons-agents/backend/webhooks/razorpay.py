@@ -60,28 +60,38 @@ async def razorpay_webhook(request: Request):
         await slack_alert(f"🚨 Razorpay payment {payment_id} ({amount_inr}₹) has NO matching hold — manual reconciliation needed.")
         return {"ok": True, "orphan": True}
 
+    total = hold.get("quoted_price") or amount_inr
+    balance = max(total - amount_inr, 0)
     booking = await db.create_booking(
         lead_id=hold["lead_id"],
         date=hold["date"],
         event_type=hold["event_type"],
         price=amount_inr,
+        total_price=total,
         payment_status="paid",
         razorpay_payment_id=payment_id,
         status="pending_vendors",
     )
-    await db.delete_hold(hold["id"])
+    await db.convert_hold(hold["id"])  # audit trail, not deletion (spec §3)
     await db.set_lead_status(hold["lead_id"], "converted")
     log_action(
         "booking_payment",
-        actions_taken=[f"payment {payment_id} converted hold {hold['id']} → booking {booking['id']} ({amount_inr}₹)"],
+        actions_taken=[f"payment {payment_id} converted hold {hold['id']} → booking {booking['id']} (advance ₹{amount_inr:,}, total ₹{total:,})"],
     )
+
+    # spec hard limit: detect + loudly log any capacity near-miss
+    from modules.booking_payment.agent import near_miss_check
+    await near_miss_check(booking)
 
     lead = await db.get_lead(hold["lead_id"])
     if lead and lead.get("phone"):
         try:
             await send_whatsapp(
                 lead["phone"],
-                f"Payment received — thank you! 🎉 Your {booking['event_type']} on {booking['date']} is booked. "
+                f"Payment received — thank you! 🎉\n\n"
+                f"Your {booking['event_type']} on {booking['date']} is booked:\n"
+                f"• Advance paid: ₹{amount_inr:,}\n"
+                f"• Balance at the event: ₹{balance:,}\n\n"
                 f"I'm locking in the team now and will confirm everything shortly.",
             )
         except Exception as e:

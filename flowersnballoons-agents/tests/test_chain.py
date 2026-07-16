@@ -127,7 +127,7 @@ async def main():
         h["expires_at"] = (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat()
     assert await availability.is_available(d), "expired hold must free the slot"
     await db.sweep_expired_holds()
-    assert not TABLES["calendar_holds"], "sweep removes expired holds"
+    assert all(h["status"] == "expired" for h in TABLES["calendar_holds"]), "sweep marks holds expired (audit trail)"
 
     # 5. fresh hold + payment link → signed razorpay webhook converts it
     hold = await availability.try_hold(d, "birthday", lead1["id"])
@@ -156,7 +156,8 @@ async def main():
     assert res.get("booking_id"), "webhook must create booking"
     booking = TABLES["bookings"][0]
     assert booking["price"] == 6000 and booking["status"] == "pending_vendors"
-    assert not TABLES["calendar_holds"], "hold consumed on payment"
+    assert any(h["status"] == "converted" for h in TABLES["calendar_holds"]), "hold marked converted on payment"
+    assert not await db.active_holds_on(d), "converted hold no longer counts against capacity"
     assert TABLES["vendor_assignments"], "vendor dispatched in the SAME webhook call"
     assert any("New job" in t for _, t in SENT), "vendor got the job message"
     assert any("Payment received" in t for _, t in SENT), "customer got payment ack"
@@ -181,7 +182,7 @@ async def main():
         "lead_id": lead2["id"], "date": (d + timedelta(days=1)).isoformat(), "event_type": "wedding",
         "price": 15000, "payment_status": "paid", "razorpay_payment_id": "pay_x",
     })
-    stuck["created_at"] = (datetime.now(timezone.utc) - timedelta(hours=7)).isoformat()
+    stuck["created_at"] = (datetime.now(timezone.utc) - timedelta(hours=50)).isoformat()  # past even the 48h far-out window
     await fake_insert("vendor_assignments", {"booking_id": stuck["id"], "vendor_id": ravi["id"], "role": "decorator"})
 
     from orchestrator import cron

@@ -21,7 +21,7 @@ import os
 import re
 from datetime import date
 
-from backend import availability, catalog, payments
+from backend import availability, catalog
 from backend.db import client as db
 from backend.notify import send_whatsapp, slack_alert
 from orchestrator.logger import log_action
@@ -140,26 +140,14 @@ async def _run_tool(name: str, inp: dict, lead: dict) -> str:
         if floor and inp["total_price_inr"] < floor:
             log_action("lead_quote", actions_skipped_or_escalated=[f"blocked below-floor quote ₹{inp['total_price_inr']} < ₹{floor} for lead {lead['id']}"])
             return f"REFUSED: ₹{inp['total_price_inr']:,} is below the ₹{floor:,} floor for {inp['event_type']}. Quote at or above the floor, or suggest trimming add-ons."
-        hold = await availability.try_hold(d, inp["event_type"], lead["id"])
+        advance = max(500, round(inp["total_price_inr"] * float(os.environ.get("ADVANCE_PERCENT", "0.30")) / 100) * 100)
+        hold = await availability.try_hold(
+            d, inp["event_type"], lead["id"],
+            quoted_price=inp["total_price_inr"], advance_price=advance,
+        )
         if not hold:
             alts = await availability.nearest_available(d, 3)
             return f"REFUSED: {d.isoformat()} lost capacity (another lead holds it). Offer: {', '.join(a.isoformat() for a in alts)}."
-
-        link_line = "Payment link unavailable — tell the customer you'll send it in a moment (owner alerted)."
-        if payments.configured() and lead.get("phone"):
-            try:
-                link = await payments.create_payment_link(
-                    inp["total_price_inr"],
-                    f"{catalog.LABELS[inp['event_type']]} — {d.isoformat()}",
-                    lead["phone"],
-                    hold["id"],
-                )
-                await db.attach_payment_link(hold["id"], link["id"])
-                link_line = f"Payment link: {link['short_url']}"
-            except Exception as e:
-                await slack_alert(f"⚠️ Payment link creation failed for lead {lead['id']}: {e}")
-        else:
-            await slack_alert(f"⚠️ Quote sent without payment link (Razorpay unconfigured) — lead {lead['id']}, ₹{inp['total_price_inr']:,} on {d.isoformat()}")
 
         await db.set_lead_status(lead["id"], "quoted")
         log_action(
@@ -167,9 +155,10 @@ async def _run_tool(name: str, inp: dict, lead: dict) -> str:
             actions_taken=[f"quote ₹{inp['total_price_inr']:,} for {inp['event_type']} on {d.isoformat()}, hold {hold['id']} created, lead {lead['id']}"],
         )
         return (
-            f"Quote registered. Hold expires: {hold['expires_at']}. {link_line}\n"
+            f"Quote registered. Hold expires: {hold['expires_at']}. Advance to lock in: ₹{advance:,}.\n"
             f"Now write the customer message: itemized quote ({'; '.join(inp['line_items'])}), "
-            f"the payment link, and that the date is held until the expiry time."
+            f"that a small advance of ₹{advance:,} locks the date in (payment link comes the moment "
+            f"they reply YES), and that the date is held until the expiry time."
         )
 
     if name == "save_lead_details":

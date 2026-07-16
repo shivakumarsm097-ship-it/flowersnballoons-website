@@ -27,7 +27,19 @@ ROLE_REQUIREMENTS: dict[str, list[str]] = {
     "default": ["decorator"],
 }
 
-ESCALATION_HOURS = float(os.environ.get("VENDOR_ESCALATION_HOURS", "6"))
+ESCALATION_HOURS = float(os.environ.get("VENDOR_ESCALATION_HOURS", "24"))
+
+
+def escalation_window_hours(event_date_iso: str) -> float:
+    """Spec: 24-48h depending on how far out the event is — a close event
+    can't afford to wait as long as a distant one."""
+    from datetime import date
+    days_out = (date.fromisoformat(event_date_iso) - date.today()).days
+    if days_out <= 7:
+        return min(ESCALATION_HOURS, 12.0)
+    if days_out <= 30:
+        return ESCALATION_HOURS          # default 24h
+    return ESCALATION_HOURS * 2          # 48h for far-out events
 
 
 def required_roles(event_type: str) -> list[str]:

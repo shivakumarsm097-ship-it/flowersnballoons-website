@@ -17,7 +17,7 @@ import os
 
 from backend.db import client as db
 from backend.notify import send_whatsapp, slack_alert
-from backend.vendor_dispatch import ESCALATION_HOURS, required_roles
+from backend.vendor_dispatch import ESCALATION_HOURS, escalation_window_hours, required_roles
 from orchestrator.logger import log_action
 
 OWNER_REVIEW_LINK = os.environ.get("GOOGLE_REVIEW_LINK", "")
@@ -72,8 +72,13 @@ async def vendor_escalations() -> None:
     """Spec §7: a paid booking stuck without full vendor acceptance past the
     escalation window triggers proactive refund-or-reschedule outreach —
     never a silent exposed customer."""
-    stuck = await db.bookings_pending_vendors_since(ESCALATION_HOURS)
+    stuck = await db.bookings_pending_vendors_since(0)  # window applied per booking below
     for b in stuck:
+        from datetime import datetime, timedelta, timezone
+        window = escalation_window_hours(b["date"])
+        if b["created_at"] > (datetime.now(timezone.utc) - timedelta(hours=window)).isoformat():
+            continue  # still inside this booking's window
+
         assignments = await db.assignments_for_booking(b["id"])
         accepted = {a["role"] for a in assignments if a["status"] == "accepted"}
         missing = [r for r in required_roles(b["event_type"]) if r not in accepted]
@@ -85,7 +90,7 @@ async def vendor_escalations() -> None:
             if a["status"] == "requested":
                 await db.set_assignment_status(a["id"], "no_response")
 
-        await db.set_booking(b["id"], status="at_risk")
+        await db.set_booking(b["id"], status="at_risk", at_risk_at=datetime.now(timezone.utc).isoformat())
         lead = await db.get_lead(b["lead_id"])
         if lead and lead.get("phone"):
             await send_whatsapp(
@@ -100,6 +105,40 @@ async def vendor_escalations() -> None:
             actions_skipped_or_escalated=[f"booking {b['id']} at_risk — missing roles {missing}, customer notified"],
         )
         await slack_alert(f"🚨 Booking {b['id']} AT RISK — no vendor for {missing} after {ESCALATION_HOURS}h. Customer offered refund/reschedule.")
+
+
+async def at_risk_default_refunds() -> None:
+    """Spec (booking_payment): customer silent 24h after the at-risk notice
+    → default to a full refund. Silence never leaves money held against an
+    undeliverable event."""
+    from modules.booking_payment.agent import _refund
+    for b in await db.at_risk_bookings_older_than(24):
+        lead = await db.get_lead(b["lead_id"])
+        if lead:
+            await _refund(b, lead, reason="no reply 24h after at-risk notice — defaulted to refund")
+
+
+async def balance_reminders() -> None:
+    """Spec: balance-due reminder 3-5 days before the event."""
+    for b in await db.bookings_due_balance_reminder(3, 5):
+        lead = await db.get_lead(b["lead_id"])
+        if not (lead and lead.get("phone")):
+            continue
+        balance = max((b.get("total_price") or 0) - (b.get("price") or 0), 0)
+        if balance <= 0:
+            await db.set_booking(b["id"], balance_reminder_sent=True)
+            continue
+        try:
+            await send_whatsapp(
+                lead["phone"],
+                f"Getting excited for your {b['event_type']} on {b['date']}! 🎈\n\n"
+                f"A friendly reminder: the balance of ₹{balance:,} is due at the event. "
+                f"Any questions before the big day, just reply here!",
+            )
+            await db.set_booking(b["id"], balance_reminder_sent=True)
+            log_action("booking_payment", actions_taken=[f"balance reminder (₹{balance:,}) sent for booking {b['id']}"])
+        except Exception as e:
+            log_action("booking_payment", errors=[f"balance reminder failed for {b['id']}: {e}"])
 
 
 async def review_requests() -> None:
@@ -128,7 +167,8 @@ async def marketing_tick() -> None:
 
 
 async def main() -> None:
-    for job in (sweep_holds, unpaid_quote_followups, lead_followups, vendor_escalations, review_requests, marketing_tick):
+    for job in (sweep_holds, unpaid_quote_followups, lead_followups, vendor_escalations,
+                at_risk_default_refunds, balance_reminders, review_requests, marketing_tick):
         try:
             await job()
         except Exception as e:

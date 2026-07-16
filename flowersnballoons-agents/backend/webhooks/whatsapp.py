@@ -47,12 +47,23 @@ async def receive(request: Request):
                         await handle_vendor_reply(vendor, text)
                         continue
 
-                    # customer / new lead → Lead & Quote agent owns the reply
+                    # customer routing, most-specific first:
+                    #  1. live booking + money keyword → Booking & Payment agent
+                    #  2. quoted lead saying YES        → Booking & Payment agent
+                    #  3. everything else               → Lead & Quote agent
                     lead = await db.find_lead_by_phone(sender)
                     if not lead:
                         lead = await db.create_lead(source="whatsapp", phone=sender, raw_message=text[:2000])
                         log_action("lead_quote", actions_taken=[f"new WhatsApp lead {lead['id']} ({sender})"])
                         await slack_alert(f"💬 New WhatsApp lead {sender}: {text[:120]}")
+
+                    from modules.booking_payment.agent import handle_booking_message, handle_confirmation
+                    booking = await db.active_booking_for_phone(sender)
+                    if booking and await handle_booking_message(booking, lead, text):
+                        continue
+                    if lead.get("status") == "quoted" and await handle_confirmation(lead, text):
+                        continue
+
                     from modules.lead_quote.agent import handle_inbound
                     await handle_inbound(lead, text)
     except Exception as e:
