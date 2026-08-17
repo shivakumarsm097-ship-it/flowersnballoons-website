@@ -16,6 +16,7 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { describe } from './describe.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
@@ -105,9 +106,10 @@ for (const r of HARV.products) {
     price: r.price,
     compareAt: r.compareAt && r.compareAt > r.price ? r.compareAt : null,
     advance: Math.max(500, Math.round((r.price * ADVANCE_PCT) / 100) * 100),
-    inclusions: [],
   });
 }
+
+for (const p of products) { const d = describe(p); p.description = d.body; p.metaDescription = d.meta; p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
 
 const CATEGORIES = Object.entries(CATMETA)
   .filter(([slug]) => products.some((p) => p.category === slug))
@@ -383,13 +385,13 @@ ${footer('../../')}`);
     const ld = {
       '@context': 'https://schema.org', '@type': 'Product',
       name: p.name, sku: p.sku, category: p.categoryName,
-      description: `${p.name} — ${p.tierBlurb} Decoration by Flowers 'N' Balloons, Bengaluru.`,
+      description: p.description,
       brand: { '@type': 'Brand', name: "Flowers 'N' Balloons" },
       offers: { '@type': 'Offer', price: p.price, priceCurrency: 'INR', availability: 'https://schema.org/InStock', url: `https://www.flowersnballoons.com/shop/${p.category}/${p.slug}.html` },
     };
     writeFileSync(join(shopDir, c.slug, `${p.slug}.html`), `${head(
       `${p.name} — ${inr(p.price)} | Flowers N Balloons Bangalore`,
-      `${p.name} — ${c.name.toLowerCase()} decoration in Bengaluru at ${inr(p.price)}. Book online; we confirm your date is free before taking payment.`,
+      p.metaDescription,
       '../../',
       `<script type="application/ld+json">${JSON.stringify(ld)}</script>`
     )}
@@ -408,7 +410,7 @@ ${header('../../')}
         <div class="pdp-info">
           <span class="prod-tier">${esc(p.tier)} · ${esc(c.name)}</span>
           <h1>${esc(p.name)}</h1>
-          <p class="pdp-blurb">${esc(p.tierBlurb)}</p>
+          <p class="pdp-blurb">${esc(p.description)}</p>
 
           <div class="pdp-price">
             ${p.compareAt ? `<s>${inr(p.compareAt)}</s>` : ''}
@@ -422,7 +424,6 @@ ${header('../../')}
           <a class="btn btn-ghost btn-block" style="margin-top:10px" href="https://wa.me/918867121207?text=${encodeURIComponent(`Hi, I'm interested in "${p.name}" (${p.sku}) at ${inr(p.price)}.`)}" target="_blank" rel="noopener">Ask about this on WhatsApp</a>
 
           <h3 class="incl-h">What you get</h3>
-          <p style="font-size:.92rem;color:var(--ink-soft)">${esc(p.tierBlurb)}</p>
           <ul class="incl-list">
             <li>Design built to your theme, colours and venue</li>
             <li>Delivery, full setup and cleanup by our team</li>
