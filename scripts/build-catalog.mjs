@@ -24,6 +24,37 @@ const COMP = read('data/components.json');
 const SPEC = read('data/catalog-spec.json');
 const { components, margin, roundTo } = COMP;
 
+// written by scripts/import-images.mjs; absent until photos are imported
+let IMG = { products: {}, categories: {} };
+try { IMG = read('data/image-map.json'); } catch { /* no photos yet */ }
+
+/** Photo resolution, in order of honesty:
+ *   1. a photo of THIS setup            -> shown plainly
+ *   2. a photo of this THEME             -> shown plainly
+ *   3. a photo from the same category    -> shown, but LABELLED "representative"
+ *      (it is a different theme; passing it off as this one would misrepresent
+ *       what the customer is buying at the exact moment they decide)
+ *   4. nothing                           -> labelled placeholder
+ */
+function photoFor(p) {
+  const own = IMG.products[p.slug];
+  if (own) return { stem: own, exact: true };
+  const pool = IMG.categories[p.category];
+  if (pool && pool.length) return { stem: pool[Math.abs(hash(p.slug)) % pool.length], exact: false };
+  return null;
+}
+function media(p, depth, size, cls = 'prod-ph') {
+  const ph = photoFor(p);
+  if (!ph) return `<div class="${cls}" aria-hidden="true">${esc(p.theme)}</div>`;
+  const alt = ph.exact
+    ? `${esc(p.theme)} decoration setup by Flowers N Balloons`
+    : `Example of our ${esc(p.categoryName.toLowerCase())} decoration work`;
+  return `<img src="${depth}images/products/${ph.stem}-${size}.webp" alt="${alt}" loading="lazy" width="${size === 'full' ? 1200 : 600}" height="${size === 'full' ? 900 : 450}">`
+    + (ph.exact ? '' : `<span class="ph-tag">Representative photo</span>`);
+}
+function hash(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
+const hasExactPhoto = (p) => !!IMG.products[p.slug];
+
 const PHONE = '+918867121207';
 const PHONE_H = '+91 88671 21207';
 const inr = (n) => '₹' + n.toLocaleString('en-IN');
@@ -200,7 +231,7 @@ const footer = (depth) => `
 const card = (p, depth) => `
 <a class="prod-card reveal" href="${depth}shop/${p.category}/${p.slug}.html">
   <div class="prod-media">
-    <div class="prod-ph" aria-hidden="true">${esc(p.theme.split(' ')[0])}</div>
+    ${media(p, depth, 'card')}
     ${p.compareAt ? `<span class="prod-off">-${Math.round((1 - p.price / p.compareAt) * 100)}%</span>` : ''}
   </div>
   <div class="prod-body">
@@ -376,8 +407,8 @@ ${header('../../')}
 
       <div class="pdp">
         <div class="pdp-media">
-          <div class="prod-ph pdp-ph" aria-hidden="true">${esc(p.theme)}</div>
-          <p class="ph-note">Photo coming soon — this setup hasn't been photographed yet.</p>
+          ${media(p, '../../', 'full', 'prod-ph pdp-ph')}
+          ${hasExactPhoto(p) ? '' : `<p class="ph-note">${photoFor(p) ? 'Shown: an example of our ' + esc(p.categoryName.toLowerCase()) + ' work. This exact theme has not been photographed yet.' : "Photo coming soon — this setup hasn't been photographed yet."}</p>`}
         </div>
 
         <div class="pdp-info">
