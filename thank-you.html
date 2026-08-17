@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Thank You! | Flowers N Balloons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap"></noscript>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       GOOGLE ADS CONVERSION TRACKING
+       Replace AW-XXXXXXXXXX with your Google Ads Conversion ID
+       Replace YYYYYYYY with your Conversion Label
+       Get these from: Google Ads → Tools → Measurement → Conversions
+  ═══════════════════════════════════════════════════════════ -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    // ↓ UNCOMMENT and replace IDs when you have your Google Ads account
+    // gtag('event', 'conversion', {'send_to': 'AW-XXXXXXXXXX/YYYYYYYY', 'value': 1.0, 'currency': 'INR'});
+  </script>
+
+  <style>
+    :root {
+      --primary: #dd6580; --secondary: #6f9d8e; --accent: #cf9a3f;
+      --text: #3a2e33; --text-light: #8a7a80;
+      --font: 'Inter', -apple-system, sans-serif;
+      --serif: 'Fraunces', 'Playfair Display', Georgia, serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); color: var(--text); background: #fff8f6; min-height: 100vh; display: flex; flex-direction: column; position: relative; }
+    body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(40rem 40rem at 88% -10%, rgba(221,101,128,.12), transparent 60%), radial-gradient(34rem 34rem at 4% 100%, rgba(111,157,142,.12), transparent 60%); }
+    a { text-decoration: none; color: inherit; }
+
+    /* Header */
+    .ty-header { background: #fff; padding: 16px 24px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(0,0,0,.07); }
+    .ty-logo { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 1.1rem; color: var(--text); }
+    .ty-logo span { color: var(--primary); }
+
+    /* Hero */
+    .ty-main { flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 20px; }
+    .ty-card {
+      background: #fff; border-radius: 28px; padding: clamp(32px,8vw,64px); border: 1px solid #f4e2df;
+      box-shadow: 0 14px 34px rgba(221,101,128,.14), 0 30px 70px rgba(180,90,110,.14); max-width: 560px; width: 100%; text-align: center;
+    }
+
+    /* Animated checkmark */
+    .ty-check {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; font-size: 2.2rem; color: #fff;
+      animation: popIn .6s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn {
+      from { transform: scale(0) rotate(-30deg); opacity: 0; }
+      to   { transform: scale(1) rotate(0deg);   opacity: 1; }
+    }
+
+    .ty-card h1 { font-family: var(--serif); font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600; margin-bottom: 10px; color: var(--text); }
+    .ty-card .ty-sub { font-size: 1.05rem; color: var(--text-light); margin-bottom: 32px; line-height: 1.7; }
+    .ty-card .ty-highlight { color: var(--primary); font-weight: 700; }
+
+    /* Steps */
+    .ty-steps { display: grid; gap: 14px; margin-bottom: 36px; text-align: left; }
+    .ty-step { display: flex; align-items: flex-start; gap: 14px; background: #fdeef0; border-radius: 14px; padding: 14px 16px; }
+    .ty-step-num {
+      width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff; font-weight: 700; font-size: .85rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .ty-step-body strong { display: block; font-size: .9rem; color: var(--text); margin-bottom: 2px; }
+    .ty-step-body span { font-size: .82rem; color: var(--text-light); }
+
+    /* CTAs */
+    .ty-ctas { display: flex; flex-direction: column; gap: 12px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 24px; border-radius: 50px; font-size: .95rem; font-weight: 600; border: 2px solid transparent; cursor: pointer; font-family: inherit; transition: transform .2s, box-shadow .2s; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-wa { background: #25d366; color: #fff; box-shadow: 0 4px 16px rgba(37,211,102,.35); }
+    .btn-wa:hover { box-shadow: 0 8px 24px rgba(37,211,102,.45); }
+    .btn-home { background: transparent; color: var(--text-light); border-color: #e0e0e0; font-size: .875rem; }
+    .btn-home:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Footer */
+    .ty-footer { text-align: center; padding: 20px; font-size: .78rem; color: #aaa; }
+  </style>
+</head>
+<body>
+
+  <header class="ty-header">
+    <a href="index.html" class="ty-logo" aria-label="Back to Flowers N Balloons">
+      <span aria-hidden="true">🌸</span>
+      Flowers '<span>N</span>' Balloons
+    </a>
+  </header>
+
+  <main class="ty-main">
+    <div class="ty-card">
+      <div class="ty-check" aria-hidden="true">✓</div>
+
+      <h1>Thank You! We've Got Your Request 🎉</h1>
+      <p class="ty-sub">
+        Your enquiry has been received.<br>
+        Our team will call you back at your number
+        <span class="ty-highlight">within 2 hours</span>.
+      </p>
+
+      <!-- What happens next -->
+      <div class="ty-steps" aria-label="What happens next">
+        <div class="ty-step">
+          <div class="ty-step-num">1</div>
+          <div class="ty-step-body">
+            <strong>Expect a call from us</strong>
+            <span>Within 2 hours on a business day. We'll confirm your event details.</span>
+          </div>
+        </div>
+        <div class="ty-step">
+          <div class="ty-step-num">2</div>
+          <div class="ty-step-body">
+            <strong>Discuss your vision</strong>
+            <span>Share your theme, venue, guest count, and any special requests.</span>
+          </div>
+        </div>
+        <div class="ty-step">
+          <div class="ty-step-num">3</div>
+          <div class="ty-step-body">
+            <strong>Get a custom quote</strong>
+            <span>Transparent pricing, no hidden charges — we'll send a detailed quote.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="ty-ctas">
+        <a href="https://wa.me/918867121207?text=Hi%2C+I+just+filled+the+quote+form.+Can+we+discuss+my+event%3F"
+           target="_blank" rel="noopener" class="btn btn-wa"
+           aria-label="Chat on WhatsApp for faster response">
+          💬 Get Faster Response on WhatsApp
+        </a>
+        <a href="index.html" class="btn btn-home">← Back to Home</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ty-footer">
+    <p>© 2025 Flowers 'N' Balloons, Bangalore &nbsp;|&nbsp;
+      <a href="tel:+918867121207" style="color:inherit;">+91 8867121207</a>
+    </p>
+  </footer>
+
+  <script src="js/main.min.js" defer></script>
+</body>
+</html>

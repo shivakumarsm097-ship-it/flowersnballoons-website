@@ -3,3 +3,7 @@ Thumbs.db
 *.log
 node_modules/
 .claude/
+
+# generated catalogue (rebuild with: node scripts/build-catalog.mjs)
+images/incoming/*
+!images/incoming/README.md

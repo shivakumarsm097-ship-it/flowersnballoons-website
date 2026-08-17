@@ -1,0 +1,5 @@
+logs/*.jsonl
+.env
+.venv
+__pycache__/
+*.pyc
