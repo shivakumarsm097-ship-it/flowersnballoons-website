@@ -20,22 +20,20 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 
-const COMP = read('data/components.json');
-const SPEC = read('data/catalog-spec.json');
-const { components, margin, roundTo } = COMP;
+const HARV = read('data/harvested.json');
 
 // written by scripts/import-images.mjs; absent until photos are imported
 let IMG = { products: {}, categories: {} };
 try { IMG = read('data/image-map.json'); } catch { /* no photos yet */ }
 
-/** Photo resolution, in order of honesty:
- *   1. a photo of THIS setup            -> shown plainly
- *   2. a photo of this THEME             -> shown plainly
- *   3. a photo from the same category    -> shown, but LABELLED "representative"
- *      (it is a different theme; passing it off as this one would misrepresent
- *       what the customer is buying at the exact moment they decide)
- *   4. nothing                           -> labelled placeholder
- */
+const PHONE = '+918867121207';
+const PHONE_H = '+91 88671 21207';
+const inr = (n) => '₹' + n.toLocaleString('en-IN');
+const slugify = (s) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/** Photo resolution, in order of honesty. Fallbacks are labelled, never passed
+ *  off as the specific setup. */
 function photoFor(p) {
   const own = IMG.products[p.slug];
   if (own) return { stem: own, exact: true };
@@ -45,91 +43,79 @@ function photoFor(p) {
 }
 function media(p, depth, size, cls = 'prod-ph') {
   const ph = photoFor(p);
-  if (!ph) return `<div class="${cls}" aria-hidden="true">${esc(p.theme)}</div>`;
-  const alt = ph.exact
-    ? `${esc(p.theme)} decoration setup by Flowers N Balloons`
-    : `Example of our ${esc(p.categoryName.toLowerCase())} decoration work`;
+  if (!ph) return `<div class="${cls}" aria-hidden="true">${esc(p.name)}</div>`;
+  const alt = ph.exact ? `${esc(p.name)} by Flowers N Balloons`
+                       : `Example of our ${esc(p.categoryName.toLowerCase())} decoration work`;
   return `<img src="${depth}images/products/${ph.stem}-${size}.webp" alt="${alt}" loading="lazy" width="${size === 'full' ? 1200 : 600}" height="${size === 'full' ? 900 : 450}">`
     + (ph.exact ? '' : `<span class="ph-tag">Representative photo</span>`);
 }
 function hash(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
 const hasExactPhoto = (p) => !!IMG.products[p.slug];
 
-const PHONE = '+918867121207';
-const PHONE_H = '+91 88671 21207';
-const inr = (n) => '₹' + n.toLocaleString('en-IN');
-const slugify = (s) => s.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const ADVANCE_PCT = 0.30;
 
-function priceOf(keys) {
-  let cost = 0;
-  for (const k of keys) {
-    if (!components[k]) throw new Error(`Unknown component "${k}" — check catalog-spec.json`);
-    cost += components[k].cost;
-  }
-  return Math.round((cost * margin) / roundTo) * roundTo;
+const CATMETA = {
+  'kids-birthday':       ['Kids Birthday', "Themed setups built around what your child actually loves — backdrop, arch, cutouts and a cake table that photographs well."],
+  'birthday':            ['Adult Birthday', 'Grown-up palettes and cleaner lines, for milestone birthdays, surprise parties and terrace celebrations.'],
+  'baby-shower':         ['Baby Shower', 'Soft-palette backdrops, balloon clouds and dessert-table styling for the photos everyone will want.'],
+  'naming-ceremony':     ['Naming Ceremony', 'Traditional touches with a modern finish — cradle decoration, name boards and warm floral work.'],
+  'house-warming':       ['Housewarming', 'Entrance rangoli, torans and pooja-area styling to welcome everyone into the new home.'],
+  'engagement':          ['Engagement', 'Ring-ceremony stages, floral arches and lighting designed to photograph well from every angle.'],
+  'haldi':               ['Haldi Ceremony', 'Bright daytime setups — marigold work, seating, umbrellas and colour-forward backdrops.'],
+  'wedding':             ['Wedding', 'Stage and mandap design, entrance styling, fresh-flower work and lighting, scaled to your venue.'],
+  'anniversary':         ['Anniversary', 'Candlelight, florals and quiet detail for anniversaries and romantic evenings.'],
+  'corporate':           ['Corporate', 'Branded stages, launch setups and entrance styling for office celebrations and store openings.'],
+  'surprise-events':     ['Surprise Parties', 'Quick-turnaround setups for proposals, homecomings and surprise celebrations.'],
+  'bachelorette':        ['Bachelorette', 'Bold, playful setups for the send-off before the wedding.'],
+  'annaprasan':          ['Annaprasan', 'First-rice ceremony decoration — traditional detail, gentle palettes and a styled seating area.'],
+  'upanayanam':          ['Upanayanam', 'Thread-ceremony decoration with traditional floral and mandap work.'],
+  'first-holy-communion':['First Holy Communion', 'Calm, elegant white-and-gold setups for the communion celebration.'],
+};
+
+/** Scale description derived from the price band — never invents a specific
+ *  item count, because every inclusion listed is a delivery promise. */
+function scaleOf(price) {
+  if (price < 3000)  return ['Compact', 'A small, focused setup — ideal for a home celebration or a single feature wall.'];
+  if (price < 8000)  return ['Standard', 'A full backdrop or ring setup with balloon work, sized for a typical home or hall celebration.'];
+  if (price < 18000) return ['Large', 'A larger installation with layered balloon work, themed elements and props.'];
+  if (price < 35000) return ['Premium', 'A full-wall treatment with extensive balloon and themed work, lighting and styled table.'];
+  return ['Grand', 'Our largest format — full-venue treatment with premium materials, lighting and a dedicated setup team.'];
 }
-const inclusionsOf = (keys) => keys.map((k) => components[k].label);
 
-/* ---------------- expand spec into products ---------------- */
+/* ---------------- build products from harvested data ---------------- */
 const products = [];
+const usedSlugs = new Set();
 let n = 0;
 
-for (const cat of SPEC.categories) {
-  for (const theme of cat.themes) {
-    for (const tierKey of cat.tiers) {
-      const tier = SPEC.tiers[tierKey];
-      // dedupe: a theme extra may repeat something already in the tier base
-      const keys = [...new Set([...tier.base, ...(theme.extra || [])])];
-      const price = priceOf(keys);
-      const name = `${theme.name} — ${tier.label}`;
-      products.push({
-        sku: `FNB-${cat.slug.slice(0, 2).toUpperCase()}-${String(++n).padStart(3, '0')}`,
-        name,
-        slug: slugify(`${theme.name}-${tier.label}`),
-        category: cat.slug,
-        categoryName: cat.name,
-        theme: theme.name,
-        tier: tier.label,
-        tierBlurb: tier.blurb,
-        price,
-        // shown struck-through; honest framing = "if bought separately"
-        compareAt: Math.round((price * 1.22) / roundTo) * roundTo,
-        components: keys,
-        inclusions: inclusionsOf(keys),
-        image: null,
-      });
-    }
-  }
-}
-
-for (const a of SPEC.addons) {
-  const price = priceOf(a.components);
+for (const r of HARV.products) {
+  const meta = CATMETA[r.cat];
+  if (!meta) continue;
+  let slug = slugify(r.name);
+  while (usedSlugs.has(slug)) slug += '-' + (++n);
+  usedSlugs.add(slug);
+  const [scale, scaleBlurb] = scaleOf(r.price);
   products.push({
-    sku: `FNB-AD-${String(++n).padStart(3, '0')}`,
-    name: a.name,
-    slug: a.slug,
-    category: 'addons',
-    categoryName: 'Add-ons',
-    theme: a.name,
-    tier: 'Add-on',
-    tierBlurb: 'Add to any setup, or book on its own.',
-    price,
-    compareAt: null,
-    components: a.components,
-    inclusions: inclusionsOf(a.components),
-    image: null,
+    sku: `FNB-${r.cat.slice(0, 2).toUpperCase()}-${String(++n).padStart(4, '0')}`,
+    name: r.name,
+    slug,
+    category: r.cat,
+    categoryName: meta[0],
+    tier: scale,
+    tierBlurb: scaleBlurb,
+    price: r.price,
+    compareAt: r.compareAt && r.compareAt > r.price ? r.compareAt : null,
+    advance: Math.max(500, Math.round((r.price * ADVANCE_PCT) / 100) * 100),
+    inclusions: [],
   });
 }
 
-const CATEGORIES = [
-  ...SPEC.categories.map((c) => ({ slug: c.slug, name: c.name, intro: c.intro })),
-  { slug: 'addons', name: 'Add-ons', intro: 'Small extras that can be added to any setup, or booked on their own.' },
-];
+const CATEGORIES = Object.entries(CATMETA)
+  .filter(([slug]) => products.some((p) => p.category === slug))
+  .map(([slug, m]) => ({ slug, name: m[0], intro: m[1] }));
 
 writeFileSync(
   join(ROOT, 'data/products.json'),
-  JSON.stringify({ generatedFrom: 'catalog-spec.json + components.json', margin, count: products.length, categories: CATEGORIES, products }, null, 2)
+  JSON.stringify({ generatedFrom: 'harvested.json', count: products.length, categories: CATEGORIES, products }, null, 2)
 );
 
 /* ---------------- shared page chrome ---------------- */
@@ -229,15 +215,15 @@ const footer = (depth) => `
 </html>`;
 
 const card = (p, depth) => `
-<a class="prod-card reveal" href="${depth}shop/${p.category}/${p.slug}.html" data-tier="${esc(p.tier)}" data-theme="${esc(p.theme.toLowerCase())}" data-price="${p.price}">
+<a class="prod-card reveal" href="${depth}shop/${p.category}/${p.slug}.html" data-tier="${esc(p.tier)}" data-theme="${esc(p.name.toLowerCase())}" data-price="${p.price}">
   <div class="prod-media">
     ${media(p, depth, 'card')}
     ${p.compareAt ? `<span class="prod-off">-${Math.round((1 - p.price / p.compareAt) * 100)}%</span>` : ''}
   </div>
   <div class="prod-body">
     <span class="prod-tier">${esc(p.tier)}</span>
-    <h3>${esc(p.theme)}</h3>
-    <p class="prod-incl">${p.inclusions.length} inclusions</p>
+    <h3>${esc(p.name)}</h3>
+    <p class="prod-incl">${esc(p.categoryName)}</p>
     <div class="prod-price">
       ${p.compareAt ? `<s>${inr(p.compareAt)}</s>` : ''}
       <b>${inr(p.price)}</b>
@@ -397,13 +383,13 @@ ${footer('../../')}`);
     const ld = {
       '@context': 'https://schema.org', '@type': 'Product',
       name: p.name, sku: p.sku, category: p.categoryName,
-      description: `${p.theme} decoration setup — ${p.tierBlurb} Includes: ${p.inclusions.join(', ')}.`,
+      description: `${p.name} — ${p.tierBlurb} Decoration by Flowers 'N' Balloons, Bengaluru.`,
       brand: { '@type': 'Brand', name: "Flowers 'N' Balloons" },
       offers: { '@type': 'Offer', price: p.price, priceCurrency: 'INR', availability: 'https://schema.org/InStock', url: `https://www.flowersnballoons.com/shop/${p.category}/${p.slug}.html` },
     };
     writeFileSync(join(shopDir, c.slug, `${p.slug}.html`), `${head(
       `${p.name} — ${inr(p.price)} | Flowers N Balloons Bangalore`,
-      `${p.theme} ${c.name.toLowerCase()} decoration in Bengaluru at ${inr(p.price)}. ${p.inclusions.length} inclusions listed. Book online, we confirm your date first.`,
+      `${p.name} — ${c.name.toLowerCase()} decoration in Bengaluru at ${inr(p.price)}. Book online; we confirm your date is free before taking payment.`,
       '../../',
       `<script type="application/ld+json">${JSON.stringify(ld)}</script>`
     )}
@@ -411,7 +397,7 @@ ${header('../../')}
 <main>
   <section class="section">
     <div class="shell">
-      <nav class="crumbs"><a href="../../index.html">Home</a> <span>/</span> <a href="../index.html">Shop</a> <span>/</span> <a href="index.html">${esc(c.name)}</a> <span>/</span> ${esc(p.theme)}</nav>
+      <nav class="crumbs"><a href="../../index.html">Home</a> <span>/</span> <a href="../index.html">Shop</a> <span>/</span> <a href="index.html">${esc(c.name)}</a> <span>/</span> ${esc(p.name)}</nav>
 
       <div class="pdp">
         <div class="pdp-media">
@@ -421,13 +407,13 @@ ${header('../../')}
 
         <div class="pdp-info">
           <span class="prod-tier">${esc(p.tier)} · ${esc(c.name)}</span>
-          <h1>${esc(p.theme)}</h1>
+          <h1>${esc(p.name)}</h1>
           <p class="pdp-blurb">${esc(p.tierBlurb)}</p>
 
           <div class="pdp-price">
             ${p.compareAt ? `<s>${inr(p.compareAt)}</s>` : ''}
             <b>${inr(p.price)}</b>
-            <span class="pdp-tax">all-inclusive for the items listed below</span>
+            <span class="pdp-tax">Book with a ${inr(p.advance)} advance \u00b7 balance on the event day</span>
           </div>
 
           <button class="btn btn-primary btn-block js-add"
@@ -435,8 +421,14 @@ ${header('../../')}
             data-url="shop/${p.category}/${p.slug}.html">Add to my setup</button>
           <a class="btn btn-ghost btn-block" style="margin-top:10px" href="https://wa.me/918867121207?text=${encodeURIComponent(`Hi, I'm interested in "${p.name}" (${p.sku}) at ${inr(p.price)}.`)}" target="_blank" rel="noopener">Ask about this on WhatsApp</a>
 
-          <h3 class="incl-h">What's included</h3>
-          <ul class="incl-list">${p.inclusions.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
+          <h3 class="incl-h">What you get</h3>
+          <p style="font-size:.92rem;color:var(--ink-soft)">${esc(p.tierBlurb)}</p>
+          <ul class="incl-list">
+            <li>Design built to your theme, colours and venue</li>
+            <li>Delivery, full setup and cleanup by our team</li>
+            <li>Itemised written quote before you pay anything</li>
+          </ul>
+          <p style="font-size:.84rem;color:var(--muted);margin-top:10px">The exact item list is confirmed in your written quote — we don't publish a fixed list that might not match your venue.</p>
 
           <details class="pdp-det"><summary>Travel &amp; setup</summary><p>Free within 12&nbsp;km of our base in Bengaluru. Beyond that, travel is quoted before you pay — never added afterwards. Setup takes 2–4 hours depending on size; we arrive well before your guests.</p></details>
           <details class="pdp-det"><summary>Changes &amp; cancellation</summary><p>Swap colours or add items any time before setup day and we'll re-quote openly. Cancel more than 5 days ahead for a full refund of your advance; closer than that we'll do our best, since materials are usually already bought.</p></details>
@@ -456,5 +448,5 @@ ${footer('../../')}`);
 const min = Math.min(...products.map((p) => p.price));
 const max = Math.max(...products.map((p) => p.price));
 console.log(`✓ ${products.length} products across ${CATEGORIES.length} categories`);
-console.log(`  price range ${inr(min)} – ${inr(max)}  (margin ${margin}x)`);
+console.log(`  price range ${inr(min)} – ${inr(max)}  (real prices, harvested)`);
 console.log(`  wrote data/products.json + shop/`);
