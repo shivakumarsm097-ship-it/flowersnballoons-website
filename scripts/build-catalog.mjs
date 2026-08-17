@@ -229,7 +229,7 @@ const footer = (depth) => `
 </html>`;
 
 const card = (p, depth) => `
-<a class="prod-card reveal" href="${depth}shop/${p.category}/${p.slug}.html">
+<a class="prod-card reveal" href="${depth}shop/${p.category}/${p.slug}.html" data-tier="${esc(p.tier)}" data-theme="${esc(p.theme.toLowerCase())}" data-price="${p.price}">
   <div class="prod-media">
     ${media(p, depth, 'card')}
     ${p.compareAt ? `<span class="prod-off">-${Math.round((1 - p.price / p.compareAt) * 100)}%</span>` : ''}
@@ -369,7 +369,7 @@ ${header('../../')}
         <p>${esc(c.intro)}</p>
       </div>
       <div class="shop-bar">
-        <span>${items.length} setups · from ${inr(Math.min(...items.map((p) => p.price)))}</span>
+        <span class="js-count">${items.length} setups · from ${inr(Math.min(...items.map((p) => p.price)))}</span>
         <label class="sort-wrap">Sort
           <select class="input js-sort">
             <option value="low">Price: low to high</option>
@@ -378,6 +378,14 @@ ${header('../../')}
           </select>
         </label>
       </div>
+      <div class="filter-bar">
+        <div class="chips">
+          <button class="chip is-on" type="button" data-tier="">All</button>
+          ${[...new Set(items.map((p) => p.tier))].map((t) => `<button class="chip" type="button" data-tier="${esc(t)}">${esc(t)}</button>`).join('')}
+        </div>
+        <input class="input js-search" type="search" placeholder="Search ${esc(c.name.toLowerCase())} themes…" aria-label="Search themes">
+      </div>
+      <p class="no-hits" hidden>No setups match that. <button type="button" class="js-clear">Clear filters</button></p>
       <div class="prod-grid js-grid">${items.map((p) => card(p, '../../')).join('')}</div>
     </div>
   </section>

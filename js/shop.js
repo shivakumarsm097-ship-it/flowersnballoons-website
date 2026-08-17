@@ -157,6 +157,51 @@
     });
   }
 
+  /* category filters: tier chips + theme search */
+  (function () {
+    var grid = document.querySelector('.js-grid');
+    if (!grid) return;
+    var chips = [].slice.call(document.querySelectorAll('.chip'));
+    var search = document.querySelector('.js-search');
+    var count = document.querySelector('.js-count');
+    var none = document.querySelector('.no-hits');
+    var cards = [].slice.call(grid.children);
+    var tier = '';
+
+    function apply() {
+      var q = (search && search.value || '').trim().toLowerCase();
+      var shown = 0;
+      cards.forEach(function (c) {
+        var ok = (!tier || c.dataset.tier === tier) && (!q || c.dataset.theme.indexOf(q) > -1);
+        c.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (none) none.hidden = shown !== 0;
+      if (count) {
+        var prices = cards.filter(function (c) { return !c.hidden; }).map(function (c) { return +c.dataset.price; });
+        count.textContent = shown
+          ? shown + ' setup' + (shown === 1 ? '' : 's') + ' · from ' + inr(Math.min.apply(null, prices))
+          : 'No setups match';
+      }
+    }
+
+    chips.forEach(function (ch) {
+      ch.addEventListener('click', function () {
+        chips.forEach(function (x) { x.classList.remove('is-on'); });
+        ch.classList.add('is-on');
+        tier = ch.dataset.tier;
+        apply();
+      });
+    });
+    if (search) search.addEventListener('input', apply);
+    var clear = document.querySelector('.js-clear');
+    if (clear) clear.addEventListener('click', function () {
+      tier = ''; if (search) search.value = '';
+      chips.forEach(function (x) { x.classList.toggle('is-on', !x.dataset.tier); });
+      apply();
+    });
+  })();
+
   /* category sort */
   var sort = document.querySelector('.js-sort');
   if (sort) {
