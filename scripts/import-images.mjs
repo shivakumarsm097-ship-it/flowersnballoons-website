@@ -82,16 +82,30 @@ function toReadable(src) {
   return out;
 }
 
+function srcWidth(f) {
+  try {
+    const out = execFileSync('sips', ['-g', 'pixelWidth', f], { encoding: 'utf8' });
+    return parseInt(out.match(/pixelWidth:\s*(\d+)/)?.[1] || '0', 10);
+  } catch { return 0; }
+}
+
 function encode(src, stem) {
   const readable = toReadable(src);
+  const w0 = srcWidth(readable);
   const made = [];
   for (const [label, w] of Object.entries(WIDTHS)) {
+    // never upscale — enlarging a 600px source to 1200px just blurs it and
+    // triples the file size for no visible gain
+    const target = w0 && w0 < w ? w0 : w;
     const dest = join(OUT, `${stem}-${label}.webp`);
-    execFileSync('cwebp', ['-q', String(QUALITY), '-resize', String(w), '0', '-m', '6', readable, '-o', dest], { stdio: 'pipe' });
+    execFileSync('cwebp', ['-q', String(QUALITY), '-resize', String(target), '0', '-m', '6', readable, '-o', dest], { stdio: 'pipe' });
     made.push(dest);
   }
+  if (w0 && w0 < WIDTHS.full) lowRes.push({ file: basename(src), width: w0 });
   return made;
 }
+
+const lowRes = [];
 
 const assigned = new Map();   // stem -> source filename
 const unmatched = [];
@@ -155,6 +169,13 @@ console.log(`\n✓ processed ${files.length} file(s) → ${OUT.replace(ROOT + '/
 console.log(`  ${Object.keys(map.products).length} product(s) with their own photo`);
 console.log(`  ${catFallbacks.size} category fallback set(s): ${[...catFallbacks.keys()].join(', ') || '—'}`);
 console.log(`  ${covered}/${products.length} products now show a real photo\n`);
+
+if (lowRes.length) {
+  console.log(`ℹ ${lowRes.length} image(s) below ${WIDTHS.full}px wide — shown at source size rather than upscaled:`);
+  lowRes.slice(0, 6).forEach((x) => console.log(`    ${x.file} (${x.width}px)`));
+  if (lowRes.length > 6) console.log(`    …and ${lowRes.length - 6} more`);
+  console.log('');
+}
 
 if (unmatched.length) {
   console.log(`⚠ ${unmatched.length} file(s) matched no product or category — NOT used:`);
