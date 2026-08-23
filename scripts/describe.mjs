@@ -67,6 +67,12 @@ const AUDIENCE = {
   'annaprasan': ['an annaprasan', 'first-rice ceremonies'],
   'upanayanam': ['an upanayanam', 'thread ceremonies and traditional functions'],
   'first-holy-communion': ['a first holy communion', 'communion celebrations'],
+  'kids-birthday-simple-home-decor': ['a home birthday', 'smaller birthday celebrations at home'],
+  'kids-birthday-fun-activities': ['a children’s party', 'kids’ parties needing entertainment as well as decor'],
+  'kids-birthday-fun-eats': ['a children’s party', 'parties where the food counter is part of the setup'],
+  'kids-birthday-photography': ['a birthday shoot', 'birthday parties that also need coverage'],
+  'baby-shower-photography': ['a baby shower shoot', 'baby showers that also need coverage'],
+  'shamyana-items': ['an outdoor function', 'outdoor functions needing tenting and seating'],
 };
 
 const OPENERS = [

@@ -71,6 +71,12 @@ const CATMETA = {
   'annaprasan':          ['Annaprasan', 'First-rice ceremony decoration — traditional detail, gentle palettes and a styled seating area.'],
   'upanayanam':          ['Upanayanam', 'Thread-ceremony decoration with traditional floral and mandap work.'],
   'first-holy-communion':['First Holy Communion', 'Calm, elegant white-and-gold setups for the communion celebration.'],
+  'kids-birthday-simple-home-decor': ['Simple Home Decor', 'Smaller, budget-friendly setups designed for a living room or balcony rather than a hall.'],
+  'kids-birthday-fun-activities': ['Party Activities', 'Entertainment and activity add-ons — the things that keep children busy once the photos are done.'],
+  'kids-birthday-fun-eats': ['Party Food & Treats', 'Food counters and treat stations that double as part of the decor.'],
+  'kids-birthday-photography': ['Party Photography', 'Photography and video coverage, booked alongside the decoration so there is one point of contact.'],
+  'baby-shower-photography': ['Baby Shower Photography', 'Coverage for the shower, arranged together with the decor.'],
+  'shamyana-items': ['Shamiana & Tent Items', 'Tenting, seating, canopies and the structural pieces an outdoor function needs.'],
 };
 
 /** Scale description derived from the price band — never invents a specific

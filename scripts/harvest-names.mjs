@@ -16,9 +16,19 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = 'https://www.eventzfly.com';
 
 const CATS = [
-  'kids-birthday', 'birthday', 'baby-shower', 'naming-ceremony', 'house-warming',
-  'engagement', 'haldi', 'wedding', 'anniversary', 'corporate', 'surprise-events',
-  'bachelorette', 'annaprasan', 'upanayanam', 'first-holy-communion',
+  // full category list enumerated from the source site (42 paths)
+  'kids-birthday', 'kids-birthday-simple-home-decor', 'kids-birthday-fun-activities',
+  'kids-birthday-fun-eats', 'kids-birthday-photography', 'boy-themes', 'girl-themes', 'kids-offer',
+  'birthday', 'baby-shower', 'baby-shower-catering', 'baby-shower-photography',
+  'naming-ceremony', 'naming-ceremony-catering', 'naming-ceremony-photography',
+  'house-warming', 'house-warming-catering', 'house-warming-photography', 'house-lighting',
+  'engagement', 'engagement-catering', 'engagement-photography',
+  'haldi', 'haldi-catering', 'haldi-photography',
+  'wedding', 'wedding-catering', 'wedding-photography',
+  'anniversary', 'corporate', 'corporate-photography', 'surprise-events', 'bachelorette',
+  'annaprasan', 'annaprasan-catering', 'annaprasan-photography',
+  'upanayanam', 'upanayanam-catering', 'upanayanam-photography',
+  'first-holy-communion', 'first-holy-communion-photography', 'shamyana-items',
 ];
 
 const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120 Safari/537.36';

@@ -1,9 +1,14 @@
 {
-  "count": 943,
+  "count": 1133,
   "byCat": {
     "kids-birthday": 335,
+    "kids-birthday-simple-home-decor": 44,
+    "kids-birthday-fun-activities": 103,
+    "kids-birthday-fun-eats": 14,
+    "kids-birthday-photography": 9,
     "birthday": 148,
-    "baby-shower": 89,
+    "baby-shower": 88,
+    "baby-shower-photography": 2,
     "naming-ceremony": 23,
     "house-warming": 135,
     "engagement": 20,
@@ -14,7 +19,8 @@
     "bachelorette": 21,
     "annaprasan": 28,
     "upanayanam": 20,
-    "first-holy-communion": 29
+    "first-holy-communion": 29,
+    "shamyana-items": 19
   },
   "products": [
     {
@@ -2028,6 +2034,1026 @@
       "cat": "kids-birthday"
     },
     {
+      "name": "Baby Sharks at Home",
+      "price": 1899,
+      "compareAt": 2713,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Balloon Bonanza Treat",
+      "price": 2890,
+      "compareAt": 4129,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Balloon Wonderland Decor",
+      "price": 3199,
+      "compareAt": 4570,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Blissful Purple Theme Decor",
+      "price": 3799,
+      "compareAt": 5427,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Bottle & Glass Party Decor",
+      "price": 2599,
+      "compareAt": 3713,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Bright Balloon Bouquets",
+      "price": 2699,
+      "compareAt": 3856,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Bright Balloon Decor",
+      "price": 3299,
+      "compareAt": 4713,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Bright Moments",
+      "price": 3399,
+      "compareAt": 4856,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Celebration Clouds",
+      "price": 2800,
+      "compareAt": 4000,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Cheerful Balloons Decor",
+      "price": 2499,
+      "compareAt": 3200,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Chromy Look Home Decor",
+      "price": 3500,
+      "compareAt": 5000,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Classic Black & Gold Decor",
+      "price": 2199,
+      "compareAt": 3141,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Classic Black Home Decor",
+      "price": 2799,
+      "compareAt": 3999,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Colorful Balloon Magic",
+      "price": 3099,
+      "compareAt": 4427,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Cricket Team at Home",
+      "price": 4299,
+      "compareAt": 6141,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Cutey Unicorn Home Decor",
+      "price": 2499,
+      "compareAt": 3570,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Dreamy Balloon Decor",
+      "price": 1999,
+      "compareAt": 2856,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Dreamy Unicorn Decor",
+      "price": 2300,
+      "compareAt": 3286,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Elegant Golden Arch Decor",
+      "price": 3199,
+      "compareAt": 4570,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Farmhouse at Home",
+      "price": 3299,
+      "compareAt": 4713,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Frozen Elsa Comes Home",
+      "price": 2799,
+      "compareAt": 3999,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Golden Balloon Bliss",
+      "price": 2099,
+      "compareAt": 3000,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Golden Glossom Home Decor",
+      "price": 3199,
+      "compareAt": 4570,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Goldy Birthday Decor",
+      "price": 4399,
+      "compareAt": 6284,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Grand Goldy Home Decor",
+      "price": 2999,
+      "compareAt": 4284,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Hot & Gold Home Decor",
+      "price": 2799,
+      "compareAt": 3999,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Joyful Metallic Bouquets",
+      "price": 4199,
+      "compareAt": 5999,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Jungle at Home",
+      "price": 2200,
+      "compareAt": 3143,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Let’s Party Home Decor",
+      "price": 2999,
+      "compareAt": 4284,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Lovely Mermaid Home Decor",
+      "price": 2800,
+      "compareAt": 4000,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Mickey Mouse & Stars",
+      "price": 2299,
+      "compareAt": 3284,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Micky & Minnie at Home",
+      "price": 2799,
+      "compareAt": 3999,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Peach Blast Panda",
+      "price": 3199,
+      "compareAt": 4570,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Peppa Bigs at Home Decor",
+      "price": 3699,
+      "compareAt": 5284,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Pink & Gold Home Decor",
+      "price": 2699,
+      "compareAt": 3856,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Pink Blast Home Decor",
+      "price": 2899,
+      "compareAt": 4141,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Prince Theme Home Decor",
+      "price": 2899,
+      "compareAt": 4141,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Shimmering Balloons Decor",
+      "price": 3299,
+      "compareAt": 4713,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Sparkle & Float Decor",
+      "price": 2399,
+      "compareAt": 3427,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Spiderman at Home Decor",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Sweet Pink Air Decor",
+      "price": 2499,
+      "compareAt": 3570,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Tropical Season Home Decor",
+      "price": 2399,
+      "compareAt": 3427,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Twisted Joy Home Decor",
+      "price": 2899,
+      "compareAt": 4141,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "Underwater Mermaid at Home",
+      "price": 2699,
+      "compareAt": 3856,
+      "cat": "kids-birthday-simple-home-decor"
+    },
+    {
+      "name": "360 Degree Selfie Booth",
+      "price": 10999,
+      "compareAt": 11999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "8 Feet Polar Bear Mascot",
+      "price": 9999,
+      "compareAt": 14284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Angry Bird Game",
+      "price": 4499,
+      "compareAt": 6427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Ball Pool With Slider",
+      "price": 4199,
+      "compareAt": 4500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Balloon Modeling",
+      "price": 2599,
+      "compareAt": 3500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Balloon Shooting",
+      "price": 3499,
+      "compareAt": 4500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Bar Hang Challenge",
+      "price": 6900,
+      "compareAt": 8499,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Basic Sound System",
+      "price": 2499,
+      "compareAt": 3000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Big Ball Pool With Slider",
+      "price": 8299,
+      "compareAt": 11000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Big Bouncing Castle",
+      "price": 5299,
+      "compareAt": 6900,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Big Dot Game",
+      "price": 4499,
+      "compareAt": 6427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Big Jenga Puzzle",
+      "price": 5499,
+      "compareAt": 7856,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Big Play Area For Kids",
+      "price": 9499,
+      "compareAt": 10000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Bottle Ring Toss",
+      "price": 5299,
+      "compareAt": 5400,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Bubble House for Kids",
+      "price": 12999,
+      "compareAt": 18570,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Bull Ride Game",
+      "price": 13999,
+      "compareAt": 15999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Buzz Wire Game",
+      "price": 5999,
+      "compareAt": 8570,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Caricature Artist",
+      "price": 3799,
+      "compareAt": 4700,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Caricature On Mug",
+      "price": 8499,
+      "compareAt": 9000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Catch The Falling Stick",
+      "price": 6499,
+      "compareAt": 9284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Clown Magician",
+      "price": 8499,
+      "compareAt": 9500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Clown Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Colorful Clay Modeling",
+      "price": 4599,
+      "compareAt": 5000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Colorful Slime Art",
+      "price": 6499,
+      "compareAt": 9284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Crazy Teddy Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Creative Craft",
+      "price": 5899,
+      "compareAt": 8427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Creative Leaves Art",
+      "price": 5499,
+      "compareAt": 7856,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Creative Nail Art",
+      "price": 4299,
+      "compareAt": 6141,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Creative Spin Art",
+      "price": 5999,
+      "compareAt": 8570,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Cristiano Ronald Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Cute Bunny Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Cute Girl Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Digital Caricature",
+      "price": 9499,
+      "compareAt": 12500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "DJ Sound System",
+      "price": 19999,
+      "compareAt": 25000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Donald Duck",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Dora Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Drip Painting Art",
+      "price": 5799,
+      "compareAt": 8284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Face Painting Artist",
+      "price": 3299,
+      "compareAt": 4600,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Female Emcee / Anchor",
+      "price": 7499,
+      "compareAt": 10713,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Finger Paint Art",
+      "price": 5499,
+      "compareAt": 7856,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Foosball Table",
+      "price": 6999,
+      "compareAt": 7500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Framed Caricature",
+      "price": 7499,
+      "compareAt": 10000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Frozen Olaf Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Funny Mimicry Artist",
+      "price": 7999,
+      "compareAt": 11427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Glass Painting Art",
+      "price": 6999,
+      "compareAt": 9999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Glass Pebble Art",
+      "price": 6500,
+      "compareAt": 9286,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Grand Car Entry For Kid",
+      "price": 3999,
+      "compareAt": 4700,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Hoopla Game for kids Party",
+      "price": 5499,
+      "compareAt": 6999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Huge Bouncing Castle",
+      "price": 9499,
+      "compareAt": 11000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Inflatable Rock Climbing Wall",
+      "price": 11999,
+      "compareAt": 13000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Jerry Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Juggler Show",
+      "price": 6999,
+      "compareAt": 9999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Key Chain Making",
+      "price": 5499,
+      "compareAt": 7856,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Lion King Rafiki Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Lion King Timon Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Live Pottery Making",
+      "price": 5499,
+      "compareAt": 6500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Magic Mirror Selfie Booth With Photo Print",
+      "price": 17499,
+      "compareAt": 21000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Marygoround 4 Seater",
+      "price": 8999,
+      "compareAt": 10000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Marygoround 8 Seater",
+      "price": 11999,
+      "compareAt": 12900,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Masha Bear Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Maze Runner Game",
+      "price": 5999,
+      "compareAt": 7000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Mehendi Artist",
+      "price": 4499,
+      "compareAt": 6427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Messi Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Micky Mouse Mascot",
+      "price": 3499,
+      "compareAt": 4499,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Mini Bouncing Castle",
+      "price": 4199,
+      "compareAt": 4500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Mini Bowling Game",
+      "price": 4999,
+      "compareAt": 6000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Mini Golf Game",
+      "price": 4599,
+      "compareAt": 5000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Mini Micky Bouncy",
+      "price": 4499,
+      "compareAt": 6427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Minion Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Minnie Mouse Mascot",
+      "price": 3499,
+      "compareAt": 4599,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "New Mini Bouncy",
+      "price": 4490,
+      "compareAt": 6414,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Origami Paper Craft",
+      "price": 3999,
+      "compareAt": 4800,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Palm Painting Art",
+      "price": 6499,
+      "compareAt": 9284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Pebble Stone Painting",
+      "price": 4299,
+      "compareAt": 6000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Pencil Lead Art",
+      "price": 6499,
+      "compareAt": 9284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Peppa Pig Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Pikachu Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Pot Painting Activity",
+      "price": 4999,
+      "compareAt": 5400,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Premium Play Area",
+      "price": 14999,
+      "compareAt": 21427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Professional Emcee / Games Coordinator",
+      "price": 4799,
+      "compareAt": 6000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Professional Face Painting",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Professional Magician",
+      "price": 4699,
+      "compareAt": 6500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Rajasthani Puppet Show",
+      "price": 5899,
+      "compareAt": 8427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Remote Car Racing Game",
+      "price": 4499,
+      "compareAt": 5200,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Ring The Toss Game",
+      "price": 6499,
+      "compareAt": 9284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Selfie With Mirror Man",
+      "price": 7499,
+      "compareAt": 10713,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Shadowgraph",
+      "price": 7499,
+      "compareAt": 10713,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Skee Bowl Game",
+      "price": 5499,
+      "compareAt": 7856,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Soap Making Art",
+      "price": 7999,
+      "compareAt": 11427,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Sound System With Mic",
+      "price": 6899,
+      "compareAt": 9000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Spider Man Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Spin To Win Game",
+      "price": 5499,
+      "compareAt": 7856,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "String Shooting Game",
+      "price": 5799,
+      "compareAt": 8284,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Tattoo Artist",
+      "price": 2699,
+      "compareAt": 3500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Tom Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Topple And Win",
+      "price": 4999,
+      "compareAt": 6000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Trampoline",
+      "price": 6499,
+      "compareAt": 7500,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Unicorn Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Vegetable Carving",
+      "price": 5999,
+      "compareAt": 8570,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Ventriloquist",
+      "price": 7499,
+      "compareAt": 10713,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Walk Around Magician",
+      "price": 7299,
+      "compareAt": 9000,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Winnie the Pooh Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Yoyo Mascot",
+      "price": 3499,
+      "compareAt": 4999,
+      "cat": "kids-birthday-fun-activities"
+    },
+    {
+      "name": "Candy And Pop Corn Combo",
+      "price": 7530,
+      "compareAt": 8700,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Chat Counter",
+      "price": 5490,
+      "compareAt": 6500,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Chocolate Fountain",
+      "price": 3460,
+      "compareAt": 4500,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Cotton Candy",
+      "price": 3890,
+      "compareAt": 4600,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Cotton Candy by Robo",
+      "price": 6499,
+      "compareAt": 7499,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "French fries",
+      "price": 5470,
+      "compareAt": 7199,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Fresh Juice Counter",
+      "price": 5290,
+      "compareAt": 7400,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Golgappa",
+      "price": 3490,
+      "compareAt": 4300,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Ice Gola",
+      "price": 4130,
+      "compareAt": 5100,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Little Chefs Pizza Party",
+      "price": 8499,
+      "compareAt": 9499,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Mocktail Juice",
+      "price": 8470,
+      "compareAt": 10500,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Pop Corn",
+      "price": 3990,
+      "compareAt": 4800,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Sweet Corn",
+      "price": 4610,
+      "compareAt": 5300,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "Veg momos",
+      "price": 4720,
+      "compareAt": 5600,
+      "cat": "kids-birthday-fun-eats"
+    },
+    {
+      "name": "1 Hour Photographer",
+      "price": 3100,
+      "compareAt": 4000,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "2 Hours Photographer",
+      "price": 3800,
+      "compareAt": 5100,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "4K Cinematic Videography",
+      "price": 12980,
+      "compareAt": 15700,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 8410,
+      "compareAt": 10300,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 6789,
+      "compareAt": 9100,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 8440,
+      "compareAt": 10500,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "Traditional 4K Video Coverage",
+      "price": 7810,
+      "compareAt": 12000,
+      "cat": "kids-birthday-photography"
+    },
+    {
+      "name": "Traditional Photographer (3 Hours)",
+      "price": 5200,
+      "compareAt": 6500,
+      "cat": "kids-birthday-photography"
+    },
+    {
       "name": "60th Grand Birthday Bash Decor",
       "price": 2999,
       "compareAt": 4284,
@@ -3324,12 +4350,6 @@
       "cat": "baby-shower"
     },
     {
-      "name": "Professional Candid Photographer",
-      "price": 8440,
-      "compareAt": 9500,
-      "cat": "baby-shower"
-    },
-    {
       "name": "Radiant Blue Floral Decor",
       "price": 9120,
       "compareAt": 12800,
@@ -3448,6 +4468,18 @@
       "price": 55000,
       "compareAt": 60100,
       "cat": "baby-shower"
+    },
+    {
+      "name": "4K Video Coverage (Full Event)",
+      "price": 7810,
+      "compareAt": 10000,
+      "cat": "baby-shower-photography"
+    },
+    {
+      "name": "Traditional Photographer",
+      "price": 3980,
+      "compareAt": 5000,
+      "cat": "baby-shower-photography"
     },
     {
       "name": "Banana leaf Ganapathi Decor",
@@ -3601,8 +4633,8 @@
     },
     {
       "name": "3 Flower Arch Entry Chapra",
-      "price": 42294,
-      "compareAt": 54164,
+      "price": 48294,
+      "compareAt": 58164,
       "cat": "house-warming"
     },
     {
@@ -3619,8 +4651,8 @@
     },
     {
       "name": "Apartment Doorway Chapra Decoration",
-      "price": 15000,
-      "compareAt": 19500,
+      "price": 20000,
+      "compareAt": 26500,
       "cat": "house-warming"
     },
     {
@@ -3697,8 +4729,8 @@
     },
     {
       "name": "Classic Marigold Door Swag Decoration",
-      "price": 2500,
-      "compareAt": 3000,
+      "price": 3500,
+      "compareAt": 4000,
       "cat": "house-warming"
     },
     {
@@ -3715,8 +4747,8 @@
     },
     {
       "name": "Decorative Flower Entrance Decoration",
-      "price": 30000,
-      "compareAt": 35000,
+      "price": 35000,
+      "compareAt": 45000,
       "cat": "house-warming"
     },
     {
@@ -3943,8 +4975,8 @@
     },
     {
       "name": "Grand Floral Chapra for Home Entrance",
-      "price": 38000,
-      "compareAt": 45000,
+      "price": 41000,
+      "compareAt": 55000,
       "cat": "house-warming"
     },
     {
@@ -3997,8 +5029,8 @@
     },
     {
       "name": "Grand Yellow And White Chapra",
-      "price": 54264,
-      "compareAt": 67032,
+      "price": 64264,
+      "compareAt": 77032,
       "cat": "house-warming"
     },
     {
@@ -4009,8 +5041,8 @@
     },
     {
       "name": "Heritage Palm Leaf Chapra Decor",
-      "price": 28000,
-      "compareAt": 32000,
+      "price": 35000,
+      "compareAt": 42000,
       "cat": "house-warming"
     },
     {
@@ -4117,8 +5149,8 @@
     },
     {
       "name": "Posh Entry Coconut leaf Chapra",
-      "price": 105336,
-      "compareAt": 131670,
+      "price": 115336,
+      "compareAt": 141670,
       "cat": "house-warming"
     },
     {
@@ -4153,8 +5185,8 @@
     },
     {
       "name": "Royal Chapra for Housewarming",
-      "price": 145000,
-      "compareAt": 175000,
+      "price": 175000,
+      "compareAt": 275000,
       "cat": "house-warming"
     },
     {
@@ -4165,7 +5197,7 @@
     },
     {
       "name": "Royal Godken Coconut Entry Chapra",
-      "price": 50673,
+      "price": 48673,
       "compareAt": 61945,
       "cat": "house-warming"
     },
@@ -4183,8 +5215,8 @@
     },
     {
       "name": "Simple Coconut Leaf Chapra",
-      "price": 16970,
-      "compareAt": 18758,
+      "price": 18970,
+      "compareAt": 22758,
       "cat": "house-warming"
     },
     {
@@ -4219,20 +5251,20 @@
     },
     {
       "name": "Temple Flower Arch Entry Chapra",
-      "price": 44688,
-      "compareAt": 57755,
+      "price": 49688,
+      "compareAt": 67755,
       "cat": "house-warming"
     },
     {
       "name": "Temple Style Coconut Leaf Chapra",
-      "price": 145000,
-      "compareAt": 176000,
+      "price": 215000,
+      "compareAt": 286000,
       "cat": "house-warming"
     },
     {
       "name": "Tradition Coconut Leaf Chapra",
-      "price": 18162,
-      "compareAt": 24446,
+      "price": 21162,
+      "compareAt": 27446,
       "cat": "house-warming"
     },
     {
@@ -4255,14 +5287,14 @@
     },
     {
       "name": "Traditional Banana Leaf Chapra Decoration",
-      "price": 17500,
-      "compareAt": 21300,
+      "price": 19500,
+      "compareAt": 25300,
       "cat": "house-warming"
     },
     {
       "name": "Traditional Chapra at Apartment Entrance",
-      "price": 22000,
-      "compareAt": 25000,
+      "price": 25000,
+      "compareAt": 32000,
       "cat": "house-warming"
     },
     {
@@ -4339,14 +5371,14 @@
     },
     {
       "name": "Traditional Pooja Room Floral Decor",
-      "price": 6899,
-      "compareAt": 9870,
+      "price": 9870,
+      "compareAt": null,
       "cat": "house-warming"
     },
     {
       "name": "Traditional Stairway Housewarming Decor",
-      "price": 8599,
-      "compareAt": 12500,
+      "price": 9599,
+      "compareAt": 14500,
       "cat": "house-warming"
     },
     {
@@ -4363,8 +5395,8 @@
     },
     {
       "name": "Traditional Yellow And White Chapra",
-      "price": 20354,
-      "compareAt": 26239,
+      "price": 23354,
+      "compareAt": 30239,
       "cat": "house-warming"
     },
     {
@@ -5674,6 +6706,120 @@
       "price": 7500,
       "compareAt": 10500,
       "cat": "first-holy-communion"
+    },
+    {
+      "name": "15×20 Feet Tent",
+      "price": 5900,
+      "compareAt": 7000,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "2 Grand Seating Chairs for Pooja",
+      "price": 3000,
+      "compareAt": 3500,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "2 Water Drums",
+      "price": 600,
+      "compareAt": 800,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "20×10 Feet Tent",
+      "price": 5500,
+      "compareAt": 6500,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "20×20 Feet Chinese Canopy",
+      "price": 4500,
+      "compareAt": 5400,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "20×40 Feet Tent",
+      "price": 10000,
+      "compareAt": 12700,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "20×50 Feet Tent",
+      "price": 15000,
+      "compareAt": 18000,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "3 VIP Sofa Set",
+      "price": 7200,
+      "compareAt": 8000,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "4 Feet Round Table With Cover",
+      "price": 500,
+      "compareAt": 600,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "4 Side Walls",
+      "price": 1200,
+      "compareAt": 1500,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "5 Feet Round Table With Cover",
+      "price": 650,
+      "compareAt": 800,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "50 Cushion Chairs With Cover",
+      "price": 5000,
+      "compareAt": 6000,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "50 Plastic Chairs With Cover",
+      "price": 2000,
+      "compareAt": 2500,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "6 Dinning Table",
+      "price": 2000,
+      "compareAt": 2800,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "6×2 Feet Food Tables With Cover",
+      "price": 350,
+      "compareAt": 400,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "Food Counter Canopy Set",
+      "price": 1200,
+      "compareAt": 1500,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "Printed Floor Mat 500 Sqft",
+      "price": 2500,
+      "compareAt": 3000,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "Red Floor Mat 500 Sqft",
+      "price": 2000,
+      "compareAt": 2500,
+      "cat": "shamyana-items"
+    },
+    {
+      "name": "Steel Wash Basin",
+      "price": 1000,
+      "compareAt": 1500,
+      "cat": "shamyana-items"
     }
   ]
 }
