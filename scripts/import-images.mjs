@@ -136,7 +136,7 @@ function encode(src, stem) {
 
 const lowRes = [];
 
-const assigned = new Map();   // stem -> source filename
+const assigned = new Map();   // slug -> { file, stem }  (stem is what encode() actually wrote)
 const unmatched = [];
 const ambiguous = [];
 const catFallbacks = new Map(); // category -> [stem,...]
@@ -148,14 +148,14 @@ for (const f of files) {
   // 1. exact product slug
   if (bySlug.has(stem)) {
     encode(src, stem);
-    assigned.set(stem, f);
+    assigned.set(stem, { file: f, stem });
     continue;
   }
 
   // 2. full product name (spacing/case ignored)
   if (byTheme.has(stem)) {
     encode(src, `theme-${stem}`);
-    for (const p of byTheme.get(stem)) assigned.set(p.slug, f);
+    for (const p of byTheme.get(stem)) assigned.set(p.slug, { file: f, stem: `theme-${stem}` });
     continue;
   }
 
@@ -167,7 +167,7 @@ for (const f of files) {
   const uniq = [...new Map((narrowed.length ? narrowed : hits).map((h) => [h.slug, h])).values()];
   if (uniq.length === 1) {
     encode(src, uniq[0].slug);
-    assigned.set(uniq[0].slug, f);
+    assigned.set(uniq[0].slug, { file: f, stem: uniq[0].slug });
     continue;
   }
   if (uniq.length > 1) {
@@ -187,24 +187,12 @@ for (const f of files) {
   unmatched.push(f);
 }
 
-// persist the map the catalogue builder reads
-const themeStems = new Set();
-for (const f of files) {
-  const stem = norm(basename(f, extname(f)));
-  if (byTheme.has(stem)) themeStems.add(stem);
-}
+// persist the map the catalogue builder reads.
+// The stem is whatever encode() actually wrote — reconstructing it here from
+// the product name silently pointed every pairing-matched image at a file
+// that does not exist.
 const map = { products: {}, categories: Object.fromEntries(catFallbacks), ratios };
-for (const p of products) {
-  if (assigned.has(p.slug)) {
-    const stem = bySlug.has(norm(assigned.get(p.slug).replace(/\.[^.]+$/, ''))) ? p.slug : null;
-    map.products[p.slug] = stem || `theme-${norm(p.name)}`;
-  }
-}
-// exact-slug files win over theme files
-for (const f of files) {
-  const stem = norm(basename(f, extname(f)));
-  if (bySlug.has(stem)) map.products[stem] = stem;
-}
+for (const [slug, rec] of assigned) map.products[slug] = rec.stem;
 
 writeFileSync(join(ROOT, 'data/image-map.json'), JSON.stringify(map, null, 2));
 rmSync(TMP, { recursive: true, force: true });
