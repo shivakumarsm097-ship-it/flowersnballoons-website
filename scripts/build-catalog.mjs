@@ -24,6 +24,23 @@ const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 
 const HARV = read('data/harvested.json');
 
+/* Swaps trademarked character names for descriptive equivalents. Scope is
+   limited to that on purpose — see data/rename-rules.json. harvested.json
+   stays pristine and each product keeps sourceName/sourceSlug, so image
+   pairings still resolve after a rename. */
+let RENAME = { trademark: {} };
+try { RENAME = read('data/rename-rules.json'); } catch { /* optional */ }
+
+const TM_RULES = Object.entries(RENAME.trademark || {})
+  .sort((a, b) => b[0].length - a[0].length)   // longest phrase first
+  .map(([from, to]) => [new RegExp(from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig'), to]);
+
+function renameProduct(name) {
+  let out = name;
+  for (const [re, to] of TM_RULES) out = out.replace(re, to);
+  return out.replace(/\s+/g, ' ').trim();
+}
+
 /* Content hash on stylesheet URLs. Without it, returning visitors keep a
    cached stylesheet after a deploy and see the old design against new markup. */
 const cssVer = (f) => createHash('sha1').update(readFileSync(join(ROOT, f))).digest('hex').slice(0, 8);
@@ -114,13 +131,16 @@ let n = 0;
 for (const r of HARV.products) {
   const meta = CATMETA[r.cat];
   if (!meta) continue;
-  let slug = slugify(r.name);
+  const displayName = renameProduct(r.name);
+  let slug = slugify(displayName);
   while (usedSlugs.has(slug)) slug += '-' + (++n);
   usedSlugs.add(slug);
   const [scale, scaleBlurb] = scaleOf(r.price);
   products.push({
     sku: `FNB-${r.cat.slice(0, 2).toUpperCase()}-${String(++n).padStart(4, '0')}`,
-    name: r.name,
+    name: displayName,
+    sourceName: r.name,
+    sourceSlug: slugify(r.name),
     slug,
     category: r.cat,
     categoryName: meta[0],

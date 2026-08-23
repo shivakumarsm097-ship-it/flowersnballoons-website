@@ -57,6 +57,11 @@ try { PAIR = JSON.parse(readFileSync(join(ROOT, 'data/source-filenames.json'), '
 
 // lookup tables
 const bySlug = new Map(products.map((p) => [p.slug, p]));
+/* Pairings were harvested against the ORIGINAL source titles. Renaming a
+   product (e.g. dropping a trademarked character) changes its slug, which
+   would orphan its photo. Translate old slug -> current product. */
+const bySourceSlug = new Map(products.map((p) => [p.sourceSlug || p.slug, p]));
+const resolve = (slug) => bySlug.get(slug) || bySourceSlug.get(slug) || null;
 const byTheme = new Map();
 for (const p of products) {
   const t = norm(p.name);
@@ -164,7 +169,9 @@ for (const f of files) {
   const hits = PAIR.map[base] || [];
   const folder = f.includes('/') ? f.split('/')[0] : null;
   const narrowed = folder ? hits.filter((h) => h.category === folder) : hits;
-  const uniq = [...new Map((narrowed.length ? narrowed : hits).map((h) => [h.slug, h])).values()];
+  const uniq = [...new Map((narrowed.length ? narrowed : hits)
+    .map((h) => { const p = resolve(h.slug); return p ? [p.slug, { ...h, slug: p.slug, name: p.name }] : null; })
+    .filter(Boolean)).values()];
   if (uniq.length === 1) {
     encode(src, uniq[0].slug);
     assigned.set(uniq[0].slug, { file: f, stem: uniq[0].slug });
