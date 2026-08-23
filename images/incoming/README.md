@@ -1,33 +1,53 @@
 # Drop photos here
 
-**FILENAMES.csv** in this folder lists all 1,133 products and the exact
-filename each image should have. Name your files from the `filename_to_use`
-column and everything wires up automatically.
-
 Then run:
 
     node scripts/import-images.mjs
     node scripts/build-catalog.mjs
 
-## Naming (spaces, capitals and underscores are fine)
+## Easiest: keep the original filenames, sort into category folders
 
-| Filename | What it covers |
+    images/incoming/wedding/5.png
+    images/incoming/kids-birthday/12-1.png
+
+`data/source-filenames.json` holds 1,147 filename → listing pairings taken
+from the source category pages, so a file keeping its original name lands on
+the correct listing automatically. The folder name matters because 81
+filenames are reused across categories — `2.png` alone belongs to three
+different listings.
+
+Regenerate that table any time with:
+
+    node scripts/harvest-pairings.mjs
+
+## Other names that work
+
+| Filename | Covers |
 |---|---|
-| `jungle-safari-standard.jpg` | that one product |
-| `Jungle Safari.jpg` | every tier of that theme (Simple / Standard / Premium) |
-| `kids-birthday-1.jpg` | fallback for any Kids Birthday product with no photo of its own |
+| `lavish-pink-wedding-decor.jpg` | that listing (slug — see FILENAMES.csv) |
+| `Lavish Pink Wedding Decor.jpg` | same, by full product name |
+| `wedding-1.jpg` | fallback for any wedding listing with no photo |
 
-Category slugs: kids-birthday, adult-birthday, baby-shower, welcome-baby,
-naming-ceremony, anniversary, haldi-engagement, housewarming, corporate, addons
+Spaces, capitals and underscores are ignored. jpg / png / webp / heic all
+work; iPhone HEIC is converted automatically. Output is webp at 600px for
+cards and 1200px for product pages — images smaller than that are encoded at
+their real size rather than upscaled, and reported so you know which ones
+would benefit from better originals.
 
-Accepts jpg / jpeg / png / webp / heic. iPhone HEIC is converted automatically.
-Output is webp at 600px (cards) and 1200px (product pages).
+## What it will not do
 
-Anything that matches no product, theme or category is reported and NOT used —
-it will never be silently attached to the wrong item.
+Anything matching more than one listing, or nothing at all, is **reported and
+skipped** — never attached to a guessed listing. A wrong photo means a
+customer books expecting something you will not deliver.
+
+## Manual override
+
+For photos with no source filename (your own shoots), either rename them per
+`FILENAMES.csv`, use `tools/match-images.html` to assign visually, or edit a
+mapping CSV and run `bash tools/apply-image-map.sh <folder>`.
 
 ## Rights
 
-Only put photos here that you own or have written permission to use.
-Setups you built as a subcontractor are usually photographed and owned by the
-platform that listed them — check your vendor agreement before reusing those.
+Only put photos here that you own or have written permission to use. Check
+each one for another company's watermark or logo before importing — one of
+the wedding images carried a third-party logo and had to be dropped.

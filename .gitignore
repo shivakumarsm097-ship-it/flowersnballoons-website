@@ -7,7 +7,5 @@ node_modules/
 # generated catalogue (rebuild with: node scripts/build-catalog.mjs)
 images/incoming/*
 !images/incoming/README.md
-images/incoming/*
-!images/incoming/README.md
 !images/incoming/FILENAMES.csv
 images/products/*.webp

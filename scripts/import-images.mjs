@@ -49,6 +49,12 @@ if (!existsSync(catalogPath)) {
 }
 const { products, categories } = JSON.parse(readFileSync(catalogPath, 'utf8'));
 
+/* filename -> listing, harvested from the source category pages by
+   scripts/harvest-pairings.mjs. This is what lets "12-1.png" land on the
+   right listing instead of being guessed at from appearance. */
+let PAIR = { map: {} };
+try { PAIR = JSON.parse(readFileSync(join(ROOT, 'data/source-filenames.json'), 'utf8')); } catch { /* optional */ }
+
 // lookup tables
 const bySlug = new Map(products.map((p) => [p.slug, p]));
 const byTheme = new Map();
@@ -59,7 +65,20 @@ for (const p of products) {
 }
 const catSlugs = new Set(categories.map((c) => c.slug));
 
-const files = readdirSync(IN).filter((f) => !f.startsWith('.') && /\.(jpe?g|png|webp|heic|heif)$/i.test(f));
+const IMG_RE = /\.(jpe?g|png|webp|heic|heif)$/i;
+/* one level deep: images/incoming/<category>/<file> — the folder name
+   disambiguates filenames reused across categories (81 of them) */
+const files = [];
+for (const entry of readdirSync(IN, { withFileTypes: true })) {
+  if (entry.name.startsWith('.')) continue;
+  if (entry.isDirectory()) {
+    for (const f of readdirSync(join(IN, entry.name))) {
+      if (!f.startsWith('.') && IMG_RE.test(f)) files.push(join(entry.name, f));
+    }
+  } else if (IMG_RE.test(entry.name)) {
+    files.push(entry.name);
+  }
+}
 
 if (!files.length) {
   console.log(`No images in images/incoming/.\n`);
@@ -119,6 +138,7 @@ const lowRes = [];
 
 const assigned = new Map();   // stem -> source filename
 const unmatched = [];
+const ambiguous = [];
 const catFallbacks = new Map(); // category -> [stem,...]
 
 for (const f of files) {
@@ -139,7 +159,23 @@ for (const f of files) {
     continue;
   }
 
-  // 3. category fallback (kids-birthday, kids-birthday-2, ...)
+  // 3. source filename -> listing (uses the folder name to disambiguate)
+  const base = basename(f);
+  const hits = PAIR.map[base] || [];
+  const folder = f.includes('/') ? f.split('/')[0] : null;
+  const narrowed = folder ? hits.filter((h) => h.category === folder) : hits;
+  const uniq = [...new Map((narrowed.length ? narrowed : hits).map((h) => [h.slug, h])).values()];
+  if (uniq.length === 1) {
+    encode(src, uniq[0].slug);
+    assigned.set(uniq[0].slug, f);
+    continue;
+  }
+  if (uniq.length > 1) {
+    ambiguous.push({ file: f, options: uniq.map((h) => `${h.category}/${h.name}`) });
+    continue;
+  }
+
+  // 4. category fallback (kids-birthday, kids-birthday-2, ...)
   const catMatch = stem.replace(/-\d+$/, '');
   if (catSlugs.has(catMatch)) {
     encode(src, `cat-${stem}`);
@@ -184,6 +220,15 @@ if (lowRes.length) {
   console.log(`ℹ ${lowRes.length} image(s) below ${WIDTHS.full}px wide — shown at source size rather than upscaled:`);
   lowRes.slice(0, 6).forEach((x) => console.log(`    ${x.file} (${x.width}px)`));
   if (lowRes.length > 6) console.log(`    …and ${lowRes.length - 6} more`);
+  console.log('');
+}
+
+if (ambiguous.length) {
+  console.log(`⚠ ${ambiguous.length} file(s) match more than one listing — NOT used:`);
+  ambiguous.slice(0, 8).forEach((a) => {
+    console.log(`    ${a.file}  ->  ${a.options.slice(0, 3).join('  |  ')}${a.options.length > 3 ? ' …' : ''}`);
+  });
+  console.log(`  Put these in a category subfolder to disambiguate, e.g. images/incoming/wedding/${basename(ambiguous[0].file)}`);
   console.log('');
 }
 
