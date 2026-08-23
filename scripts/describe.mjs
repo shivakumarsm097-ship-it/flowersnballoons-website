@@ -276,3 +276,70 @@ function serviceCopy(p) {
     + `Arranged together with the decoration, so there is one point of contact rather than a separate vendor to chase. `
     + `${tail} ${close}`;
 }
+
+/* ── inclusions ───────────────────────────────────────────────────────
+   What a setup physically consists of, derived from the product's own
+   name (structure, theme, palette) and price band (scale). The wording
+   here is ours.
+
+   Counts are given as approximations and the page states that the exact
+   list is confirmed on the written quote. A specific figure published
+   against 1,000+ listings nobody has audited is a delivery promise, and
+   under-delivering against it is a refund. */
+
+function bandOf(price) {
+  if (price < 3000) return 0;
+  if (price < 8000) return 1;
+  if (price < 18000) return 2;
+  if (price < 35000) return 3;
+  return 4;
+}
+
+const BALLOONS = ['A small balloon cluster', 'An organic balloon garland (~100 balloons)',
+  'An organic balloon garland (~150 balloons)', 'Layered balloon work (~200 balloons)',
+  'Full balloon work across the structure (200+ balloons)'];
+
+function structureFor(name, band) {
+  if (/\bring\b|\bhalo\b|\bcircle\b|\bspinny\b/i.test(name))
+    return [`A circular ring frame${band >= 2 ? ', floor-standing, dressed on both sides' : ''}`];
+  if (/\barch(way)?\b/i.test(name)) return ['A free-standing balloon arch'];
+  if (/\bsequin|sequne|sequence\b/i.test(name)) return ['A shimmer-sequin panel wall'];
+  if (/\bpanel\b/i.test(name)) return [`${band >= 3 ? 'Multiple panel boards' : 'A panel board backdrop'}, framed`];
+  if (/\bcastle\b/i.test(name)) return ['A themed castle backdrop with cut-out detail'];
+  if (/\bwall\b/i.test(name)) return ['A full feature wall'];
+  if (/\bcascade|spiral|garland\b/i.test(name)) return ['A cascading balloon garland'];
+  if (/\bstage\b/i.test(name)) return ['A dressed stage backdrop', 'Stage-front skirting'];
+  if (/\bentrance\b/i.test(name)) return ['An entrance frame or arch'];
+  if (/\bflex\b/i.test(name)) return ['A printed flex backdrop'];
+  return [`A fabric or flex backdrop${band >= 3 ? ', full-wall width' : ''}`];
+}
+
+export function inclusionsFor(p) {
+  if (SERVICE_CATS.has(p.category)) return null;   // these are hire/coverage, not setups
+  const n = p.name, band = bandOf(p.price);
+  const out = [...structureFor(n, band)];
+
+  out.push(BALLOONS[band]);
+
+  const motif = find(MOTIFS, n)?.[1];
+  if (motif) out.push(`Themed cut-outs and props for the ${motif.replace(/-/g, ' ')} look`);
+
+  const pal = find(PALETTES, n)?.[1];
+  if (pal) out.push(`Colour scheme kept to ${pal} throughout`);
+
+  if (/flower|floral|rose|garden|marigold|jasmine/i.test(n) || band >= 3)
+    out.push(band >= 3 ? 'Fresh-flower arrangements' : 'Floral accents');
+
+  if (band >= 2) out.push('Focus lighting on the backdrop');
+  if (band >= 3) out.push('Fairy lights or additional uplighting');
+
+  if (/cradle/i.test(n)) out.push('A decorated cradle');
+  if (/rangoli|toran|pooja/i.test(n)) out.push('Entrance rangoli and door toran');
+  if (/name|monogram|letter/i.test(n)) out.push('A personalised name or monogram piece');
+
+  if (p.category !== 'house-warming') out.push(band >= 3 ? 'A styled cake or dessert table' : 'A dressed cake table');
+  if (band >= 2) out.push('Photo-booth props');
+
+  out.push(band >= 3 ? 'Delivery, setup, on-site supervision and cleanup' : 'Delivery, setup and cleanup');
+  return out;
+}

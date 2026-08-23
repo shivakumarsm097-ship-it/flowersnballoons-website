@@ -17,7 +17,7 @@ import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { describe, cardColors } from './describe.mjs';
+import { describe, cardColors, inclusionsFor } from './describe.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
@@ -128,7 +128,7 @@ for (const r of HARV.products) {
   });
 }
 
-for (const p of products) { const c = cardColors(p); p.c1 = c[0]; p.c2 = c[1]; const d = describe(p); p.description = d.body; p.metaDescription = d.meta; p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
+for (const p of products) { const c = cardColors(p); p.c1 = c[0]; p.c2 = c[1]; p.inclusions = inclusionsFor(p); const d = describe(p); p.description = d.body; p.metaDescription = d.meta; p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
 
 const CATEGORIES = Object.entries(CATMETA)
   .filter(([slug]) => products.some((p) => p.category === slug))
@@ -441,13 +441,15 @@ ${header('../../')}
             data-url="shop/${p.category}/${p.slug}.html">Add to my setup</button>
           <a class="btn btn-ghost btn-block" style="margin-top:10px" href="https://wa.me/918867121207?text=${encodeURIComponent(`Hi, I'm interested in "${p.name}" (${p.sku}) at ${inr(p.price)}.`)}" target="_blank" rel="noopener">Ask about this on WhatsApp</a>
 
-          <h3 class="incl-h">What you get</h3>
-          <ul class="incl-list">
-            <li>Design built to your theme, colours and venue</li>
-            <li>Delivery, full setup and cleanup by our team</li>
-            <li>Itemised written quote before you pay anything</li>
-          </ul>
-          <p style="font-size:.84rem;color:var(--muted);margin-top:10px">The exact item list is confirmed in your written quote — we don't publish a fixed list that might not match your venue.</p>
+          <h3 class="incl-h">What's included</h3>
+          ${p.inclusions && p.inclusions.length
+            ? `<ul class="incl-list">${p.inclusions.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
+               <p style="font-size:.84rem;color:var(--muted);margin-top:12px">Indicative for a setup at this size — quantities and exact items are confirmed on your written quote, sized to your venue.</p>`
+            : `<ul class="incl-list">
+                 <li>Delivered, set up and collected by our team</li>
+                 <li>Booked on its own or alongside a decoration package</li>
+                 <li>Itemised written quote before you pay anything</li>
+               </ul>`}
 
           <details class="pdp-det"><summary>Travel &amp; setup</summary><p>Free within 12&nbsp;km of our base in Bengaluru. Beyond that, travel is quoted before you pay — never added afterwards. Setup takes 2–4 hours depending on size; we arrive well before your guests.</p></details>
           <details class="pdp-det"><summary>Changes &amp; cancellation</summary><p>Swap colours or add items any time before setup day and we'll re-quote openly. Cancel more than 5 days ahead for a full refund of your advance; closer than that we'll do our best, since materials are usually already bought.</p></details>
