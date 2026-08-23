@@ -24,21 +24,17 @@ const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 
 const HARV = read('data/harvested.json');
 
-/* Swaps trademarked character names for descriptive equivalents. Scope is
-   limited to that on purpose — see data/rename-rules.json. harvested.json
-   stays pristine and each product keeps sourceName/sourceSlug, so image
-   pairings still resolve after a rename. */
-let RENAME = { trademark: {} };
+/* Exact old-name -> new-name pairs from scripts/generic-names.mjs. Only
+   generically-named listings appear there; ones named after a character or
+   franchise keep their source name because that is the search term. Products
+   keep sourceName/sourceSlug either way, so image pairings survive a rename. */
+let RENAME = { names: {} };
 try { RENAME = read('data/rename-rules.json'); } catch { /* optional */ }
 
-const TM_RULES = Object.entries(RENAME.trademark || {})
-  .sort((a, b) => b[0].length - a[0].length)   // longest phrase first
-  .map(([from, to]) => [new RegExp(from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'ig'), to]);
+const NAME_MAP = new Map(Object.entries(RENAME.names || {}));
 
 function renameProduct(name) {
-  let out = name;
-  for (const [re, to] of TM_RULES) out = out.replace(re, to);
-  return out.replace(/\s+/g, ' ').trim();
+  return (NAME_MAP.get(name) || name).replace(/\s+/g, ' ').trim();
 }
 
 /* Content hash on stylesheet URLs. Without it, returning visitors keep a
@@ -63,8 +59,13 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 
 /** Photo resolution, in order of honesty. Fallbacks are labelled, never passed
  *  off as the specific setup. */
+/* image-map.json and curated.json are keyed by slug, and a rename changes the
+   slug. Fall back to sourceSlug so renaming a listing never orphans its photo
+   or its hand-written copy. */
+const bySlugOrSource = (table, p) => table[p.slug] || table[p.sourceSlug] || undefined;
+
 function photoFor(p) {
-  const own = IMG.products[p.slug];
+  const own = bySlugOrSource(IMG.products, p);
   if (own) return { stem: own, exact: true };
   const pool = IMG.categories[p.category];
   if (pool && pool.length) return { stem: pool[Math.abs(hash(p.slug)) % pool.length], exact: false };
@@ -85,7 +86,7 @@ function media(p, depth, size, cls = 'prod-ph') {
     + (ph.exact ? '' : `<span class="ph-tag">Representative photo</span>`);
 }
 function hash(s) { let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h; }
-const hasExactPhoto = (p) => !!IMG.products[p.slug];
+const hasExactPhoto = (p) => !!bySlugOrSource(IMG.products, p);
 
 const ADVANCE_PCT = 0.30;
 
@@ -153,7 +154,7 @@ for (const r of HARV.products) {
 }
 
 for (const p of products) { const c = cardColors(p); p.c1 = c[0]; p.c2 = c[1]; p.inclusions = inclusionsFor(p); const d = describe(p); p.description = d.body; p.metaDescription = d.meta;
-  const cur = CURATED.products[p.slug];
+  const cur = bySlugOrSource(CURATED.products, p);
   if (cur) { if (cur.description) p.description = cur.description; if (cur.inclusions) p.inclusions = cur.inclusions; p.curated = true; } p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
 
 const CATEGORIES = Object.entries(CATMETA)
