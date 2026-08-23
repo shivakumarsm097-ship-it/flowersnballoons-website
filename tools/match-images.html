@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Match images to listings</title>
+<style>
+  :root{--ink:#241a22;--soft:#574a53;--muted:#7b6d76;--bg:#fdfaf6;--line:#ece0d6;--accent:#c2456b;--ok:#0b7a4b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font:15px/1.5 ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--bg)}
+  header{position:sticky;top:0;z-index:5;background:rgba(253,250,246,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:14px 20px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  h1{font-size:1.05rem;font-weight:700;margin-right:auto}
+  .btn{padding:9px 16px;border-radius:999px;border:1.5px solid var(--line);background:#fff;font:inherit;font-weight:600;cursor:pointer}
+  .btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+  .stat{font-size:.85rem;color:var(--muted)}
+  main{padding:20px;max-width:1500px;margin:0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+  .item{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+  .item.done{border-color:var(--ok);box-shadow:0 0 0 2px rgba(11,122,75,.12)}
+  .thumb{aspect-ratio:4/3;background:#f3ece2;position:relative}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .fname{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.62);color:#fff;font-size:.7rem;padding:3px 8px;border-radius:99px;max-width:90%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .body{padding:11px 12px 13px;display:flex;flex-direction:column;gap:8px;flex:1}
+  input[type=search]{width:100%;padding:8px 11px;border:1.5px solid var(--line);border-radius:9px;font:inherit;background:var(--bg)}
+  input[type=search]:focus{outline:none;border-color:var(--accent)}
+  .sugg{display:flex;flex-direction:column;gap:4px;max-height:190px;overflow:auto}
+  .sugg button{text-align:left;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:#fff;font:inherit;font-size:.82rem;cursor:pointer}
+  .sugg button:hover{border-color:var(--accent);background:#fdf1f4}
+  .sugg button small{display:block;color:var(--muted);font-size:.72rem}
+  .assigned{background:#eefaf3;border:1px solid #b9e6cf;border-radius:9px;padding:8px 10px;font-size:.82rem}
+  .assigned b{display:block}
+  .assigned button{border:0;background:none;color:var(--accent);font:inherit;font-size:.76rem;cursor:pointer;padding:2px 0;text-decoration:underline}
+  .empty{padding:60px 20px;text-align:center;color:var(--muted)}
+  code{background:#f3ece2;padding:2px 6px;border-radius:5px;font-size:.85em}
+  .note{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:18px;font-size:.88rem;color:var(--soft)}
+</style>
+</head>
+<body>
+<header>
+  <h1>Match images → listings</h1>
+  <span class="stat" id="stat">no folder picked</span>
+  <label class="btn">Pick image folder<input id="pick" type="file" webkitdirectory multiple hidden accept="image/*"></label>
+  <button class="btn" id="auto" disabled>Auto-match by filename</button>
+  <button class="btn btn-primary" id="export" disabled>Export rename script</button>
+</header>
+
+<main>
+  <div class="note">
+    Pick the folder of images. Each one shows below — search the product it belongs to and click it.
+    <b>Auto-match by filename</b> assigns anything whose name already resembles a product.
+    When done, <b>Export</b> downloads <code>rename-images.sh</code>; run it from the project root and it copies
+    everything into <code>images/incoming/</code> with the right names, ready for
+    <code>node scripts/import-images.mjs</code>.
+  </div>
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty">No images loaded yet.</div>
+</main>
+
+<script>
+let PRODUCTS = [], files = [], assign = {};
+
+const norm = s => s.toLowerCase().replace(/\.[^.]+$/,'').replace(/[\s_]+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/-+/g,'-').replace(/^-|-$/g,'');
+
+fetch('../data/products.json').then(r=>r.json()).then(d=>{
+  PRODUCTS = d.products.map(p=>({slug:p.slug,name:p.name,cat:p.categoryName,price:p.price,n:norm(p.name)}));
+  document.getElementById('stat').textContent = PRODUCTS.length + ' listings loaded';
+}).catch(()=>{
+  document.getElementById('stat').textContent = 'products.json not found — serve this from the project root';
+});
+
+/* crude token overlap, good enough to surface the right listing near the top */
+function score(q, p){
+  const a = new Set(q.split('-').filter(t=>t.length>2));
+  if(!a.size) return 0;
+  const b = new Set(p.n.split('-'));
+  let hit = 0; a.forEach(t=>{ if(b.has(t)) hit++; });
+  return hit / a.size;
+}
+function suggest(q, limit=6){
+  const k = norm(q);
+  return PRODUCTS.map(p=>({p,s: p.n===k?2: score(k,p)})).filter(x=>x.s>0)
+    .sort((x,y)=>y.s-x.s).slice(0,limit).map(x=>x.p);
+}
+function search(q, limit=8){
+  const k = q.toLowerCase().trim();
+  if(!k) return [];
+  return PRODUCTS.filter(p=>p.name.toLowerCase().includes(k)).slice(0,limit);
+}
+
+document.getElementById('pick').addEventListener('change', e=>{
+  files = [...e.target.files].filter(f=>/\.(jpe?g|png|webp|heic|heif)$/i.test(f.name));
+  assign = {};
+  document.getElementById('empty').style.display = files.length?'none':'block';
+  document.getElementById('auto').disabled = !files.length;
+  render();
+  updateStat();
+});
+
+function updateStat(){
+  const n = Object.keys(assign).length;
+  document.getElementById('stat').textContent = `${n} / ${files.length} matched · ${PRODUCTS.length} listings`;
+  document.getElementById('export').disabled = !n;
+}
+
+function render(){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  files.forEach((f,i)=>{
+    const el = document.createElement('div');
+    el.className = 'item' + (assign[i]?' done':'');
+    const url = URL.createObjectURL(f);
+    el.innerHTML = `
+      <div class="thumb"><img src="${url}" loading="lazy"><span class="fname">${f.name}</span></div>
+      <div class="body">
+        ${assign[i]
+          ? `<div class="assigned"><b>${assign[i].name}</b><span>${assign[i].cat} · ₹${assign[i].price.toLocaleString('en-IN')}</span>
+             <button data-clear="${i}">change</button></div>`
+          : `<input type="search" placeholder="Search listing…" data-search="${i}">
+             <div class="sugg" data-sugg="${i}"></div>`}
+      </div>`;
+    grid.appendChild(el);
+    if(!assign[i]) fill(i, suggest(f.name));
+  });
+}
+
+function fill(i, list){
+  const box = document.querySelector(`[data-sugg="${i}"]`);
+  if(!box) return;
+  box.innerHTML = list.length
+    ? list.map(p=>`<button data-pick="${i}" data-slug="${p.slug}">${p.name}<small>${p.cat} · ₹${p.price.toLocaleString('en-IN')}</small></button>`).join('')
+    : '<small style="color:#7b6d76">Type to search…</small>';
+}
+
+document.addEventListener('input', e=>{
+  const i = e.target.dataset.search;
+  if(i===undefined) return;
+  const q = e.target.value;
+  fill(i, q ? search(q) : suggest(files[i].name));
+});
+
+document.addEventListener('click', e=>{
+  const pick = e.target.closest('[data-pick]');
+  if(pick){
+    assign[pick.dataset.pick] = PRODUCTS.find(p=>p.slug===pick.dataset.slug);
+    render(); updateStat(); return;
+  }
+  const clr = e.target.closest('[data-clear]');
+  if(clr){ delete assign[clr.dataset.clear]; render(); updateStat(); }
+});
+
+document.getElementById('auto').addEventListener('click', ()=>{
+  files.forEach((f,i)=>{
+    if(assign[i]) return;
+    const k = norm(f.name);
+    const exact = PRODUCTS.find(p=>p.n===k || p.slug===k);
+    if(exact){ assign[i]=exact; return; }
+    const best = PRODUCTS.map(p=>({p,s:score(k,p)})).sort((a,b)=>b.s-a.s)[0];
+    if(best && best.s >= 0.8) assign[i]=best.p;   // only high confidence
+  });
+  render(); updateStat();
+});
+
+document.getElementById('export').addEventListener('click', ()=>{
+  const lines = ['#!/bin/bash',
+    '# Generated by tools/match-images.html — run from the project root.',
+    '# Copies matched images into images/incoming/ under their listing filename.',
+    'set -e', 'mkdir -p images/incoming', ''];
+  const seen = {};
+  Object.entries(assign).forEach(([i,p])=>{
+    const f = files[i];
+    const ext = (f.name.match(/\.[^.]+$/)||['.jpg'])[0].toLowerCase();
+    seen[p.slug] = (seen[p.slug]||0)+1;
+    const suffix = seen[p.slug]>1 ? '-'+seen[p.slug] : '';
+    const src = (f.webkitRelativePath || f.name).replace(/'/g,"'\\''");
+    lines.push(`cp '${src}' 'images/incoming/${p.slug}${suffix}${ext}'`);
+  });
+  lines.push('', 'echo "copied ' + Object.keys(assign).length + ' image(s)"',
+             'echo "next: node scripts/import-images.mjs && node scripts/build-catalog.mjs"');
+  const blob = new Blob([lines.join('\n')], {type:'text/x-sh'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'rename-images.sh'; a.click();
+});
+</script>
+</body>
+</html>
