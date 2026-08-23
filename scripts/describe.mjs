@@ -122,6 +122,11 @@ const find = (list, name) => { for (const row of list) if (row[0].test(name)) re
 
 export function describe(p) {
   const name = p.name;
+  if (SERVICE_CATS.has(p.category)) {
+    const body = serviceCopy(p);
+    const meta = `${name} — ${(AUDIENCE[p.category] || ['your event'])[0]} in Bengaluru at ₹${p.price.toLocaleString('en-IN')}. Booked with Flowers 'N' Balloons alongside your decoration.`;
+    return { body, meta: meta.slice(0, 300), form: null, palette: null, motif: null };
+  }
   const fm = find(FORMS, name);
   const form = fm ? fm[1] : 'themed backdrop setup';
   let pal = find(PALETTES, name)?.[1] || null;
@@ -200,4 +205,74 @@ export function cardColors(p) {
   const pal = find(PALETTES, name)?.[1];
   const motif = find(MOTIFS, name)?.[1];
   return PAL_COLOR[pal] || MOTIF_COLOR[motif] || CAT_COLOR[p.category] || ['#a78bfa', '#f0abfc'];
+}
+
+/* ── non-decoration categories ────────────────────────────────────────
+   Tents, mascots, food counters and photographers are not backdrops, but
+   the decoration path described all 137 of them as "a themed backdrop
+   setup with balloon and prop work". These get their own copy.
+   Nothing asserts staffing, duration or coverage that isn't in the
+   product name — anything stated here is a delivery promise. */
+
+const SERVICE_CATS = new Set([
+  'shamyana-items', 'kids-birthday-fun-activities', 'kids-birthday-fun-eats',
+  'kids-birthday-photography', 'baby-shower-photography',
+]);
+
+const size = (n) => n.match(/(\d+)\s*[×x]\s*(\d+)\s*(?:feet|ft)?/i)?.slice(1, 3).join('×');
+const hours = (n) => n.match(/(\d+)\s*hours?\b/i)?.[1];
+
+const SERVICE_CLOSERS = [
+  'Tell us your venue and guest count and we will confirm exactly what is needed.',
+  'Delivery and collection across Bengaluru are included in the quote.',
+  'Book it on its own or add it to a decoration package.',
+  'Availability is confirmed in writing before you pay anything.',
+];
+
+function serviceCopy(p) {
+  const n = p.name, h = hash(p.slug), sz = size(n), hr = hours(n);
+  const close = SERVICE_CLOSERS[(h >> 3) % SERVICE_CLOSERS.length];
+
+  if (p.category === 'shamyana-items') {
+    const what = /tent|canopy|shamyana/i.test(n) ? 'Covered shelter'
+      : /chair|seating|sofa/i.test(n) ? 'Guest seating'
+      : /table/i.test(n) ? 'Table hire'
+      : /drum|water/i.test(n) ? 'Water storage'
+      : /light|fan|cooler/i.test(n) ? 'On-site utilities'
+      : 'Event hire';
+    return `${what} for an outdoor or open-air function${sz ? `, ${sz} feet` : ''}. `
+      + `Delivered, put up and taken down by our team on the day. `
+      + `Usually booked alongside the decor so there is one crew and one quote. ${close}`;
+  }
+
+  if (p.category === 'kids-birthday-fun-activities') {
+    const kind = /mascot/i.test(n) ? 'A costumed character appearance'
+      : /booth|selfie|360/i.test(n) ? 'A photo activity'
+      : /pool|slider|bounce|castle|trampoline/i.test(n) ? 'An active play setup'
+      : /game|shooting|angry|ring|dart/i.test(n) ? 'A party game'
+      : /magic|puppet|tattoo|art|craft|clay|paint/i.test(n) ? 'A hosted activity'
+      : 'An add-on activity';
+    return `${kind} to run alongside the decor, for the stretch after the cake when children need something to do. `
+      + `Set up before guests arrive and cleared afterwards. `
+      + `Add it to any birthday package. ${close}`;
+  }
+
+  if (p.category === 'kids-birthday-fun-eats') {
+    return `A live food counter set up at your venue, made to order in front of guests rather than plated in advance. `
+      + `It doubles as part of the decor — counters are dressed to match your theme. `
+      + `Quantities are quoted against your guest count. ${close}`;
+  }
+
+  // photography / videography
+  const kind = /drone/i.test(n) ? 'Aerial coverage'
+    : /4k|cinematic|video/i.test(n) ? 'Video coverage'
+    : /led wall|screen/i.test(n) ? 'A live screen for the venue'
+    : /album|print/i.test(n) ? 'Printed output'
+    : 'Photography coverage';
+  const tail = /in writing/.test(close)
+    ? 'Deliverables and turnaround are listed on your quote.'
+    : 'Deliverables and turnaround are confirmed in writing with your quote.';
+  return `${kind} for your event${hr ? `, booked in a ${hr}-hour slot` : ''}. `
+    + `Arranged together with the decoration, so there is one point of contact rather than a separate vendor to chase. `
+    + `${tail} ${close}`;
 }
