@@ -42,7 +42,6 @@
 .prod-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(194,69,107,.3); }
 .prod-media { position: relative; aspect-ratio: 4/3; overflow: hidden; }
 .prod-media img, .pdp-media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.pdp-media img { aspect-ratio: 4/3; }
 .prod-card:hover .prod-media img { transform: scale(1.04); }
 .prod-media img { transition: transform .5s ease; }
 .prod-off {
@@ -258,3 +257,9 @@
   .prod-card:hover .prod-ph::after,
   .prod-card:hover .prod-media::after { animation: none; }
 }
+
+/* Product-page image keeps its real aspect ratio (set inline from the file's
+   actual pixels). The fixed 4:3 box was cropping 3:2 photos and upscaling
+   them; `contain` plus the true ratio means no crop and no stretch. */
+.pdp-media img { aspect-ratio: auto; height: 100%; object-fit: contain; }
+.pdp-media { max-width: 760px; }

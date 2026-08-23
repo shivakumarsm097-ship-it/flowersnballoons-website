@@ -49,6 +49,12 @@ function photoFor(p) {
   if (pool && pool.length) return { stem: pool[Math.abs(hash(p.slug)) % pool.length], exact: false };
   return null;
 }
+/** real pixel ratio of the photo, so the page never crops or stretches it */
+function ratioStyle(p) {
+  const ph = photoFor(p);
+  const r = ph && IMG.ratios && IMG.ratios[ph.stem];
+  return r ? ` style="aspect-ratio:${r[0]}/${r[1]}"` : '';
+}
 function media(p, depth, size, cls = 'prod-ph') {
   const ph = photoFor(p);
   if (!ph) return `<div class="${cls}" style="--c1:${p.c1};--c2:${p.c2}" aria-hidden="true"><span>${esc(p.name)}</span></div>`;
@@ -414,7 +420,7 @@ ${header('../../')}
       <nav class="crumbs"><a href="../../index.html">Home</a> <span>/</span> <a href="../index.html">Shop</a> <span>/</span> <a href="index.html">${esc(c.name)}</a> <span>/</span> ${esc(p.name)}</nav>
 
       <div class="pdp" style="--c1:${p.c1};--c2:${p.c2}">
-        <div class="pdp-media">
+        <div class="pdp-media"${ratioStyle(p)}>
           ${media(p, '../../', 'full', 'prod-ph pdp-ph')}
           ${hasExactPhoto(p) ? '' : `<p class="ph-note">${photoFor(p) ? 'Shown: an example of our ' + esc(p.categoryName.toLowerCase()) + ' work. This exact theme has not been photographed yet.' : "Photo coming soon — this setup hasn't been photographed yet."}</p>`}
         </div>

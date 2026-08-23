@@ -82,16 +82,26 @@ function toReadable(src) {
   return out;
 }
 
-function srcWidth(f) {
+function dims(f) {
   try {
-    const out = execFileSync('sips', ['-g', 'pixelWidth', f], { encoding: 'utf8' });
-    return parseInt(out.match(/pixelWidth:\s*(\d+)/)?.[1] || '0', 10);
-  } catch { return 0; }
+    const out = execFileSync('sips', ['-g', 'pixelWidth', '-g', 'pixelHeight', f], { encoding: 'utf8' });
+    return {
+      w: parseInt(out.match(/pixelWidth:\s*(\d+)/)?.[1] || '0', 10),
+      h: parseInt(out.match(/pixelHeight:\s*(\d+)/)?.[1] || '0', 10),
+    };
+  } catch { return { w: 0, h: 0 }; }
 }
+const srcWidth = (f) => dims(f).w;
+
+/* Real aspect ratio per image stem. Without this the product page forces a
+   fixed 4:3 box, which crops the sides off a 3:2 photo and upscales it. */
+const ratios = {};
 
 function encode(src, stem) {
   const readable = toReadable(src);
-  const w0 = srcWidth(readable);
+  const d0 = dims(readable);
+  const w0 = d0.w;
+  if (d0.w && d0.h) ratios[stem] = [d0.w, d0.h];
   const made = [];
   for (const [label, w] of Object.entries(WIDTHS)) {
     // never upscale — enlarging a 600px source to 1200px just blurs it and
@@ -147,7 +157,7 @@ for (const f of files) {
   const stem = norm(basename(f, extname(f)));
   if (byTheme.has(stem)) themeStems.add(stem);
 }
-const map = { products: {}, categories: Object.fromEntries(catFallbacks) };
+const map = { products: {}, categories: Object.fromEntries(catFallbacks), ratios };
 for (const p of products) {
   if (assigned.has(p.slug)) {
     const stem = bySlug.has(norm(assigned.get(p.slug).replace(/\.[^.]+$/, ''))) ? p.slug : null;

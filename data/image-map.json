@@ -22,5 +22,91 @@
     "western-style-wedding-decor": "western-style-wedding-decor",
     "white-bliss-wedding-decor": "white-bliss-wedding-decor"
   },
-  "categories": {}
+  "categories": {},
+  "ratios": {
+    "best-white-panel-wedding-decor": [
+      600,
+      400
+    ],
+    "classic-white-wedding-backdrop": [
+      600,
+      400
+    ],
+    "dazzling-greece-arch-decor": [
+      600,
+      400
+    ],
+    "dazzling-white-panel-decor": [
+      600,
+      400
+    ],
+    "delightful-white-wedding-decor": [
+      600,
+      400
+    ],
+    "duel-white-arch-wedding-decor": [
+      600,
+      400
+    ],
+    "elegant-peach-wedding-decor": [
+      600,
+      400
+    ],
+    "elegant-white-panel-wedding-decor": [
+      600,
+      400
+    ],
+    "graceful-peach-wedding-decor": [
+      600,
+      400
+    ],
+    "grand-white-and-gold-panel-decor": [
+      600,
+      400
+    ],
+    "lavish-pink-wedding-decor": [
+      600,
+      400
+    ],
+    "lavish-white-and-yellow-decor": [
+      600,
+      400
+    ],
+    "lavish-white-panel-decoration": [
+      600,
+      400
+    ],
+    "lovely-yellow-and-pink-decor": [
+      600,
+      400
+    ],
+    "peach-wedding-backdrop-decor": [
+      600,
+      400
+    ],
+    "radiant-white-and-gold-decor": [
+      600,
+      400
+    ],
+    "red-and-white-hexagon-decor": [
+      600,
+      400
+    ],
+    "stunning-white-wedding-decor": [
+      600,
+      400
+    ],
+    "tri-circle-white-wedding-decor": [
+      600,
+      400
+    ],
+    "western-style-wedding-decor": [
+      1264,
+      843
+    ],
+    "white-bliss-wedding-decor": [
+      600,
+      400
+    ]
+  }
 }
