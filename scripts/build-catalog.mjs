@@ -31,6 +31,10 @@ const V_REFINED = cssVer('css/refined.css');
 const V_SHOP = cssVer('css/shop.css');
 
 // written by scripts/import-images.mjs; absent until photos are imported
+/* hand-written from the product photo; overrides name-inferred copy */
+let CURATED = { products: {} };
+try { CURATED = read('data/curated.json'); } catch { /* optional */ }
+
 let IMG = { products: {}, categories: {} };
 try { IMG = read('data/image-map.json'); } catch { /* no photos yet */ }
 
@@ -128,7 +132,9 @@ for (const r of HARV.products) {
   });
 }
 
-for (const p of products) { const c = cardColors(p); p.c1 = c[0]; p.c2 = c[1]; p.inclusions = inclusionsFor(p); const d = describe(p); p.description = d.body; p.metaDescription = d.meta; p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
+for (const p of products) { const c = cardColors(p); p.c1 = c[0]; p.c2 = c[1]; p.inclusions = inclusionsFor(p); const d = describe(p); p.description = d.body; p.metaDescription = d.meta;
+  const cur = CURATED.products[p.slug];
+  if (cur) { if (cur.description) p.description = cur.description; if (cur.inclusions) p.inclusions = cur.inclusions; p.curated = true; } p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
 
 const CATEGORIES = Object.entries(CATMETA)
   .filter(([slug]) => products.some((p) => p.category === slug))
@@ -444,7 +450,9 @@ ${header('../../')}
           <h3 class="incl-h">What's included</h3>
           ${p.inclusions && p.inclusions.length
             ? `<ul class="incl-list">${p.inclusions.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
-               <p style="font-size:.84rem;color:var(--muted);margin-top:12px">Indicative for a setup at this size — quantities and exact items are confirmed on your written quote, sized to your venue.</p>`
+               <p style="font-size:.84rem;color:var(--muted);margin-top:12px">${p.curated
+                 ? 'As shown in the photograph. Sizes are adjusted to your venue and confirmed on your written quote.'
+                 : 'Indicative for a setup at this size — quantities and exact items are confirmed on your written quote, sized to your venue.'}</p>`
             : `<ul class="incl-list">
                  <li>Delivered, set up and collected by our team</li>
                  <li>Booked on its own or alongside a decoration package</li>
