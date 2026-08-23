@@ -12,7 +12,7 @@
  * FILENAME RULES (case/spacing/underscores don't matter):
  *
  *   jungle-safari-standard.jpg   -> that exact product
- *   jungle-safari.jpg            -> every tier of that theme (simple/standard/premium)
+ *   3D Butterfly Theme Decor.jpg -> that product (name match, spacing/case ignored)
  *   kids-birthday.jpg            -> fallback for any Kids Birthday product with no own photo
  *   kids-birthday-2.jpg          -> second fallback for that category (rotates)
  *
@@ -53,7 +53,7 @@ const { products, categories } = JSON.parse(readFileSync(catalogPath, 'utf8'));
 const bySlug = new Map(products.map((p) => [p.slug, p]));
 const byTheme = new Map();
 for (const p of products) {
-  const t = norm(p.theme);
+  const t = norm(p.name);
   if (!byTheme.has(t)) byTheme.set(t, []);
   byTheme.get(t).push(p);
 }
@@ -63,9 +63,9 @@ const files = readdirSync(IN).filter((f) => !f.startsWith('.') && /\.(jpe?g|png|
 
 if (!files.length) {
   console.log(`No images in images/incoming/.\n`);
-  console.log(`Drop photos there named after the product, theme or category, e.g.`);
-  console.log(`  jungle-safari-standard.jpg   (one product)`);
-  console.log(`  jungle-safari.jpg            (all Jungle Safari tiers)`);
+  console.log(`Drop photos there named after the product or category, e.g.`);
+  console.log(`  3d-butterfly-theme-decor.jpg  (one product — see FILENAMES.csv)`);
+  console.log(`  3D Butterfly Theme Decor.jpg  (same, by full name)`);
   console.log(`  kids-birthday-1.jpg          (category fallback)`);
   process.exit(0);
 }
@@ -108,7 +108,7 @@ for (const f of files) {
     continue;
   }
 
-  // 2. theme name -> every tier of that theme
+  // 2. full product name (spacing/case ignored)
   if (byTheme.has(stem)) {
     encode(src, `theme-${stem}`);
     for (const p of byTheme.get(stem)) assigned.set(p.slug, f);
@@ -137,7 +137,7 @@ const map = { products: {}, categories: Object.fromEntries(catFallbacks) };
 for (const p of products) {
   if (assigned.has(p.slug)) {
     const stem = bySlug.has(norm(assigned.get(p.slug).replace(/\.[^.]+$/, ''))) ? p.slug : null;
-    map.products[p.slug] = stem || `theme-${norm(p.theme)}`;
+    map.products[p.slug] = stem || `theme-${norm(p.name)}`;
   }
 }
 // exact-slug files win over theme files
@@ -157,9 +157,9 @@ console.log(`  ${catFallbacks.size} category fallback set(s): ${[...catFallbacks
 console.log(`  ${covered}/${products.length} products now show a real photo\n`);
 
 if (unmatched.length) {
-  console.log(`⚠ ${unmatched.length} file(s) matched no product, theme or category — NOT used:`);
+  console.log(`⚠ ${unmatched.length} file(s) matched no product or category — NOT used:`);
   unmatched.forEach((f) => console.log(`    ${f}`));
-  console.log(`  Rename to a product slug, theme name, or category slug. Valid categories:`);
+  console.log(`  Rename using FILENAMES.csv, or use a category slug. Valid categories:`);
   console.log(`    ${[...catSlugs].join(', ')}\n`);
 }
 

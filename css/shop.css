@@ -177,3 +177,84 @@
 /* .prod-card sets display:flex, which beats the UA sheet's [hidden]{display:none}.
    Without this the filter marks cards hidden and they stay on screen. */
 .prod-card[hidden] { display: none !important; }
+
+/* ============================================================
+   Colourful animated product cards
+   Each card carries --c1/--c2 derived from the product's own
+   palette or motif, so a wall of cards reads as varied and the
+   colour actually tells you something before photos exist.
+
+   Everything animates on transform/opacity only. Category pages
+   hold 300+ cards, so ambient animation is hover-scoped —
+   animating them all at rest would jank the scroll and cost
+   page-speed score.
+   ============================================================ */
+
+.prod-ph {
+  position: relative; overflow: hidden;
+  background:
+    radial-gradient(120% 120% at 15% 12%, color-mix(in srgb, var(--c2, #f0abfc) 78%, #fff) 0%, transparent 58%),
+    linear-gradient(140deg, var(--c1, #a78bfa) 0%, var(--c2, #f0abfc) 100%);
+  color: #fff; opacity: 1;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .28);
+}
+.prod-ph > span { position: relative; z-index: 2; font-weight: 600; }
+
+/* soft floating orbs — pure CSS, no extra DOM weight per card */
+.prod-ph::before,
+.prod-ph::after {
+  content: ''; position: absolute; border-radius: 50%; pointer-events: none;
+  background: rgba(255, 255, 255, .22); filter: blur(2px);
+}
+.prod-ph::before { width: 42%; aspect-ratio: 1; top: -14%; right: -10%; }
+.prod-ph::after  { width: 26%; aspect-ratio: 1; bottom: -8%; left: -6%; background: rgba(255,255,255,.16); }
+
+.prod-card {
+  position: relative;
+  transition: transform .3s cubic-bezier(.2,.8,.25,1), box-shadow .3s ease, border-color .3s ease;
+}
+.prod-card:hover {
+  transform: translateY(-7px);
+  border-color: color-mix(in srgb, var(--c1) 45%, var(--line));
+  box-shadow: 0 22px 46px color-mix(in srgb, var(--c1) 22%, transparent);
+}
+
+/* orbs drift only while hovered */
+.prod-card:hover .prod-ph::before { animation: drift 5s ease-in-out infinite; }
+.prod-card:hover .prod-ph::after  { animation: drift 6.5s ease-in-out infinite reverse; }
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(-10%, 12%, 0) scale(1.14); }
+}
+
+/* light sweeps across on hover */
+.prod-media::after {
+  content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.42) 50%, transparent 62%);
+  transform: translateX(-120%); opacity: 0;
+}
+.prod-card:hover .prod-media::after { animation: sweep .85s ease-out; }
+@keyframes sweep {
+  0%   { transform: translateX(-120%); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+
+/* price pops on hover */
+.prod-card .prod-price b { transition: color .25s ease; }
+.prod-card:hover .prod-price b { color: color-mix(in srgb, var(--c1) 78%, #000); }
+.prod-off { background: var(--c1, var(--accent)); box-shadow: 0 4px 12px color-mix(in srgb, var(--c1) 40%, transparent); }
+
+/* staggered entrance — CSS-only, no per-card JS */
+.prod-card.reveal { transition-delay: calc(var(--i, 0) * 45ms); }
+
+/* product page hero frame picks up the same colour */
+.pdp-media { box-shadow: 0 24px 60px color-mix(in srgb, var(--c1) 20%, transparent); }
+.pdp-ph { font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .prod-card:hover { transform: none; }
+  .prod-card:hover .prod-ph::before,
+  .prod-card:hover .prod-ph::after,
+  .prod-card:hover .prod-media::after { animation: none; }
+}

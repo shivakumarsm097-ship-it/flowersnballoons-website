@@ -16,12 +16,19 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { describe } from './describe.mjs';
+import { createHash } from 'node:crypto';
+import { describe, cardColors } from './describe.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => JSON.parse(readFileSync(join(ROOT, p), 'utf8'));
 
 const HARV = read('data/harvested.json');
+
+/* Content hash on stylesheet URLs. Without it, returning visitors keep a
+   cached stylesheet after a deploy and see the old design against new markup. */
+const cssVer = (f) => createHash('sha1').update(readFileSync(join(ROOT, f))).digest('hex').slice(0, 8);
+const V_REFINED = cssVer('css/refined.css');
+const V_SHOP = cssVer('css/shop.css');
 
 // written by scripts/import-images.mjs; absent until photos are imported
 let IMG = { products: {}, categories: {} };
@@ -44,7 +51,7 @@ function photoFor(p) {
 }
 function media(p, depth, size, cls = 'prod-ph') {
   const ph = photoFor(p);
-  if (!ph) return `<div class="${cls}" aria-hidden="true">${esc(p.name)}</div>`;
+  if (!ph) return `<div class="${cls}" style="--c1:${p.c1};--c2:${p.c2}" aria-hidden="true"><span>${esc(p.name)}</span></div>`;
   const alt = ph.exact ? `${esc(p.name)} by Flowers N Balloons`
                        : `Example of our ${esc(p.categoryName.toLowerCase())} decoration work`;
   return `<img src="${depth}images/products/${ph.stem}-${size}.webp" alt="${alt}" loading="lazy" width="${size === 'full' ? 1200 : 600}" height="${size === 'full' ? 900 : 450}">`
@@ -115,7 +122,7 @@ for (const r of HARV.products) {
   });
 }
 
-for (const p of products) { const d = describe(p); p.description = d.body; p.metaDescription = d.meta; p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
+for (const p of products) { const c = cardColors(p); p.c1 = c[0]; p.c2 = c[1]; const d = describe(p); p.description = d.body; p.metaDescription = d.meta; p.form = d.form; p.palette = d.palette; p.motif = d.motif; }
 
 const CATEGORIES = Object.entries(CATMETA)
   .filter(([slug]) => products.some((p) => p.category === slug))
@@ -138,8 +145,8 @@ const head = (title, desc, depth, extra = '') => `<!DOCTYPE html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="${depth}css/refined.css">
-<link rel="stylesheet" href="${depth}css/shop.css">
+<link rel="stylesheet" href="${depth}css/refined.css?v=${V_REFINED}">
+<link rel="stylesheet" href="${depth}css/shop.css?v=${V_SHOP}">
 ${extra}
 </head>
 <body>`;
@@ -222,8 +229,8 @@ const footer = (depth) => `
 </body>
 </html>`;
 
-const card = (p, depth) => `
-<a class="prod-card reveal" href="${depth}shop/${p.category}/${p.slug}.html" data-tier="${esc(p.tier)}" data-theme="${esc(p.name.toLowerCase())}" data-price="${p.price}">
+const card = (p, depth, i = 0) => `
+<a class="prod-card reveal" href="${depth}shop/${p.category}/${p.slug}.html" data-tier="${esc(p.tier)}" data-theme="${esc(p.name.toLowerCase())}" data-price="${p.price}" style="--c1:${p.c1};--c2:${p.c2};--i:${i % 12}">
   <div class="prod-media">
     ${media(p, depth, 'card')}
     ${p.compareAt ? `<span class="prod-off">-${Math.round((1 - p.price / p.compareAt) * 100)}%</span>` : ''}
@@ -380,7 +387,7 @@ ${header('../../')}
         <input class="input js-search" type="search" placeholder="Search ${esc(c.name.toLowerCase())} themes…" aria-label="Search themes">
       </div>
       <p class="no-hits" hidden>No setups match that. <button type="button" class="js-clear">Clear filters</button></p>
-      <div class="prod-grid js-grid">${items.map((p) => card(p, '../../')).join('')}</div>
+      <div class="prod-grid js-grid">${items.map((p, i) => card(p, '../../', i)).join('')}</div>
     </div>
   </section>
 </main>
@@ -407,7 +414,7 @@ ${header('../../')}
     <div class="shell">
       <nav class="crumbs"><a href="../../index.html">Home</a> <span>/</span> <a href="../index.html">Shop</a> <span>/</span> <a href="index.html">${esc(c.name)}</a> <span>/</span> ${esc(p.name)}</nav>
 
-      <div class="pdp">
+      <div class="pdp" style="--c1:${p.c1};--c2:${p.c2}">
         <div class="pdp-media">
           ${media(p, '../../', 'full', 'prod-ph pdp-ph')}
           ${hasExactPhoto(p) ? '' : `<p class="ph-note">${photoFor(p) ? 'Shown: an example of our ' + esc(p.categoryName.toLowerCase()) + ' work. This exact theme has not been photographed yet.' : "Photo coming soon — this setup hasn't been photographed yet."}</p>`}

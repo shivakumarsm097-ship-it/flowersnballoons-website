@@ -1,5 +1,9 @@
 # Drop photos here
 
+**FILENAMES.csv** in this folder lists all 1,133 products and the exact
+filename each image should have. Name your files from the `filename_to_use`
+column and everything wires up automatically.
+
 Then run:
 
     node scripts/import-images.mjs

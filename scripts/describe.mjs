@@ -145,3 +145,59 @@ export function describe(p) {
 
   return { body, meta: meta.slice(0, 300), form, palette: pal, motif };
 }
+
+/* ── card colour ──────────────────────────────────────────────────────
+   Every product currently shows the same placeholder, so 300 cards on a
+   category page read as one grey wall. Deriving the gradient from the
+   palette/motif already parsed above makes each card distinct AND
+   informative — a blue product looks blue before any photo exists. */
+
+const PAL_COLOR = {
+  'pink': ['#ec4899', '#f9a8d4'],       'rose gold': ['#e0846f', '#f7cfc2'],
+  'gold': ['#d4a017', '#f6dc8a'],        'silver': ['#8e9bab', '#dbe2ea'],
+  'black': ['#3f3f52', '#7a7a92'],       'white': ['#c9cfda', '#f6f8fb'],
+  'blue': ['#3b82f6', '#a5c8fd'],        'purple': ['#8b5cf6', '#c9bcfb'],
+  'green': ['#10b981', '#8ae8c4'],       'red': ['#ef4444', '#fbb0b0'],
+  'peach': ['#fb923c', '#fed9b6'],       'copper': ['#c2703d', '#eec0a0'],
+  'yellow': ['#f2b01e', '#fbe28f'],      'soft pastel': ['#c9b6ec', '#f9d8e6'],
+  'chrome': ['#94a3b8', '#d6dee8'],      'rainbow': ['#f472b6', '#60a5fa'],
+  'boho neutral': ['#c2a37c', '#ecdfc9'],
+};
+
+const MOTIF_COLOR = {
+  'jungle-animal': ['#2f9e6a', '#9fe0bd'],  'ice-and-snowflake': ['#4aa8d8', '#bfe6f7'],
+  'unicorn': ['#c084fc', '#fbcfe8'],        'butterfly': ['#d946ef', '#f6c9f2'],
+  'space': ['#4338ca', '#a5b4fc'],          'under-the-sea': ['#0891b2', '#95dce8'],
+  'dinosaur': ['#4d9c41', '#b7e3a8'],       'racing-car': ['#dc2626', '#fbaeae'],
+  'superhero': ['#2563eb', '#f87171'],      'princess-and-crown': ['#e879a9', '#fbd5e6'],
+  'floral': ['#e0568b', '#fbc7d9'],         'tropical': ['#14b8a6', '#9beedf'],
+  'starry-night': ['#3730a3', '#a5a1e8'],   'romantic': ['#e11d48', '#fbb6c8'],
+  'sweet-treat': ['#f472b6', '#fde0ec'],    'carnival': ['#f59e0b', '#f472b6'],
+  'up-in-the-air': ['#38bdf8', '#c3e9fb'],  'sports': ['#16a34a', '#a7e6bd'],
+  'farmyard': ['#ca8a04', '#f3dda0'],       'construction': ['#ea9612', '#f9dba6'],
+  'game-and-robot': ['#6366f1', '#bcc0fb'], 'boss-baby': ['#475569', '#b4c0d0'],
+  'friendly-character': ['#f97316', '#fdd0a8'], 'island-adventure': ['#0d9488', '#8fdcd2'],
+  'retro-glam': ['#a21caf', '#e9b6ee'],     'puppy-rescue': ['#0ea5e9', '#b3e2fb'],
+  'Cocomelon-style': ['#65a30d', '#cdeb9c'], 'boho': ['#b08968', '#e6d3bd'],
+  'carnival ': ['#f59e0b', '#f472b6'],
+};
+
+const CAT_COLOR = {
+  'kids-birthday': ['#f472b6', '#a5b4fc'],  'birthday': ['#8b5cf6', '#f0abfc'],
+  'baby-shower': ['#7dd3fc', '#fbcfe8'],    'naming-ceremony': ['#fb923c', '#fde3c0'],
+  'house-warming': ['#f59e0b', '#fbd9a0'],  'engagement': ['#e879a9', '#f5d0e4'],
+  'haldi': ['#eab308', '#fbe9a3'],          'wedding': ['#dc2626', '#f7c2b8'],
+  'anniversary': ['#e11d48', '#f9c4d2'],    'surprise-events': ['#a855f7', '#e2c7fb'],
+  'bachelorette': ['#ec4899', '#f9c8e6'],   'annaprasan': ['#f97316', '#fbd8b4'],
+  'upanayanam': ['#ca8a04', '#f0dca4'],     'first-holy-communion': ['#93a4c7', '#e5ecf7'],
+  'shamyana-items': ['#0d9488', '#9ad9d1'], 'kids-birthday-fun-activities': ['#f59e0b', '#fbcfe8'],
+  'kids-birthday-fun-eats': ['#f472b6', '#fde68a'], 'kids-birthday-photography': ['#64748b', '#cbd5e1'],
+  'baby-shower-photography': ['#94a3b8', '#dbe4ee'], 'kids-birthday-simple-home-decor': ['#a78bfa', '#ddd6fe'],
+};
+
+export function cardColors(p) {
+  const name = p.name;
+  const pal = find(PALETTES, name)?.[1];
+  const motif = find(MOTIFS, name)?.[1];
+  return PAL_COLOR[pal] || MOTIF_COLOR[motif] || CAT_COLOR[p.category] || ['#a78bfa', '#f0abfc'];
+}
