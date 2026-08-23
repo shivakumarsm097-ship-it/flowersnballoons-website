@@ -140,7 +140,7 @@ export function describe(p) {
 
   const body = `${open}${styleLine} ${scale} Suits ${occLong}. ${close}`;
 
-  const meta = `${name} — ${occShort} decoration in Bengaluru from ${'₹' + p.price.toLocaleString('en-IN')}. `
+  const meta = `${name} — ${occShort} decoration in Bengaluru at ${'₹' + p.price.toLocaleString('en-IN')}. `
     + `${pal ? cap(pal) + ' ' : ''}${form}, set up by Flowers 'N' Balloons. Book online; we confirm your date first.`;
 
   return { body, meta: meta.slice(0, 300), form, palette: pal, motif };

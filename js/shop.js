@@ -178,10 +178,7 @@
       });
       if (none) none.hidden = shown !== 0;
       if (count) {
-        var prices = cards.filter(function (c) { return !c.hidden; }).map(function (c) { return +c.dataset.price; });
-        count.textContent = shown
-          ? shown + ' setup' + (shown === 1 ? '' : 's') + ' · from ' + inr(Math.min.apply(null, prices))
-          : 'No setups match';
+        count.textContent = shown ? shown + ' setup' + (shown === 1 ? '' : 's') : 'No setups match';
       }
     }
 

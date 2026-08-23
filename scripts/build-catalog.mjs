@@ -254,10 +254,9 @@ mkdirSync(shopDir, { recursive: true });
 // shop index
 const catCards = CATEGORIES.map((c) => {
   const items = products.filter((p) => p.category === c.slug);
-  const from = Math.min(...items.map((p) => p.price));
   return `
   <a class="occ-card reveal" href="${c.slug}/index.html">
-    <div class="occ-media"><div class="prod-ph" aria-hidden="true">${esc(c.name)}</div><span class="occ-price">From ${inr(from)}</span></div>
+    <div class="occ-media"><div class="prod-ph" aria-hidden="true">${esc(c.name)}</div></div>
     <div class="occ-body">
       <h3>${esc(c.name)}</h3>
       <p>${esc(c.intro)}</p>
@@ -355,8 +354,8 @@ for (const c of CATEGORIES) {
   const items = products.filter((p) => p.category === c.slug).sort((a, b) => a.price - b.price);
   mkdirSync(join(shopDir, c.slug), { recursive: true });
   writeFileSync(join(shopDir, c.slug, 'index.html'), `${head(
-    `${c.name} Decoration in Bangalore — Prices & Inclusions | Flowers N Balloons`,
-    `${items.length} ${c.name.toLowerCase()} decoration setups in Bengaluru from ${inr(Math.min(...items.map((p) => p.price)))}. Full inclusions listed on every setup.`,
+    `${c.name} Decoration in Bangalore | Flowers N Balloons`,
+    `${items.length} ${c.name.toLowerCase()} decoration setups in Bengaluru. Every setup priced, with what you get listed on each one.`,
     '../../'
   )}
 ${header('../../')}
@@ -370,7 +369,7 @@ ${header('../../')}
         <p>${esc(c.intro)}</p>
       </div>
       <div class="shop-bar">
-        <span class="js-count">${items.length} setups · from ${inr(Math.min(...items.map((p) => p.price)))}</span>
+        <span class="js-count">${items.length} setups</span>
         <label class="sort-wrap">Sort
           <select class="input js-sort">
             <option value="low">Price: low to high</option>
