@@ -174,7 +174,7 @@ const head = (title, desc, depth, extra = '') => `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
-<link rel="icon" href="${depth}images/logo.svg" type="image/svg+xml">
+<link rel="icon" href="${depth}images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
@@ -188,7 +188,7 @@ const header = (depth) => `
 <header class="header" role="banner">
   <div class="shell header-inner">
     <a class="logo" href="${depth}index.html" aria-label="Flowers N Balloons — home">
-      <img src="${depth}images/logo.webp" alt="" width="38" height="38">
+      <img src="${depth}images/logo.svg" alt="" width="38" height="38">
       <span class="logo-text"><span class="logo-name">Flowers 'N' Balloons</span><span class="logo-sub">Bengaluru</span></span>
     </a>
     <nav class="nav" aria-label="Primary">
@@ -218,7 +218,7 @@ const footer = (depth) => `
     <div class="footer-grid">
       <div class="footer-brand">
         <a class="logo" href="${depth}index.html">
-          <img src="${depth}images/logo.webp" alt="" width="38" height="38" loading="lazy">
+          <img src="${depth}images/logo.svg" alt="" width="38" height="38" loading="lazy">
           <span class="logo-text"><span class="logo-name">Flowers 'N' Balloons</span><span class="logo-sub">Bengaluru</span></span>
         </a>
         <p>Decoration across Bengaluru. Every price on this site is a starting point for that setup — your final quote is confirmed in writing.</p>
