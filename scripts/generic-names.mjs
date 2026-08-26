@@ -16,7 +16,7 @@
  * Writes data/rename-rules.json (exact "old name" -> "new name" pairs) which
  * build-catalog.mjs applies. Editing a single pair there by hand is safe.
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 const THEME = /frozen|elsa|anna|unicorn|unicron|unicoron|jungle|safari|mermaid|dino|cocomelon|spider\s?man|avenger|hulk|superhero|marvel|barbie|cinderella|boss\s?baby|moana|pe+p+a|mickey|micky|minnie|minie|hello\s?kitty|masha|bluey|paw\s?p[ea]trol|mario|minecraft|transformer|pokemon|doraemon|chhota\s?bheem|motu|tom\s?(and|&)\s?jerry|winnie|pooh|shinchan|ben\s?10|angry\s?bird|among\s?us|squid|encanto|luca|toy\s?story|lightning\s?mcqueen|batman|superman|iron\s?man|captain\s?america|krishna|ganesh|construction|astronaut|space|rocket|circus|cirus|carnival|casino|gatsby|hollywood|harry\s?potter|sonic|roblox|naruto|dragon|mandala|arabian|moroccan|little\s?man|little\s?miss|under\s?the\s?sea|hot\s?air\s?balloon|boho|tropical|farm|jungle/i;
 
@@ -105,11 +105,27 @@ const slugify = (s) => s.toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]
 
 const { products } = JSON.parse(readFileSync('data/products.json', 'utf8'));
 const taken = new Set(products.map((p) => slugify(p.sourceName || p.name)));
+
+/* Existing assignments are STICKY. Re-running against a larger catalogue used
+   to shuffle collision resolution and hand listings a different adjective —
+   which changes the slug, which changes the URL. 50 live pages moved that way
+   the first time. Keep every pair already on disk and only assign new ones. */
 const pairs = {};
+if (existsSync('data/rename-rules.json')) {
+  const prev = JSON.parse(readFileSync('data/rename-rules.json', 'utf8')).names || {};
+  const stillPresent = new Set(products.map((p) => p.sourceName || p.name));
+  for (const [from, to] of Object.entries(prev)) {
+    if (!stillPresent.has(from)) continue;   // listing gone from the source
+    pairs[from] = to;
+    taken.add(slugify(to));
+  }
+}
+const kept = Object.keys(pairs).length;
 let skippedThemed = 0, collisions = 0;
 
 for (const p of products) {
   const src = p.sourceName || p.name;
+  if (pairs[src]) continue;                  // already assigned on a previous run
   if (THEME.test(src)) { skippedThemed++; continue; }
   const m = src.match(LEAD);
   if (!m) continue;
@@ -140,6 +156,8 @@ writeFileSync('data/rename-rules.json', JSON.stringify({
   names: pairs,
 }, null, 2) + '\n');
 
+console.log(`kept from previous run:        ${kept}`);
+console.log(`newly renamed this run:        ${Object.keys(pairs).length - kept}`);
 console.log(`themed listings left verbatim: ${skippedThemed}`);
 console.log(`generic listings renamed:      ${Object.keys(pairs).length}`);
 if (collisions) console.log(`could not rename (no free name): ${collisions}`);

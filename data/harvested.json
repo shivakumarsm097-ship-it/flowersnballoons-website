@@ -1,5 +1,5 @@
 {
-  "count": 1133,
+  "count": 1191,
   "byCat": {
     "kids-birthday": 335,
     "kids-birthday-simple-home-decor": 44,
@@ -7,19 +7,26 @@
     "kids-birthday-fun-eats": 14,
     "kids-birthday-photography": 9,
     "birthday": 148,
-    "baby-shower": 88,
-    "baby-shower-photography": 2,
+    "baby-shower": 90,
+    "baby-shower-photography": 7,
     "naming-ceremony": 23,
+    "naming-ceremony-photography": 7,
     "house-warming": 135,
+    "house-warming-photography": 7,
+    "house-lighting": 4,
     "engagement": 20,
+    "engagement-photography": 7,
     "haldi": 20,
+    "haldi-photography": 7,
     "wedding": 21,
+    "wedding-photography": 7,
     "anniversary": 28,
     "surprise-events": 26,
     "bachelorette": 21,
     "annaprasan": 28,
     "upanayanam": 20,
     "first-holy-communion": 29,
+    "first-holy-communion-photography": 12,
     "shamyana-items": 19
   },
   "products": [
@@ -4116,6 +4123,12 @@
       "cat": "baby-shower"
     },
     {
+      "name": "Elegant Butterfly Theme Decor",
+      "price": 11840,
+      "compareAt": 15400,
+      "cat": "baby-shower"
+    },
+    {
       "name": "Elegant Floral Babyshower Decor",
       "price": 26000,
       "compareAt": 31080,
@@ -4350,6 +4363,12 @@
       "cat": "baby-shower"
     },
     {
+      "name": "Professional Candid Photographer",
+      "price": 8440,
+      "compareAt": 9500,
+      "cat": "baby-shower"
+    },
+    {
       "name": "Radiant Blue Floral Decor",
       "price": 9120,
       "compareAt": 12800,
@@ -4470,9 +4489,39 @@
       "cat": "baby-shower"
     },
     {
+      "name": "4K Cinematic Videography",
+      "price": 9980,
+      "compareAt": 13700,
+      "cat": "baby-shower-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 7410,
+      "compareAt": 9000,
+      "cat": "baby-shower-photography"
+    },
+    {
       "name": "4K Video Coverage (Full Event)",
       "price": 7810,
       "compareAt": 10000,
+      "cat": "baby-shower-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "baby-shower-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 5850,
+      "compareAt": 6800,
+      "cat": "baby-shower-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 8440,
+      "compareAt": 9500,
       "cat": "baby-shower-photography"
     },
     {
@@ -4618,6 +4667,48 @@
       "price": 18400,
       "compareAt": 22700,
       "cat": "naming-ceremony"
+    },
+    {
+      "name": "4K Cinematic Videography",
+      "price": 9980,
+      "compareAt": 13700,
+      "cat": "naming-ceremony-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 7410,
+      "compareAt": 9000,
+      "cat": "naming-ceremony-photography"
+    },
+    {
+      "name": "4K Video Coverage (Full Event)",
+      "price": 7810,
+      "compareAt": 10000,
+      "cat": "naming-ceremony-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "naming-ceremony-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 5850,
+      "compareAt": 6800,
+      "cat": "naming-ceremony-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 7440,
+      "compareAt": 9500,
+      "cat": "naming-ceremony-photography"
+    },
+    {
+      "name": "Traditional Photographer",
+      "price": 3980,
+      "compareAt": 5000,
+      "cat": "naming-ceremony-photography"
     },
     {
       "name": "2 Floor Building Lighting",
@@ -5430,6 +5521,72 @@
       "cat": "house-warming"
     },
     {
+      "name": "4K Cinematic Videography",
+      "price": 9980,
+      "compareAt": 13700,
+      "cat": "house-warming-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 7410,
+      "compareAt": 9000,
+      "cat": "house-warming-photography"
+    },
+    {
+      "name": "4K Video Coverage (Full Event)",
+      "price": 7810,
+      "compareAt": 10000,
+      "cat": "house-warming-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "house-warming-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 5850,
+      "compareAt": 6800,
+      "cat": "house-warming-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 7440,
+      "compareAt": 9500,
+      "cat": "house-warming-photography"
+    },
+    {
+      "name": "Traditional Photographer",
+      "price": 3980,
+      "compareAt": 5000,
+      "cat": "house-warming-photography"
+    },
+    {
+      "name": "2 Floor Building Lighting",
+      "price": 9799,
+      "compareAt": 14500,
+      "cat": "house-lighting"
+    },
+    {
+      "name": "3 Floor Building Lighting",
+      "price": 8299,
+      "compareAt": 14500,
+      "cat": "house-lighting"
+    },
+    {
+      "name": "Lighting For Big Villa",
+      "price": 16499,
+      "compareAt": 20600,
+      "cat": "house-lighting"
+    },
+    {
+      "name": "Lighting for Villa",
+      "price": 9599,
+      "compareAt": 13600,
+      "cat": "house-lighting"
+    },
+    {
       "name": "Breathtaking White Decor",
       "price": 45000,
       "compareAt": 56700,
@@ -5550,6 +5707,48 @@
       "cat": "engagement"
     },
     {
+      "name": "4K Cinematic Videography",
+      "price": 9980,
+      "compareAt": 13700,
+      "cat": "engagement-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 7410,
+      "compareAt": 9000,
+      "cat": "engagement-photography"
+    },
+    {
+      "name": "4K Video Coverage (Full Event)",
+      "price": 7810,
+      "compareAt": 10000,
+      "cat": "engagement-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "engagement-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 5850,
+      "compareAt": 6800,
+      "cat": "engagement-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 7440,
+      "compareAt": 9500,
+      "cat": "engagement-photography"
+    },
+    {
+      "name": "Traditional Photographer",
+      "price": 3980,
+      "compareAt": 5000,
+      "cat": "engagement-photography"
+    },
+    {
       "name": "Buttercup Bliss Haldi Decor",
       "price": 29199,
       "compareAt": 39800,
@@ -5668,6 +5867,48 @@
       "price": 56800,
       "compareAt": 67000,
       "cat": "haldi"
+    },
+    {
+      "name": "4K Cinematic Videography",
+      "price": 9980,
+      "compareAt": 13700,
+      "cat": "haldi-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 7410,
+      "compareAt": 9000,
+      "cat": "haldi-photography"
+    },
+    {
+      "name": "4K Video Coverage (Full Event)",
+      "price": 7810,
+      "compareAt": 10000,
+      "cat": "haldi-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "haldi-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 5850,
+      "compareAt": 6800,
+      "cat": "haldi-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 7440,
+      "compareAt": 9500,
+      "cat": "haldi-photography"
+    },
+    {
+      "name": "Traditional Photographer",
+      "price": 3980,
+      "compareAt": 5000,
+      "cat": "haldi-photography"
     },
     {
       "name": "Best White Panel Wedding Decor",
@@ -5794,6 +6035,48 @@
       "price": 52269,
       "compareAt": 64339,
       "cat": "wedding"
+    },
+    {
+      "name": "4K Cinematic Videography",
+      "price": 9980,
+      "compareAt": 13700,
+      "cat": "wedding-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 7410,
+      "compareAt": 9000,
+      "cat": "wedding-photography"
+    },
+    {
+      "name": "4K Video Coverage (Full Event)",
+      "price": 7810,
+      "compareAt": 10000,
+      "cat": "wedding-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "wedding-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 5850,
+      "compareAt": 6800,
+      "cat": "wedding-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 7440,
+      "compareAt": 9500,
+      "cat": "wedding-photography"
+    },
+    {
+      "name": "Traditional Photographer",
+      "price": 3980,
+      "compareAt": 5000,
+      "cat": "wedding-photography"
     },
     {
       "name": "Aesthetic White And Yellow",
@@ -6706,6 +6989,78 @@
       "price": 7500,
       "compareAt": 10500,
       "cat": "first-holy-communion"
+    },
+    {
+      "name": "4K Cinematic Videography",
+      "price": 9980,
+      "compareAt": 13700,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "4K Drone Video Coverage",
+      "price": 7410,
+      "compareAt": 9000,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "4K Video Coverage (Full Event)",
+      "price": 7810,
+      "compareAt": 10000,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "8×6 Feet LED Wall",
+      "price": 8530,
+      "compareAt": 10100,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Communion floral decoration Bangalore",
+      "price": 35000,
+      "compareAt": 38000,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Communion function stage decoration Bangalore",
+      "price": 10000,
+      "compareAt": 13000,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Holy communion balloon theme decoration Bangalore",
+      "price": 8500,
+      "compareAt": 11000,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Luxury Holy Communion decoration Bangalore",
+      "price": 35000,
+      "compareAt": 38000,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Photographer With Umbrella Lights",
+      "price": 5850,
+      "compareAt": 6800,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Premium communion decoration Bangalore",
+      "price": 40000,
+      "compareAt": 43000,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Professional Candid Photographer",
+      "price": 7440,
+      "compareAt": 9500,
+      "cat": "first-holy-communion-photography"
+    },
+    {
+      "name": "Traditional Photographer",
+      "price": 3980,
+      "compareAt": 5000,
+      "cat": "first-holy-communion-photography"
     },
     {
       "name": "15×20 Feet Tent",

@@ -72,6 +72,13 @@ const AUDIENCE = {
   'kids-birthday-fun-eats': ['a children’s party', 'parties where the food counter is part of the setup'],
   'kids-birthday-photography': ['a birthday shoot', 'birthday parties that also need coverage'],
   'baby-shower-photography': ['a baby shower shoot', 'baby showers that also need coverage'],
+  'naming-ceremony-photography': ['a naming ceremony shoot', 'naming and cradle ceremonies that also need coverage'],
+  'house-warming-photography': ['a housewarming shoot', 'griha pravesh functions that also need coverage'],
+  'engagement-photography': ['an engagement shoot', 'ring ceremonies and receptions that also need coverage'],
+  'haldi-photography': ['a haldi shoot', 'daytime haldi functions that also need coverage'],
+  'wedding-photography': ['a wedding shoot', 'weddings and receptions that also need coverage'],
+  'first-holy-communion-photography': ['a communion shoot', 'communion services and the celebration after'],
+  'house-lighting': ['a lit-up home', 'festivals, housewarmings and celebrations needing exterior lighting'],
   'shamyana-items': ['an outdoor function', 'outdoor functions needing tenting and seating'],
 };
 
@@ -197,7 +204,11 @@ const CAT_COLOR = {
   'upanayanam': ['#ca8a04', '#f0dca4'],     'first-holy-communion': ['#93a4c7', '#e5ecf7'],
   'shamyana-items': ['#0d9488', '#9ad9d1'], 'kids-birthday-fun-activities': ['#f59e0b', '#fbcfe8'],
   'kids-birthday-fun-eats': ['#f472b6', '#fde68a'], 'kids-birthday-photography': ['#64748b', '#cbd5e1'],
-  'baby-shower-photography': ['#94a3b8', '#dbe4ee'], 'kids-birthday-simple-home-decor': ['#a78bfa', '#ddd6fe'],
+  'baby-shower-photography': ['#94a3b8', '#dbe4ee'],
+  'naming-ceremony-photography': ['#7c8798', '#cfd8e3'], 'house-warming-photography': ['#8b8177', '#ded5cb'],
+  'engagement-photography': ['#9c7f8a', '#e6d6dc'], 'haldi-photography': ['#b8973f', '#f2e3b8'],
+  'wedding-photography': ['#6f7b8c', '#d3dbe6'], 'first-holy-communion-photography': ['#8e9bab', '#dce3ec'],
+  'house-lighting': ['#c08a3e', '#ffe9b8'], 'kids-birthday-simple-home-decor': ['#a78bfa', '#ddd6fe'],
 };
 
 export function cardColors(p) {
@@ -217,6 +228,9 @@ export function cardColors(p) {
 const SERVICE_CATS = new Set([
   'shamyana-items', 'kids-birthday-fun-activities', 'kids-birthday-fun-eats',
   'kids-birthday-photography', 'baby-shower-photography',
+  'naming-ceremony-photography', 'house-warming-photography',
+  'engagement-photography', 'haldi-photography', 'wedding-photography',
+  'first-holy-communion-photography', 'house-lighting',
 ]);
 
 const size = (n) => n.match(/(\d+)\s*[×x]\s*(\d+)\s*(?:feet|ft)?/i)?.slice(1, 3).join('×');
@@ -261,6 +275,25 @@ function serviceCopy(p) {
     return `A live food counter set up at your venue, made to order in front of guests rather than plated in advance. `
       + `It doubles as part of the decor — counters are dressed to match your theme. `
       + `Quantities are quoted against your guest count. ${close}`;
+  }
+
+  if (p.category === 'house-lighting') {
+    const what = /villa|bungalow/i.test(n) ? 'a villa'
+      : /(\d+)\s*floor/i.test(n) ? `a ${n.match(/(\d+)\s*floor/i)[1]}-floor building`
+      : /balcony|terrace/i.test(n) ? 'a balcony or terrace'
+      : 'your home';
+    // the shared closers ask for a guest count, which means nothing for the
+    // outside of a building
+    const LIGHT_CLOSERS = [
+      'Send us the address and we will confirm the run and the fixing points.',
+      'Fitting and removal across Bengaluru are included in the quote.',
+      'Book it on its own or add it to a housewarming package.',
+      'Availability is confirmed in writing before you pay anything.',
+    ];
+    return `Exterior lighting for ${what}, run and fitted by our team and taken down afterwards. `
+      + `Used for housewarmings, festivals and family celebrations where the outside of the house should read as clearly as the inside. `
+      + `Power requirements are checked on a site visit before the day. `
+      + LIGHT_CLOSERS[(h >> 5) % LIGHT_CLOSERS.length];
   }
 
   // photography / videography

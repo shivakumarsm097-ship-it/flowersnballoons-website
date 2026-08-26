@@ -8,7 +8,7 @@
  *
  *   node scripts/harvest-names.mjs > /dev/null   (writes data/harvested.json)
  */
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -78,24 +78,46 @@ function parse(html, cat) {
 }
 
 const all = [];
+/* Keyed on category+name, NOT name alone. The source lists the same service
+   under several occasions at DIFFERENT prices — 4K Cinematic Videography is
+   ₹12,980 for a kids birthday and ₹9,980 for a wedding. Deduping on name let
+   whichever category came first in CATS claim the name and silently discard
+   every other category's copy along with its price: 65 listings and 7 whole
+   categories never made it into the catalogue. */
 const seen = new Set();
+const key = (r) => `${r.cat}|${r.name}`;
+
+/** Fetch with retries. A bare `break` on a failed request silently truncates a
+ *  whole category — that is how 7 categories went missing last time. Retry,
+ *  then record the failure so the run can refuse to write a short harvest. */
+const failures = [];
+async function get(url) {
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { 'user-agent': UA } });
+      if (res.status === 404) return null;              // genuinely no such page
+      if (res.ok) return await res.text();
+      if (attempt === 4) { failures.push(`${url} -> HTTP ${res.status}`); return undefined; }
+    } catch (e) {
+      if (attempt === 4) { failures.push(`${url} -> ${e.message}`); return undefined; }
+    }
+    await sleep(1200 * attempt);                        // back off before retrying
+  }
+}
 
 for (const cat of CATS) {
   for (let page = 1; page <= 12; page++) {
     const url = `${BASE}/service-category/${cat}/${page > 1 ? `page/${page}/` : ''}`;
-    let html;
-    try {
-      const res = await fetch(url, { headers: { 'user-agent': UA } });
-      if (!res.ok) break;
-      html = await res.text();
-    } catch { break; }
+    const html = await get(url);
+    if (html === null) break;                           // 404: end of pagination
+    if (html === undefined) break;                      // gave up; already recorded
 
     const rows = parse(html, cat);
     if (!rows.length) break;
     let added = 0;
     for (const r of rows) {
-      if (!r.name || seen.has(r.name) || !r.price) continue;
-      seen.add(r.name);
+      if (!r.name || seen.has(key(r)) || !r.price) continue;
+      seen.add(key(r));
       all.push(r);
       added++;
     }
@@ -105,8 +127,31 @@ for (const cat of CATS) {
   }
 }
 
+if (failures.length) {
+  console.error(`\nREFUSING TO WRITE — ${failures.length} request(s) failed after retries:`);
+  failures.forEach((f) => console.error('  ' + f));
+  console.error('A partial harvest would silently delete listings. Re-run.');
+  process.exit(1);
+}
+
 const byCat = {};
 all.forEach((r) => { byCat[r.cat] = (byCat[r.cat] || 0) + 1; });
+
+/* A soft failure — HTTP 200 with an empty grid — throws no error and would
+   quietly shrink the catalogue. Compare against the harvest already on disk
+   and refuse to overwrite it with anything smaller. */
+try {
+  const prev = JSON.parse(readFileSync(join(ROOT, 'data/harvested.json'), 'utf8'));
+  const shrunk = Object.entries(prev.byCat || {})
+    .filter(([c, n]) => (byCat[c] || 0) < n)
+    .map(([c, n]) => `  ${c}: ${n} -> ${byCat[c] || 0}`);
+  if (shrunk.length) {
+    console.error(`\nREFUSING TO WRITE — ${shrunk.length} categor(y/ies) came back smaller:`);
+    shrunk.forEach((l) => console.error(l));
+    console.error('Existing harvest left untouched. Re-run.');
+    process.exit(1);
+  }
+} catch { /* no previous harvest — first run */ }
 writeFileSync(join(ROOT, 'data/harvested.json'), JSON.stringify({ count: all.length, byCat, products: all }, null, 2));
 
 const p = all.map((r) => r.price);

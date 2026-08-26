@@ -111,6 +111,13 @@ const CATMETA = {
   'kids-birthday-fun-eats': ['Party Food & Treats', 'Food counters and treat stations that double as part of the decor.'],
   'kids-birthday-photography': ['Party Photography', 'Photography and video coverage, booked alongside the decoration so there is one point of contact.'],
   'baby-shower-photography': ['Baby Shower Photography', 'Coverage for the shower, arranged together with the decor.'],
+  'naming-ceremony-photography': ['Naming Ceremony Photography', 'Coverage for the naming and cradle ceremony, booked alongside the decoration.'],
+  'house-warming-photography': ['Housewarming Photography', 'Photography and video for griha pravesh, arranged with the decor.'],
+  'engagement-photography': ['Engagement Photography', 'Coverage for the ring ceremony and reception, on the same booking as the decor.'],
+  'haldi-photography':      ['Haldi Photography', 'Daytime coverage for the haldi function, booked together with the setup.'],
+  'wedding-photography':    ['Wedding Photography', 'Photography and video for the wedding and reception, arranged alongside the decoration.'],
+  'first-holy-communion-photography': ['Communion Photography', 'Coverage for the communion service and the celebration after it.'],
+  'house-lighting':         ['House Lighting', 'Exterior and interior lighting for festivals, housewarmings and celebrations.'],
   'shamyana-items': ['Shamiana & Tent Items', 'Tenting, seating, canopies and the structural pieces an outdoor function needs.'],
 };
 
@@ -126,16 +133,35 @@ function scaleOf(price) {
 
 /* ---------------- build products from harvested data ---------------- */
 const products = [];
-const usedSlugs = new Set();
+const usedSlugs = new Map();   // slug -> category of the listing holding it
 let n = 0;
 
 for (const r of HARV.products) {
   const meta = CATMETA[r.cat];
   if (!meta) continue;
   const displayName = renameProduct(r.name);
-  let slug = slugify(displayName);
-  while (usedSlugs.has(slug)) slug += '-' + (++n);
-  usedSlugs.add(slug);
+  /* The same service is sold under several occasions at different prices, so
+     names repeat across categories. Disambiguate with the occasion, not a
+     counter: `n` doubles as the SKU sequence, so a counter suffix produced
+     URLs like `4k-cinematic-videography-748` that moved on every rebuild.
+     Slugs stay globally unique because image-map.json and curated.json are
+     keyed by slug alone. */
+  const base = slugify(displayName);
+  let slug = base;
+  if (usedSlugs.has(slug)) {
+    // A clash across categories means the same service sold for a different
+    // occasion — say which. A clash inside one category means two variants that
+    // differ only in scale, where the occasion tells the buyer nothing and the
+    // price does. Both are stable across rebuilds; a counter was not.
+    slug = usedSlugs.get(base) === r.cat
+      ? `${base}-${r.price}`
+      : `${base}-${r.cat.replace(/-(photography|catering)$/, '')}`;
+    let dup = 1;
+    const attempt = slug;
+    while (usedSlugs.has(slug)) slug = `${attempt}-${++dup}`;
+  }
+  usedSlugs.set(slug, r.cat);
+  if (!usedSlugs.has(base)) usedSlugs.set(base, r.cat);
   const [scale, scaleBlurb] = scaleOf(r.price);
   products.push({
     sku: `FNB-${r.cat.slice(0, 2).toUpperCase()}-${String(++n).padStart(4, '0')}`,
@@ -167,13 +193,44 @@ writeFileSync(
 );
 
 /* ---------------- shared page chrome ---------------- */
-const head = (title, desc, depth, extra = '') => `<!DOCTYPE html>
+const SITE = 'https://www.flowersnballoons.com';
+
+/* Coverage, hire and lighting are not "decoration setups" and are not chosen by
+   "theme". Calling a videographer a setup reads as copy nobody proofread. */
+const SERVICE_CATS = new Set([
+  'shamyana-items', 'kids-birthday-fun-activities', 'kids-birthday-fun-eats',
+  'house-lighting',
+]);
+const isService = (slug) => SERVICE_CATS.has(slug) || slug.endsWith('-photography');
+const unitOf = (slug) => (isService(slug) ? 'option' : 'setup');
+
+/* The source sells the same service under several occasions. Where those copies
+   carry the SAME price they are genuinely one product on two URLs, and left
+   uncanonicalised they compete with each other in search. Point every copy at
+   the first one. Copies priced differently are distinct offers and each keeps
+   its own canonical. */
+const canonicalOf = new Map();
+{
+  const primary = new Map();
+  for (const p of products) {
+    const k = `${p.sourceName.toLowerCase().trim()}|${p.price}`;
+    if (!primary.has(k)) primary.set(k, p);
+    canonicalOf.set(p, primary.get(k));
+  }
+}
+const canonUrl = (p) => {
+  const c = canonicalOf.get(p) || p;
+  return `/shop/${c.category}/${c.slug}.html`;
+};
+
+const head = (title, desc, depth, extra = '', canonical = '') => `<!DOCTYPE html>
 <html lang="en-IN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
+${canonical ? `<link rel="canonical" href="${SITE}${canonical}">` : ''}
 <link rel="icon" href="${depth}images/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -293,7 +350,7 @@ const catCards = CATEGORIES.map((c) => {
     <div class="occ-body">
       <h3>${esc(c.name)}</h3>
       <p>${esc(c.intro)}</p>
-      <span class="occ-link">${items.length} setups
+      <span class="occ-link">${items.length} ${unitOf(c.slug)}s
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </span>
     </div>
@@ -303,7 +360,9 @@ const catCards = CATEGORIES.map((c) => {
 writeFileSync(join(shopDir, 'index.html'), `${head(
   `Shop Decoration Setups in Bangalore | Flowers N Balloons`,
   `Browse ${products.length} decoration setups with prices and full inclusions. Birthday, baby shower, haldi, housewarming and corporate decor in Bengaluru.`,
-  '../'
+  '../',
+    '',
+    '/shop/index.html'
 )}
 ${header('../')}
 <main>
@@ -325,7 +384,9 @@ ${footer('../')}`);
 writeFileSync(join(shopDir, 'checkout.html'), `${head(
   'Check your date | Flowers N Balloons',
   'Confirm your event date is available before paying anything.',
-  '../'
+  '../',
+    '',
+    '/shop/checkout.html'
 )}
 ${header('../')}
 <main>
@@ -387,9 +448,13 @@ for (const c of CATEGORIES) {
   const items = products.filter((p) => p.category === c.slug).sort((a, b) => a.price - b.price);
   mkdirSync(join(shopDir, c.slug), { recursive: true });
   writeFileSync(join(shopDir, c.slug, 'index.html'), `${head(
-    `${c.name} Decoration in Bangalore | Flowers N Balloons`,
-    `${items.length} ${c.name.toLowerCase()} decoration setups in Bengaluru. Every setup priced, with what you get listed on each one.`,
-    '../../'
+    isService(c.slug)
+      ? `${c.name} in Bangalore | Flowers N Balloons`
+      : `${c.name} Decoration in Bangalore | Flowers N Balloons`,
+    `${items.length} ${c.name.toLowerCase()} ${unitOf(c.slug)}s in Bengaluru, each one priced with what you get listed on it.`,
+    '../../',
+    '',
+    `/shop/${c.slug}/index.html`
   )}
 ${header('../../')}
 <main>
@@ -398,11 +463,11 @@ ${header('../../')}
       <nav class="crumbs"><a href="../../index.html">Home</a> <span>/</span> <a href="../index.html">Shop</a> <span>/</span> ${esc(c.name)}</nav>
       <div class="section-head">
         <span class="eyebrow">${esc(c.name)}</span>
-        <h2>${esc(c.name)} setups</h2>
+        <h2>${esc(c.name)}${isService(c.slug) ? '' : ' setups'}</h2>
         <p>${esc(c.intro)}</p>
       </div>
       <div class="shop-bar">
-        <span class="js-count">${items.length} setups</span>
+        <span class="js-count">${items.length} ${unitOf(c.slug)}s</span>
         <label class="sort-wrap">Sort
           <select class="input js-sort">
             <option value="low">Price: low to high</option>
@@ -416,7 +481,7 @@ ${header('../../')}
           <button class="chip is-on" type="button" data-tier="">All</button>
           ${[...new Set(items.map((p) => p.tier))].map((t) => `<button class="chip" type="button" data-tier="${esc(t)}">${esc(t)}</button>`).join('')}
         </div>
-        <input class="input js-search" type="search" placeholder="Search ${esc(c.name.toLowerCase())} themes…" aria-label="Search themes">
+        <input class="input js-search" type="search" placeholder="Search ${esc(c.name.toLowerCase())}…" aria-label="Search themes">
       </div>
       <p class="no-hits" hidden>No setups match that. <button type="button" class="js-clear">Clear filters</button></p>
       <div class="prod-grid js-grid">${items.map((p, i) => card(p, '../../', i)).join('')}</div>
@@ -438,7 +503,8 @@ ${footer('../../')}`);
       `${p.name} — ${inr(p.price)} | Flowers N Balloons Bangalore`,
       p.metaDescription,
       '../../',
-      `<script type="application/ld+json">${JSON.stringify(ld)}</script>`
+      `<script type="application/ld+json">${JSON.stringify(ld)}</script>`,
+      canonUrl(p)
     )}
 ${header('../../')}
 <main>
