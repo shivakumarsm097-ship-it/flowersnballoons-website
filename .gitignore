@@ -9,3 +9,4 @@ images/incoming/*
 !images/incoming/README.md
 !images/incoming/FILENAMES.csv
 images/products/*.webp
+.img-src/
