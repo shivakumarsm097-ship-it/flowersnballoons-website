@@ -240,10 +240,36 @@ const unitOf = (slug) => (isService(slug) ? 'option' : 'setup');
    uncanonicalised they compete with each other in search. Point every copy at
    the first one. Copies priced differently are distinct offers and each keeps
    its own canonical. */
+
+/* ---------------- what is finished enough to publish ----------------
+   A listing goes live only when it carries its own picture, real copy and a
+   what's-included list. Everything else stays in data/products.json — the
+   catalogue is still the single source of truth — but no page is written for
+   it, so the live shop never shows a half-built listing.
+
+   PUBLISH_ALL=1 builds the whole catalogue for local preview. */
+const PUBLISH_ALL = process.env.PUBLISH_ALL === '1';
+
+function isComplete(p) {
+  const ownPicture = hasExactPhoto(p) || !!listingArt(p);   // category art does not count
+  const realCopy   = typeof p.description === 'string' && p.description.length > 80;
+  const service    = SERVICE_CATS.has(p.category) || p.category.endsWith('-photography');
+  const inclusions = service || (Array.isArray(p.inclusions) && p.inclusions.length >= 3);
+  return ownPicture && realCopy && inclusions;
+}
+
+const PUBLISHED  = PUBLISH_ALL ? products : products.filter(isComplete);
+const PUB_CATS   = CATEGORIES.filter((c) => PUBLISHED.some((p) => p.category === c.slug));
+
+if (!PUBLISHED.length) {
+  console.error('Nothing is complete enough to publish — no shop pages written.');
+  console.error('Run with PUBLISH_ALL=1 to build the full catalogue for preview.');
+}
+
 const canonicalOf = new Map();
 {
   const primary = new Map();
-  for (const p of products) {
+  for (const p of PUBLISHED) {
     const k = `${p.sourceName.toLowerCase().trim()}|${p.price}`;
     if (!primary.has(k)) primary.set(k, p);
     canonicalOf.set(p, primary.get(k));
@@ -312,10 +338,10 @@ const footer = (depth) => `
         <p>Decoration across Bengaluru. Every price on this site is a starting point for that setup — your final quote is confirmed in writing.</p>
       </div>
       <div class="footer-col"><h4>Shop</h4><ul>
-        ${CATEGORIES.slice(0, 5).map((c) => `<li><a href="${depth}shop/${c.slug}/index.html">${esc(c.name)}</a></li>`).join('\n        ')}
+        ${PUB_CATS.slice(0, 5).map((c) => `<li><a href="${depth}shop/${c.slug}/index.html">${esc(c.name)}</a></li>`).join('\n        ')}
       </ul></div>
       <div class="footer-col"><h4>More</h4><ul>
-        ${CATEGORIES.slice(5).map((c) => `<li><a href="${depth}shop/${c.slug}/index.html">${esc(c.name)}</a></li>`).join('\n        ')}
+        ${PUB_CATS.slice(5).map((c) => `<li><a href="${depth}shop/${c.slug}/index.html">${esc(c.name)}</a></li>`).join('\n        ')}
       </ul></div>
       <div class="footer-col"><h4>Get in touch</h4><ul>
         <li><a href="tel:${PHONE}">${PHONE_H}</a></li>
@@ -373,15 +399,17 @@ if (existsSync(shopDir)) rmSync(shopDir, { recursive: true });
 mkdirSync(shopDir, { recursive: true });
 
 // shop index
-const catCards = CATEGORIES.map((c) => {
-  const items = products.filter((p) => p.category === c.slug);
+const catCards = PUB_CATS.map((c) => {
+  const items = PUBLISHED.filter((p) => p.category === c.slug);
   return `
   <a class="occ-card reveal" href="${c.slug}/index.html">
-    <div class="occ-media"><div class="prod-ph" aria-hidden="true">${esc(c.name)}</div></div>
+    <div class="occ-media">${categoryArt(c.slug)
+      ? `<img src="../${categoryArt(c.slug)}" alt="" width="1376" height="768" loading="lazy">`
+      : `<div class="prod-ph" aria-hidden="true">${esc(c.name)}</div>`}</div>
     <div class="occ-body">
       <h3>${esc(c.name)}</h3>
       <p>${esc(c.intro)}</p>
-      <span class="occ-link">${items.length} ${unitOf(c.slug)}s
+      <span class="occ-link">${items.length} ${unitOf(c.slug)}${items.length === 1 ? '' : 's'}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </span>
     </div>
@@ -390,7 +418,7 @@ const catCards = CATEGORIES.map((c) => {
 
 writeFileSync(join(shopDir, 'index.html'), `${head(
   `Shop Decoration Setups in Bangalore | Flowers N Balloons`,
-  `Browse ${products.length} decoration setups with prices and full inclusions. Birthday, baby shower, haldi, housewarming and corporate decor in Bengaluru.`,
+  `Browse ${PUBLISHED.length} decoration setups with prices and full inclusions. Birthday, baby shower, haldi, housewarming and corporate decor in Bengaluru.`,
   '../',
     '',
     '/shop/index.html'
@@ -403,7 +431,7 @@ ${header('../')}
       <div class="section-head">
         <span class="eyebrow">The full catalogue</span>
         <h2>Every setup, with the price and what's in it</h2>
-        <p>${products.length} setups across ${CATEGORIES.length} categories. Each listing shows exactly what's included — no "call for price".</p>
+        <p>${PUBLISHED.length} ${PUBLISHED.length === 1 ? 'setup' : 'setups'} across ${PUB_CATS.length} ${PUB_CATS.length === 1 ? 'category' : 'categories'}. Each listing shows exactly what's included — no "call for price".</p>
       </div>
       <div class="occasions">${catCards}</div>
     </div>
@@ -475,8 +503,8 @@ ${header('../')}
 ${footer('../')}`);
 
 // category pages
-for (const c of CATEGORIES) {
-  const items = products.filter((p) => p.category === c.slug).sort((a, b) => a.price - b.price);
+for (const c of PUB_CATS) {
+  const items = PUBLISHED.filter((p) => p.category === c.slug).sort((a, b) => a.price - b.price);
   mkdirSync(join(shopDir, c.slug), { recursive: true });
   writeFileSync(join(shopDir, c.slug, 'index.html'), `${head(
     isService(c.slug)
@@ -593,8 +621,26 @@ ${footer('../../')}`);
   }
 }
 
-const min = Math.min(...products.map((p) => p.price));
-const max = Math.max(...products.map((p) => p.price));
-console.log(`✓ ${products.length} products across ${CATEGORIES.length} categories`);
+
+/* Keep the hand-maintained homepage honest about what is actually live.
+   These counts have gone stale three times; derive them instead. */
+{
+  const idx = join(ROOT, 'index.html');
+  try {
+    let html = readFileSync(idx, 'utf8');
+    const before = html;
+    const n = PUBLISHED.length.toLocaleString('en-IN');
+    html = html.replace(/Shop all [\d,]+ setups?/g, `Shop all ${n} setup${PUBLISHED.length === 1 ? '' : 's'}`)
+               .replace(/<b>[\d,]+<\/b><span>(?:Category|Categories)<\/span>/g,
+                        `<b>${PUB_CATS.length}</b><span>${PUB_CATS.length === 1 ? 'Category' : 'Categories'}</span>`)
+               .replace(/<b>[\d,]+<\/b><span>(?:Setup|Setups) to browse<\/span>/g,
+                        `<b>${n}</b><span>${PUBLISHED.length === 1 ? 'Setup' : 'Setups'} to browse</span>`);
+    if (html !== before) { writeFileSync(idx, html); console.log(`  index.html counts -> ${n} setups, ${PUB_CATS.length} categories`); }
+  } catch { /* homepage not present */ }
+}
+
+const min = Math.min(...PUBLISHED.map((p) => p.price));
+const max = Math.max(...PUBLISHED.map((p) => p.price));
+console.log(`✓ published ${PUBLISHED.length} of ${products.length} listings across ${PUB_CATS.length} of ${CATEGORIES.length} categories`);
 console.log(`  price range ${inr(min)} – ${inr(max)}  (real prices, harvested)`);
 console.log(`  wrote data/products.json + shop/`);
