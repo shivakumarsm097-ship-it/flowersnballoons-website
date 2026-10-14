@@ -64,6 +64,12 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
    or its hand-written copy. */
 const bySlugOrSource = (table, p) => table[p.slug] || table[p.sourceSlug] || undefined;
 
+/* Category header images, generated rather than photographed. They are
+   atmosphere for a category page; on a listing they appear only as a clearly
+   labelled illustration, never passed off as a photograph of a setup we built. */
+const CATEGORY_ART = new Set(['annaprasan', 'anniversary', 'baby-shower', 'baby-shower-photography', 'bachelorette', 'birthday', 'engagement', 'engagement-photography', 'first-holy-communion', 'first-holy-communion-photography', 'haldi', 'haldi-photography', 'house-lighting', 'house-warming', 'house-warming-photography', 'kids-birthday', 'kids-birthday-fun-activities', 'kids-birthday-fun-eats', 'kids-birthday-photography', 'kids-birthday-simple-home-decor', 'naming-ceremony', 'naming-ceremony-photography', 'shamyana-items', 'surprise-events', 'upanayanam', 'wedding', 'wedding-photography']);
+const categoryArt = (slug) => (CATEGORY_ART.has(slug) ? 'images/categories/' + slug + '.webp' : null);
+
 function photoFor(p) {
   const own = bySlugOrSource(IMG.products, p);
   if (own) return { stem: own, exact: true };
@@ -75,11 +81,25 @@ function photoFor(p) {
 function ratioStyle(p) {
   const ph = photoFor(p);
   const r = ph && IMG.ratios && IMG.ratios[ph.stem];
-  return r ? ` style="aspect-ratio:${r[0]}/${r[1]}"` : '';
+  if (r) return ` style="aspect-ratio:${r[0]}/${r[1]}"`;
+  // the generated category art is 16:9; without this the media box collapses
+  // and the disclaimer under it rides up over the image
+  if (!ph && categoryArt(p.category)) return ' style="aspect-ratio:1376/768"';
+  return '';
 }
 function media(p, depth, size, cls = 'prod-ph') {
   const ph = photoFor(p);
-  if (!ph) return `<div class="${cls}" style="--c1:${p.c1};--c2:${p.c2}" aria-hidden="true"><span>${esc(p.name)}</span></div>`;
+  if (!ph) {
+    // Only on the product page. In a grid every listing in a category would
+    // show the same picture twenty times over, which reads worse than the
+    // per-product gradient cards and buries the real photos we do have.
+    const art = size === 'full' ? categoryArt(p.category) : null;
+    if (art) {
+      return `<img src="${depth}${art}" alt="Illustration of ${esc(p.categoryName.toLowerCase())} decoration" loading="lazy" width="1376" height="768">`
+        + `<span class="ph-tag ph-tag-art">Illustration</span>`;
+    }
+    return `<div class="${cls}" style="--c1:${p.c1};--c2:${p.c2}" aria-hidden="true"><span>${esc(p.name)}</span></div>`;
+  }
   const alt = ph.exact ? `${esc(p.name)} by Flowers N Balloons`
                        : `Example of our ${esc(p.categoryName.toLowerCase())} decoration work`;
   return `<img src="${depth}images/products/${ph.stem}-${size}.webp" alt="${alt}" loading="lazy" width="${size === 'full' ? 1200 : 600}" height="${size === 'full' ? 900 : 450}">`
@@ -461,6 +481,7 @@ ${header('../../')}
   <section class="section">
     <div class="shell">
       <nav class="crumbs"><a href="../../index.html">Home</a> <span>/</span> <a href="../index.html">Shop</a> <span>/</span> ${esc(c.name)}</nav>
+      ${categoryArt(c.slug) ? `<div class="cat-hero"><img src="../../${categoryArt(c.slug)}" alt="" width="1376" height="768" loading="eager" fetchpriority="high"></div>` : ''}
       <div class="section-head">
         <span class="eyebrow">${esc(c.name)}</span>
         <h2>${esc(c.name)}${isService(c.slug) ? '' : ' setups'}</h2>
@@ -515,7 +536,7 @@ ${header('../../')}
       <div class="pdp" style="--c1:${p.c1};--c2:${p.c2}">
         <div class="pdp-media"${ratioStyle(p)}>
           ${media(p, '../../', 'full', 'prod-ph pdp-ph')}
-          ${hasExactPhoto(p) ? '' : `<p class="ph-note">${photoFor(p) ? 'Shown: an example of our ' + esc(p.categoryName.toLowerCase()) + ' work. This exact theme has not been photographed yet.' : "Photo coming soon — this setup hasn't been photographed yet."}</p>`}
+          ${hasExactPhoto(p) ? '' : `<p class="ph-note">${photoFor(p) ? 'Shown: an example of our ' + esc(p.categoryName.toLowerCase()) + ' work. This exact theme has not been photographed yet.' : (categoryArt(p.category) ? 'Illustration, not a photograph — this setup has not been photographed yet. We will send real photos of comparable work with your quote.' : "Photo coming soon — this setup hasn't been photographed yet.")}</p>`}
         </div>
 
         <div class="pdp-info">

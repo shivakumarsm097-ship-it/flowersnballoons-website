@@ -263,3 +263,15 @@
    them; `contain` plus the true ratio means no crop and no stretch. */
 .pdp-media img { aspect-ratio: auto; height: 100%; object-fit: contain; }
 .pdp-media { max-width: 760px; }
+
+/* ---------- category hero ---------- */
+/* Generated artwork, not a photograph of a setup, so it is decorative: empty
+   alt and no caption. The listing-level counterpart is labelled instead. */
+.cat-hero {
+  margin: 0 0 26px; border-radius: var(--radius); overflow: hidden;
+  background: var(--cream-deep); box-shadow: var(--shadow-sm);
+}
+.cat-hero img { display: block; width: 100%; height: clamp(170px, 26vw, 300px); object-fit: cover; }
+
+/* an illustration standing in for a photo is called what it is */
+.ph-tag-art { background: rgba(192,138,62,.92); }
