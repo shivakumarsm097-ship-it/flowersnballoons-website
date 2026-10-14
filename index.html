@@ -151,7 +151,7 @@
 
       <div class="hero-gallery">
         <figure class="hero-shot tall reveal">
-          <img src="images/hero-bg.webp?v=f2b8c7ab" alt="Garden-theme celebration setup: floral hoops over a draped cake table, flanked by potted topiary" width="640" height="853" loading="eager" fetchpriority="high">
+          <img src="images/hero-themed-birthday.webp?v=830a8147" alt="Jungle-theme birthday setup: a green and gold balloon garland with palm leaves, animal cutouts and a dressed cake table" width="640" height="853" loading="eager" fetchpriority="high">
           <figcaption>Themed birthday setup</figcaption>
         </figure>
         <figure class="hero-shot wide reveal reveal-delay-1">
@@ -529,9 +529,24 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="area">Area in Bengaluru</label>
-              <input class="input" type="text" id="area" name="area" placeholder="e.g. Koramangala">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="budget">Budget <span class="req">*</span></label>
+                <select class="input" id="budget" name="budget" data-required>
+                  <option value="">Select a range</option>
+                  <option value="under-10k">Under &#8377;10,000</option>
+                  <option value="10k-25k">&#8377;10,000 &ndash; &#8377;25,000</option>
+                  <option value="25k-50k">&#8377;25,000 &ndash; &#8377;50,000</option>
+                  <option value="50k-1l">&#8377;50,000 &ndash; &#8377;1,00,000</option>
+                  <option value="over-1l">Over &#8377;1,00,000</option>
+                  <option value="unsure">Not sure yet &mdash; advise me</option>
+                </select>
+                <span class="field-err" data-err="budget" role="alert"></span>
+              </div>
+              <div class="form-group">
+                <label for="area">Area in Bengaluru</label>
+                <input class="input" type="text" id="area" name="area" placeholder="e.g. Koramangala">
+              </div>
             </div>
 
             <div class="form-group">
