@@ -53,7 +53,7 @@ h2,.section-title{font-weight:600;}
 .hero{
   background:
     linear-gradient(120deg, rgba(36,26,34,.60) 0%, rgba(200,84,110,.50) 48%, rgba(192,138,62,.42) 100%),
-    url('../images/hero-bg.webp') center/cover no-repeat !important;
+    url('../images/hero-bg.webp?v=dde16b61') center/cover no-repeat !important;
 }
 .hero h1{text-shadow:0 3px 22px rgba(0,0,0,.26);}
 .hero-badge{
@@ -160,7 +160,7 @@ h2,.section-title{font-weight:600;}
 .lp-hero{
   background:
     linear-gradient(135deg, rgba(36,26,34,.58) 0%, rgba(200,84,110,.50) 48%, rgba(192,138,62,.40) 100%),
-    url('../images/hero-bg.webp') center/cover no-repeat!important;
+    url('../images/hero-bg.webp?v=dde16b61') center/cover no-repeat!important;
   position:relative;overflow:hidden;
 }
 /* interior page hero band (privacy-policy etc.) — same coral→champagne wash, not coral→sage */
