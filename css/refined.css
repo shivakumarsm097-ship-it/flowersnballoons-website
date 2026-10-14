@@ -394,3 +394,10 @@ textarea.input { resize: vertical; min-height: 108px; }
   .price-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
   .float-actions { right: 24px; bottom: 24px; }
 }
+
+/* The hero gallery shows generated illustrations of the styles we build, not
+   photographs of completed jobs. Said once, quietly, under the gallery. */
+.gallery-note {
+  margin: 12px 0 0; text-align: center;
+  font-size: .76rem; color: var(--muted); letter-spacing: .01em;
+}
