@@ -297,6 +297,7 @@ const canonUrl = (p) => {
 const head = (title, desc, depth, extra = '', canonical = '') => `<!DOCTYPE html>
 <html lang="en-IN">
 <head>
+<meta name="google-site-verification" content="jXF9bUfyoJCfftCF9_v2ieErC97yQWjSccfBT7rC0dI">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(title)}</title>
