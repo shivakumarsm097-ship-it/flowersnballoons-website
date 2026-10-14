@@ -250,6 +250,13 @@ const unitOf = (slug) => (isService(slug) ? 'option' : 'setup');
    PUBLISH_ALL=1 builds the whole catalogue for local preview. */
 const PUBLISH_ALL = process.env.PUBLISH_ALL === '1';
 
+/* The shop can be taken off the site without losing the catalogue: this writes
+   no shop/ pages and leaves index.html untouched. data/products.json is still
+   generated either way. */
+let SITE_CFG = { shop: true };
+try { SITE_CFG = read('data/site-config.json'); } catch { /* default on */ }
+const SHOP_ENABLED = SITE_CFG.shop !== false;
+
 function isComplete(p) {
   const ownPicture = hasExactPhoto(p) || !!listingArt(p);   // category art does not count
   const realCopy   = typeof p.description === 'string' && p.description.length > 80;
@@ -264,6 +271,13 @@ const PUB_CATS   = CATEGORIES.filter((c) => PUBLISHED.some((p) => p.category ===
 if (!PUBLISHED.length) {
   console.error('Nothing is complete enough to publish — no shop pages written.');
   console.error('Run with PUBLISH_ALL=1 to build the full catalogue for preview.');
+}
+
+if (!SHOP_ENABLED) {
+  rmSync(join(ROOT, 'shop'), { recursive: true, force: true });
+  console.log(`✓ catalogue rebuilt: ${products.length} listings in data/products.json`);
+  console.log('  shop is OFF in data/site-config.json — no shop/ pages written, index.html untouched');
+  process.exit(0);
 }
 
 const canonicalOf = new Map();

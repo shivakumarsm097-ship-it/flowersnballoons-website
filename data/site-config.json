@@ -1,0 +1,11 @@
+{
+  "_readme": [
+    "shop: false keeps the shop out of the built site entirely — no shop/ pages",
+    "are written and index.html is left alone. The catalogue itself is untouched:",
+    "data/products.json is still generated, so nothing is lost and flipping this",
+    "back to true republishes whatever is complete at that moment.",
+    "",
+    "PUBLISH_ALL=1 overrides the completeness filter for local preview."
+  ],
+  "shop": false
+}
