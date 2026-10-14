@@ -224,7 +224,7 @@ writeFileSync(
 );
 
 /* ---------------- shared page chrome ---------------- */
-const SITE = 'https://www.flowersnballoons.com';
+const SITE = 'https://flowersnballoons.com';
 
 /* Coverage, hire and lighting are not "decoration setups" and are not chosen by
    "theme". Calling a videographer a setup reads as copy nobody proofread. */
@@ -529,7 +529,7 @@ ${footer('../../')}`);
       name: p.name, sku: p.sku, category: p.categoryName,
       description: p.description,
       brand: { '@type': 'Brand', name: "Flowers 'N' Balloons" },
-      offers: { '@type': 'Offer', price: p.price, priceCurrency: 'INR', availability: 'https://schema.org/InStock', url: `https://www.flowersnballoons.com/shop/${p.category}/${p.slug}.html` },
+      offers: { '@type': 'Offer', price: p.price, priceCurrency: 'INR', availability: 'https://schema.org/InStock', url: `https://flowersnballoons.com/shop/${p.category}/${p.slug}.html` },
     };
     writeFileSync(join(shopDir, c.slug, `${p.slug}.html`), `${head(
       `${p.name} — ${inr(p.price)} | Flowers N Balloons Bangalore`,
