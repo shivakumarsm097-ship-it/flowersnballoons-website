@@ -51,6 +51,16 @@ try { CURATED = read('data/curated.json'); } catch { /* optional */ }
 let IMG = { products: {}, categories: {} };
 try { IMG = read('data/image-map.json'); } catch { /* no photos yet */ }
 
+/* Per-cluster illustrations from scripts/generate-listing-images.py. Sits
+   between a real photograph and the category-wide image: more specific than
+   the category, still generated, so still labelled. */
+let LISTING_ART = { bySlug: {} };
+try { LISTING_ART = read('data/listing-image-map.json'); } catch { /* not generated yet */ }
+const listingArt = (p) => {
+  const stem = LISTING_ART.bySlug[p.slug] || LISTING_ART.bySlug[p.sourceSlug];
+  return stem ? 'images/listings/' + stem + '.webp' : null;
+};
+
 const PHONE = '+918867121207';
 const PHONE_H = '+91 88671 21207';
 const inr = (n) => '₹' + n.toLocaleString('en-IN');
@@ -84,6 +94,7 @@ function ratioStyle(p) {
   if (r) return ` style="aspect-ratio:${r[0]}/${r[1]}"`;
   // the generated category art is 16:9; without this the media box collapses
   // and the disclaimer under it rides up over the image
+  if (!ph && listingArt(p)) return ' style="aspect-ratio:4/3"';
   if (!ph && categoryArt(p.category)) return ' style="aspect-ratio:1376/768"';
   return '';
 }
@@ -93,7 +104,7 @@ function media(p, depth, size, cls = 'prod-ph') {
     // Only on the product page. In a grid every listing in a category would
     // show the same picture twenty times over, which reads worse than the
     // per-product gradient cards and buries the real photos we do have.
-    const art = size === 'full' ? categoryArt(p.category) : null;
+    const art = size === 'full' ? (listingArt(p) || categoryArt(p.category)) : null;
     if (art) {
       return `<img src="${depth}${art}" alt="Illustration of ${esc(p.categoryName.toLowerCase())} decoration" loading="lazy" width="1376" height="768">`
         + `<span class="ph-tag ph-tag-art">Illustration</span>`;
@@ -536,7 +547,7 @@ ${header('../../')}
       <div class="pdp" style="--c1:${p.c1};--c2:${p.c2}">
         <div class="pdp-media"${ratioStyle(p)}>
           ${media(p, '../../', 'full', 'prod-ph pdp-ph')}
-          ${hasExactPhoto(p) ? '' : `<p class="ph-note">${photoFor(p) ? 'Shown: an example of our ' + esc(p.categoryName.toLowerCase()) + ' work. This exact theme has not been photographed yet.' : (categoryArt(p.category) ? 'Illustration, not a photograph — this setup has not been photographed yet. We will send real photos of comparable work with your quote.' : "Photo coming soon — this setup hasn't been photographed yet.")}</p>`}
+          ${hasExactPhoto(p) ? '' : `<p class="ph-note">${photoFor(p) ? 'Shown: an example of our ' + esc(p.categoryName.toLowerCase()) + ' work. This exact theme has not been photographed yet.' : ((listingArt(p) || categoryArt(p.category)) ? 'Illustration, not a photograph — this setup has not been photographed yet. We will send real photos of comparable work with your quote.' : "Photo coming soon — this setup hasn't been photographed yet.")}</p>`}
         </div>
 
         <div class="pdp-info">

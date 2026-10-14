@@ -10,3 +10,4 @@ images/incoming/*
 !images/incoming/FILENAMES.csv
 images/products/*.webp
 .img-src/
+images/listings/
