@@ -2,19 +2,19 @@
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════════
-   GOOGLE ANALYTICS 4 + GOOGLE ADS TRACKING
+   GOOGLE ANALYTICS 4
    ─────────────────────────────────────────────────────────────
-   SETUP STEPS (do this before running ads):
-   1. Create a Google Analytics 4 property → get your Measurement ID (G-XXXXXXXXXX)
-   2. Create a Google Ads account → get your Conversion ID (AW-XXXXXXXXXX)
-   3. Replace both placeholders below with your real IDs
-   4. In Google Ads, create a "Website" conversion action and copy the
-      Conversion Label — paste it in thank-you.html where indicated
+   GA4 is live below. Google Ads is NOT wired: both Ads accounts
+   (547-214-5252 and 441-612-9545) are behind a 2-Step Verification
+   requirement, so the conversion ID could not be read. The config
+   call was removed rather than left firing for an ID that does not
+   exist. To add it later: set GADS_ID, add gtag('config', GADS_ID)
+   below, and uncomment the conversion line in thank-you.html with
+   the real AW-xxxx/label.
 ═══════════════════════════════════════════════════════════════ */
 (function () {
-  var GA4_ID  = 'G-XXXXXXXXXX';   // ← Replace with your GA4 Measurement ID
-  var GADS_ID = 'AW-XXXXXXXXXX';  // ← Replace with your Google Ads Conversion ID
-
+  var GA4_ID = 'G-GP3Q0N8Q9M';  // GA4 property 'flowersnballoons.com', stream 4076501310
+  
   // Don't load on localhost (dev environment)
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
 
@@ -29,7 +29,6 @@
   window.gtag = gtag;
   gtag('js', new Date());
   gtag('config', GA4_ID);   // GA4 pageview
-  gtag('config', GADS_ID);  // Google Ads remarketing
 
   // Track phone call clicks
   document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
