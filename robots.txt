@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.flowersnballoons.com/sitemap.xml
+Sitemap: https://flowersnballoons.com/sitemap.xml
