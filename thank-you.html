@@ -14,17 +14,10 @@
 
   <!-- ═══════════════════════════════════════════════════════════
        GOOGLE ADS CONVERSION TRACKING
-       Replace AW-XXXXXXXXXX with your Google Ads Conversion ID
-       Replace YYYYYYYY with your Conversion Label
-       Get these from: Google Ads → Tools → Measurement → Conversions
+       Handled in js/main.js (AW-809001025 / "Leads"). That script
+       detects this page by pathname and fires the conversion once,
+       after gtag.js is loaded — so nothing is needed inline here.
   ═══════════════════════════════════════════════════════════ -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    // ↓ UNCOMMENT and replace IDs when you have your Google Ads account
-    // gtag('event', 'conversion', {'send_to': 'AW-XXXXXXXXXX/YYYYYYYY', 'value': 1.0, 'currency': 'INR'});
-  </script>
 
   <style>
     :root {
@@ -155,6 +148,6 @@
     </p>
   </footer>
 
-  <script src="js/main.min.js?v=06ea22bc" defer></script>
+  <script src="js/main.min.js?v=dc538b65" defer></script>
 </body>
 </html>

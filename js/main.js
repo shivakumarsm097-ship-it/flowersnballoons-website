@@ -2,18 +2,18 @@
 'use strict';
 
 /* ═══════════════════════════════════════════════════════════════
-   GOOGLE ANALYTICS 4
+   GOOGLE ANALYTICS 4  +  GOOGLE ADS CONVERSIONS
    ─────────────────────────────────────────────────────────────
-   GA4 is live below. Google Ads is NOT wired: both Ads accounts
-   (547-214-5252 and 441-612-9545) are behind a 2-Step Verification
-   requirement, so the conversion ID could not be read. The config
-   call was removed rather than left firing for an ID that does not
-   exist. To add it later: set GADS_ID, add gtag('config', GADS_ID)
-   below, and uncomment the conversion line in thank-you.html with
-   the real AW-xxxx/label.
+   GA4 property 'flowersnballoons.com' (stream 4076501310).
+   Google Ads account 'Shiva' 547-214-5252, conversion action
+   "Leads" (conversion type ID 314886155, Submit lead form).
+   The conversion fires once on thank-you.html, which is the page
+   the enquiry form redirects to after a successful submit.
 ═══════════════════════════════════════════════════════════════ */
 (function () {
-  var GA4_ID = 'G-GP3Q0N8Q9M';  // GA4 property 'flowersnballoons.com', stream 4076501310
+  var GA4_ID   = 'G-GP3Q0N8Q9M';            // GA4 measurement ID
+  var GADS_ID  = 'AW-809001025';            // Google Ads conversion ID
+  var GADS_LBL = 'wt0zCIuQk5YBEMHA4YED';    // "Leads" conversion label
   
   // Don't load on localhost (dev environment)
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') return;
@@ -29,6 +29,17 @@
   window.gtag = gtag;
   gtag('js', new Date());
   gtag('config', GA4_ID);   // GA4 pageview
+  gtag('config', GADS_ID);  // Google Ads
+
+  // Google Ads conversion — thank-you.html is reached only after a
+  // successful enquiry submit, so a page-load fire is the conversion.
+  if (/(^|\/)thank-you(\.html)?$/.test(window.location.pathname)) {
+    gtag('event', 'conversion', {
+      send_to: GADS_ID + '/' + GADS_LBL,
+      value: 1.0,
+      currency: 'INR'
+    });
+  }
 
   // Track phone call clicks
   document.querySelectorAll('a[href^="tel:"]').forEach(function (a) {
