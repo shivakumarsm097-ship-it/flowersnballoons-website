@@ -158,49 +158,7 @@
   });
 })();
 
-/* === HERO 3D FLOATING ELEMENTS === */
-(function () {
-  const hero = document.querySelector('.hero');
-  if (!hero) return;
 
-  const items = [
-    { e: '🎈', s: '2.4rem', t: '12%', l: '7%',   d: '0s',    dr: '6s'   },
-    { e: '🌸', s: '2rem',   t: '65%', l: '5%',   d: '1.2s',  dr: '7.5s' },
-    { e: '🎊', s: '2.2rem', t: '20%', r: '7%',   d: '0.6s',  dr: '5.5s' },
-    { e: '💐', s: '1.8rem', t: '72%', r: '6%',   d: '1.8s',  dr: '8s'   },
-    { e: '🎉', s: '2rem',   t: '40%', l: '3%',   d: '2.4s',  dr: '6.5s' },
-    { e: '🌺', s: '1.6rem', t: '8%',  r: '16%',  d: '3s',    dr: '7s'   },
-  ];
-
-  items.forEach((item, i) => {
-    const outer = document.createElement('span');
-    outer.className = 'hero-float';
-    outer.style.cssText = `top:${item.t};${item.l?'left:'+item.l:'right:'+item.r};font-size:${item.s};`;
-
-    const inner = document.createElement('span');
-    inner.className = 'hero-float-inner';
-    inner.textContent = item.e;
-    inner.style.cssText = `animation-delay:${item.d};animation-duration:${item.dr};`;
-
-    outer.appendChild(inner);
-    hero.appendChild(outer);
-  });
-
-  // Mouse parallax: each float moves at a different depth
-  hero.addEventListener('mousemove', e => {
-    const r = hero.getBoundingClientRect();
-    const mx = (e.clientX - r.left) / r.width  - 0.5;
-    const my = (e.clientY - r.top)  / r.height - 0.5;
-    hero.querySelectorAll('.hero-float').forEach((el, i) => {
-      const depth = (i % 3 + 1) * 14;
-      el.style.transform = `translate(${mx * depth}px, ${my * depth}px)`;
-    });
-  });
-
-  hero.addEventListener('mouseleave', () => {
-    hero.querySelectorAll('.hero-float').forEach(el => { el.style.transform = ''; });
-  });
-})();
 
 /* === FORM VALIDATION & SUBMIT === */
 (function () {
