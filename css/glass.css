@@ -6,8 +6,6 @@
    Styling only: no content, markup or SEO depends on this file.
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
-
 /* ---- Tokens ---- */
 :root{
   color-scheme:dark;
@@ -527,3 +525,18 @@ h2,.section-title{font-weight:700;}
     linear-gradient(180deg, rgba(31,32,35,.62) 0%, rgba(31,32,35,.74) 60%, var(--night) 100%),
     url('../images/hero-bg.webp?v=1c4ff491') center/cover no-repeat!important;
 }
+.lp-gallery-photo picture{display:block;width:100%;height:100%;}
+
+/* footer: areas-we-serve link row */
+.footer-areas{border-top:1px solid var(--glass-line);padding:18px 0;font-size:.85rem;}
+.footer-areas .container{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:center;}
+.footer-areas-label{color:var(--ink-hi);font-weight:600;}
+.footer-areas a{color:var(--ink-mute)!important;}
+.footer-areas a:hover{color:var(--coral)!important;}
+/* area pages: occasion tiles are links */
+a.lp-feat{color:inherit;transition:border-color .2s ease,transform .2s ease;}
+a.lp-feat:hover{border-color:rgba(249,131,47,.5)!important;transform:translateY(-2px);}
+.lp-feat-text strong{color:var(--ink-hi);}
+.lp-feat-text{display:block;}
+.lp-feat-text strong{display:block;margin-bottom:3px;}
+.lp-feat-text small{display:block;color:var(--ink-mute);font-size:.82rem;line-height:1.5;}
