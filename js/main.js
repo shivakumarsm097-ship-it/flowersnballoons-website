@@ -226,6 +226,9 @@
 
       if (!valid) return;
 
+      // Let js/lead-alert.js send the WhatsApp alert right away (independent of the email service)
+      document.dispatchEvent(new CustomEvent('fnb:lead', { detail: { form: form } }));
+
       const submitBtn = form.querySelector('[type="submit"]');
       const origLabel = submitBtn.dataset.label || submitBtn.textContent;
       submitBtn.disabled = true;
@@ -235,6 +238,9 @@
       fetch('https://api.web3forms.com/submit', { method: 'POST', body: data })
         .then(res => res.json())
         .then(json => {
+          // Web3Forms answers 200 with success:false (e.g. missing access key): treat as failure,
+          // don't send the visitor to the thank-you page as if the enquiry went through
+          if (!json || !json.success) throw new Error((json && json.message) || 'Form service rejected the submission');
           // Fire GA4 lead event before redirect
           if (typeof gtag === 'function') {
             gtag('event', 'form_submit', { event_category: 'lead', event_label: window.location.pathname });

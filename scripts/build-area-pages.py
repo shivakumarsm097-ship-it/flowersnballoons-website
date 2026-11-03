@@ -224,7 +224,8 @@ def shell_parts():
     tail_css = re.findall(r'  <link rel="stylesheet" href="css/(?:theme|glass)\.css[^>]*>\n', t)
     header = t[t.index("  <!-- Minimal Header for LP -->"):t.index("  <main>")]
     form = t[t.index('            <form class="js-quote-form" novalidate aria-label="Birthday decoration quote form">'):t.index("          </div>\n        </div>\n      </div>\n    </section>\n\n    <!-- ===== WHAT'S INCLUDED")]
-    scripts = t[t.index('  <script src="js/main.min.js'):t.index("</body>")]
+    first_script = '  <script src="js/lead-alert.js' if '  <script src="js/lead-alert.js' in t else '  <script src="js/main.min.js'
+    scripts = t[t.index(first_script):t.index("</body>")]
     return verify, favicon, fonts_to_css, styles, "".join(tail_css), header, form, scripts, footer_logo
 
 
