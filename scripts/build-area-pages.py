@@ -215,7 +215,9 @@ def shell_parts():
     """Pull the shared pieces from lp-birthday.html so new pages match the live landing pages."""
     t = (ROOT / "lp-birthday.html").read_text(encoding="utf-8")
     verify = re.search(r'  <meta name="google-site-verification"[^>]*>\n', t).group(0)
-    favicon = re.search(r'  <link rel="icon"[^>]*>\n', t).group(0)
+    # favicon block: .ico, SVG, Apple touch icon, manifest, theme colour
+    favicon = re.search(r'(  <link rel="icon"[^>]*>\n)+(  <link rel="apple-touch-icon"[^>]*>\n)?(  <link rel="manifest"[^>]*>\n)?(  <meta name="theme-color"[^>]*>\n)?', t).group(0)
+    footer_logo = re.search(r'<footer style="background:var\(--text\);.*?(<img src="images/logo\.svg[^>]*>)', t, re.S).group(1)
     fonts_to_css = t[t.index('  <link rel="preconnect"'):t.index('  <link rel="preload" href="css/style.min.css"')]
     fonts_to_css = fonts_to_css.replace("  </style>\n  </script>\n", "  </style>\n")
     styles = t[t.index('  <link rel="preload" href="css/style.min.css"'):t.index('<noscript><link rel="stylesheet" href="css/style.min.css"></noscript>') + len('<noscript><link rel="stylesheet" href="css/style.min.css"></noscript>')]
@@ -223,7 +225,7 @@ def shell_parts():
     header = t[t.index("  <!-- Minimal Header for LP -->"):t.index("  <main>")]
     form = t[t.index('            <form class="js-quote-form" novalidate aria-label="Birthday decoration quote form">'):t.index("          </div>\n        </div>\n      </div>\n    </section>\n\n    <!-- ===== WHAT'S INCLUDED")]
     scripts = t[t.index('  <script src="js/main.min.js'):t.index("</body>")]
-    return verify, favicon, fonts_to_css, styles, "".join(tail_css), header, form, scripts
+    return verify, favicon, fonts_to_css, styles, "".join(tail_css), header, form, scripts, footer_logo
 
 
 def area_form(form, a):
@@ -245,7 +247,7 @@ def jsonld(obj):
 
 
 def build():
-    verify, favicon, fonts_to_css, styles, tail_css, header, form, scripts = shell_parts()
+    verify, favicon, fonts_to_css, styles, tail_css, header, form, scripts, footer_logo = shell_parts()
     reviews = load_reviews()
     by_slug = {a["slug"]: a for a in AREAS}
     occ = {o[0]: o for o in OCCASIONS}
@@ -481,7 +483,7 @@ def build():
   <footer style="background:var(--text);padding:24px 0;text-align:center;" role="contentinfo">
     <div class="container">
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:#fff;font-weight:700;font-size:1rem;margin-bottom:8px;">
-        <span aria-hidden="true">🎈</span> Flowers 'N' Balloons
+        {footer_logo} Flowers 'N' Balloons
       </div>
       <p style="color:rgba(255,255,255,.5);font-size:.8rem;margin-bottom:8px;">Event Decorators for {name}, Bangalore | Sarjapura Main Road, Bangalore 562125</p>
       <p style="color:rgba(255,255,255,.4);font-size:.75rem;">© 2025 Flowers 'N' Balloons. All rights reserved. &nbsp;|&nbsp; <a href="/" style="color:rgba(255,255,255,.4);">Main Site</a> &nbsp;|&nbsp; <a href="/contact" style="color:rgba(255,255,255,.4);">Contact</a></p>

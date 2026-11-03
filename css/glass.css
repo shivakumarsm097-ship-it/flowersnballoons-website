@@ -404,3 +404,6 @@ body > footer a{color:var(--magenta)!important;}
 /* logo wordmark inside the plum footer (privacy page) */
 .footer .logo-wordmark{-webkit-text-fill-color:#fff!important;color:#fff!important;}
 .footer .logo-wordmark span{-webkit-text-fill-color:var(--marigold)!important;color:var(--marigold)!important;}
+
+/* small logo in the 404 / thank-you footers */
+.footer-mini-logo{display:block;margin:0 auto 8px;width:40px;height:40px;}
