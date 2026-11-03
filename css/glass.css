@@ -301,3 +301,150 @@ a:focus-visible,button:focus-visible,.btn:focus-visible,input:focus-visible,sele
 
 /* long email address in the footer contact column wraps instead of spilling out */
 .footer-ci-text,.footer-ci-text a{overflow-wrap:anywhere;}
+
+/* ============================================================
+   Inner pages: About · Services · Contact · Privacy
+   ============================================================ */
+.page-hero{
+  background:
+    radial-gradient(30rem 18rem at 80% 0%, rgba(224,98,140,.38), transparent 70%),
+    radial-gradient(26rem 18rem at 10% 100%, rgba(138,92,240,.30), transparent 70%),
+    linear-gradient(180deg, rgba(27,15,34,.6), rgba(18,10,22,0))!important;
+  border-bottom:1px solid var(--glass-line);
+}
+.page-hero h1{color:#fff!important;}
+.page-hero p{color:var(--ink)!important;}
+.breadcrumb a{color:var(--ink-mute)!important;}
+.breadcrumb a:hover,.breadcrumb-cur{color:var(--gold)!important;}
+.breadcrumb-sep{color:rgba(255,255,255,.3)!important;}
+
+/* glass panels for page-specific cards */
+.val-card,.svc-item,.svc-feat,.lp-feat,.lp-form-card,.map-wrap,.svc-visual,
+.quick-links,.ty-card,.ty-step{
+  background:var(--glass)!important;
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--glass-line)!important;
+  box-shadow:var(--glass-shadow)!important;
+}
+.val-card{border-top:1px solid var(--glass-line)!important;}
+.val-card h3,.svc-item h4,.svc-section-content h2,.story-text h2,.tl-item h3{color:var(--ink-hi)!important;}
+.svc-item:hover{border-color:rgba(227,178,106,.55)!important;transform:translateY(-3px);}
+.svc-feat,.lp-feat{border-radius:12px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;}
+.svc-feat p,.lp-feat-text,.lp-feat-text *{color:var(--ink)!important;}
+.svc-section{border-bottom:1px solid var(--glass-line)!important;}
+.svc-visual-bg1,.svc-visual-bg2,.svc-visual-bg3,.svc-visual-bg4{background-image:none!important;}
+.svc-visual-bg1{background:linear-gradient(135deg,rgba(224,98,140,.22),rgba(255,255,255,.04))!important;}
+.svc-visual-bg2{background:linear-gradient(135deg,rgba(138,92,240,.24),rgba(255,255,255,.04))!important;}
+.svc-visual-bg3{background:linear-gradient(135deg,rgba(227,178,106,.22),rgba(255,255,255,.04))!important;}
+.svc-visual-bg4{background:linear-gradient(135deg,rgba(80,200,150,.18),rgba(255,255,255,.04))!important;}
+.svc-visual-emoji{filter:drop-shadow(0 10px 24px rgba(0,0,0,.45));}
+
+/* about: stats, timeline */
+.stat-card{background:linear-gradient(160deg,rgba(224,98,140,.22),rgba(227,178,106,.10))!important;color:var(--ink-hi)!important;}
+.stat-card .stat-num{color:#fff!important;-webkit-text-fill-color:#fff!important;font-family:var(--serif);}
+.stat-lbl{color:var(--ink)!important;opacity:1!important;}
+.timeline::before{background:linear-gradient(to bottom,var(--coral),var(--gold))!important;box-shadow:0 0 10px rgba(224,98,140,.5);}
+.tl-item::before{border-color:var(--night)!important;background:var(--gold)!important;box-shadow:0 0 0 2px var(--gold),0 0 12px rgba(227,178,106,.7)!important;}
+.tl-year{color:var(--gold)!important;}
+
+/* contact: hours list, map */
+.hours-list li{border-bottom:1px solid var(--glass-line)!important;}
+.map-wrap{padding:0!important;}
+.map-wrap iframe{filter:invert(.9) hue-rotate(180deg) saturate(.7) brightness(.95);}
+
+/* privacy policy + generic tables */
+table{color:var(--ink);}
+.footer-brand,.footer-logo{color:var(--ink-hi)!important;}
+.social-link{background:var(--glass-strong)!important;border:1px solid var(--glass-line);border-radius:12px;}
+
+/* ---- Inline-styled boxes baked into the HTML (light backgrounds / hard borders) ---- */
+[style*="background:#fff"],
+[style*="background:var(--bg-light)"],
+[style*="background:linear-gradient(135deg,#fdf1f4,#fdf1f4)"]{
+  background:var(--glass)!important;
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  border:1px solid var(--glass-line)!important;
+  box-shadow:var(--glass-shadow)!important;
+}
+[style*="border-bottom:2px solid var(--bg-light)"],
+[style*="border-bottom:2px solid #eee"],
+[style*="border-bottom:1px solid #f0f0f0"]{border-bottom-color:var(--glass-line)!important;}
+/* gradient CTA bands (about / services): glow, not a flat coral slab */
+[style*="background:linear-gradient(135deg,var(--primary),var(--accent))"]{
+  background:
+    radial-gradient(30rem 16rem at 85% 0%, rgba(224,98,140,.45), transparent 70%),
+    radial-gradient(26rem 16rem at 10% 100%, rgba(227,178,106,.30), transparent 70%),
+    rgba(255,255,255,.04)!important;
+  border-top:1px solid var(--glass-line);border-bottom:1px solid var(--glass-line);
+}
+
+/* ============================================================
+   Landing pages (lp-*)
+   ============================================================ */
+.lp-header{
+  background:rgba(18,10,22,.6)!important;border-bottom:1px solid var(--glass-line);
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+  position:relative;z-index:5;
+}
+.lp-logo{color:var(--ink-hi)!important;font-family:var(--serif);}
+.lp-logo span{color:var(--gold)!important;}
+.lp-hero{
+  background:
+    linear-gradient(180deg, rgba(18,10,22,.40) 0%, rgba(18,10,22,.62) 60%, var(--night) 100%),
+    linear-gradient(120deg, rgba(138,92,240,.35) 0%, rgba(224,98,140,.28) 55%, rgba(227,178,106,.22) 100%),
+    url('../images/hero-bg.webp?v=1c4ff491') center/cover no-repeat!important;
+}
+.lp-hero::after{display:none!important;}
+.lp-pill{
+  background:rgba(255,255,255,.10)!important;border:1px solid var(--glass-line-hi)!important;color:#fff!important;
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+}
+.lp-form-card h2{color:var(--ink-hi)!important;}
+.lp-gallery-item{border:1px solid var(--glass-line);box-shadow:var(--glass-shadow);}
+.lp-gallery-item:not(.lp-gallery-photo){background:var(--glass)!important;}
+.divider{border-color:var(--glass-line)!important;background:var(--glass-line)!important;}
+
+/* ============================================================
+   404 + thank-you (standalone pages with their own inline CSS)
+   ============================================================ */
+.ty-header{
+  background:rgba(18,10,22,.6)!important;border-bottom:1px solid var(--glass-line);box-shadow:none!important;
+  backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);
+}
+.ty-logo{color:var(--ink-hi)!important;}
+.ty-logo span{color:var(--gold)!important;}
+.ty-card{border-radius:var(--radius-lg)!important;}
+.ty-card h1,.ty-step-body strong{color:var(--ink-hi)!important;}
+.ty-card .ty-sub,.ty-step-body span{color:var(--ink-mute)!important;}
+.ty-card .ty-highlight{color:var(--gold)!important;}
+.ty-step{border-radius:14px!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)!important;}
+.ty-check,.ty-step-num{background:linear-gradient(135deg,var(--coral),var(--gold-deep))!important;box-shadow:0 0 0 6px rgba(224,98,140,.12),0 8px 22px rgba(224,98,140,.4);}
+.btn-home{background:var(--glass-strong)!important;color:var(--ink)!important;border:1px solid var(--glass-line-hi)!important;}
+.btn-home:hover{border-color:rgba(227,178,106,.6)!important;color:#fff!important;}
+.ty-footer{color:var(--ink-mute)!important;}
+
+.error-num{background:linear-gradient(135deg,#f6c3d4,var(--gold))!important;-webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;filter:drop-shadow(0 0 24px rgba(224,98,140,.35));}
+.error-title{color:var(--ink-hi)!important;}
+.error-desc{color:var(--ink-mute)!important;}
+.quick-links{border-radius:var(--radius-lg)!important;}
+.quick-links h3{color:var(--gold)!important;}
+.quick-links ul li a{background:var(--glass-strong)!important;border:1px solid var(--glass-line)!important;color:var(--ink)!important;}
+.quick-links ul li a:hover{border-color:rgba(227,178,106,.6)!important;color:#fff!important;}
+body > footer{color:var(--ink-mute)!important;border-top:1px solid var(--glass-line)!important;}
+body > footer a{color:var(--gold)!important;}
+
+/* ---- More inline-styled spots ---- */
+/* light pastel tiles and solid light fills */
+[style*="background:linear-gradient(135deg,#"],
+[style*="background:#fff3e0"],[style*="background:#fdf1f4"],[style*="background:#e8f5e9"],
+[style*="background:#e8f0ee"],[style*="background:#fafafa"]{
+  background:var(--glass)!important;border:1px solid var(--glass-line)!important;
+}
+/* landing-page footers were painted with the (old, dark) text colour */
+[style*="background:var(--text)"]{background:rgba(10,5,13,.7)!important;border-top:1px solid var(--glass-line);}
+/* violet text on night is too dim — lift it */
+[style*="color:var(--secondary)"]{color:#b9a0ff!important;}
+/* footer link colour: same muted tone on every page, gold on hover */
+.footer-col a,.footer-ci-text a{color:var(--ink-mute)!important;}
+.footer-col a:hover,.footer-ci-text a:hover{color:var(--gold)!important;}
+.quick-links ul{list-style:none;}
