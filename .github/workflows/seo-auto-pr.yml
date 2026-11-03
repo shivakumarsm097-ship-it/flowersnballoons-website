@@ -1,0 +1,42 @@
+# Opens a pull request automatically when the monthly SEO run pushes its
+# branch (seo/striking-distance-YYYY-MM). The scheduled Claude task only needs
+# to `git push`; it does not need GitHub API/connector access to open the PR.
+# Uses the repo's built-in GITHUB_TOKEN. Requires: Settings > Actions > General >
+# Workflow permissions > "Allow GitHub Actions to create and approve pull requests".
+name: SEO striking-distance PR
+
+on:
+  push:
+    branches:
+      - 'seo/striking-distance-*'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  open-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Open PR into main (skip if one is already open)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          existing=$(gh pr list --head "$BRANCH" --base main --state open --json number --jq 'length')
+          if [ "$existing" != "0" ]; then
+            echo "PR already open for $BRANCH"; exit 0
+          fi
+          month="${BRANCH#seo/striking-distance-}"
+          body_file=$(mktemp)
+          # PR body: the run's commit messages (the playbook puts the report table there)
+          git log --format='%B%n---' origin/main.."origin/$BRANCH" > "$body_file"
+          printf '\n_Opened automatically by the SEO striking-distance workflow. Review before merging; nothing is merged automatically._\n' >> "$body_file"
+          gh pr create --base main --head "$BRANCH" \
+            --title "SEO striking-distance update – $month" \
+            --body-file "$body_file"

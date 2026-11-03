@@ -1,6 +1,6 @@
 # Monthly Search Console "striking distance" update
 
-Runs once a month (Claude scheduled task). Goal: for searches where a page
+Runs once a month (Claude scheduled task); the PR is opened by a GitHub Action. Goal: for searches where a page
 already shows up at **average position 5–20**, add that **exact search phrase**
 to the matching page, so Google sees a clear match and can move the page up.
 
@@ -17,7 +17,7 @@ to the matching page, so Google sees a clear match and can move the page up.
 3. Read `/tmp/seo-report.md`. For each page and each phrase listed under it,
    add the phrase **word for word** (same words, same order; capitalisation may
    follow the sentence) to that page's visible body copy.
-4. Check, open a PR, and stop (see below).
+4. Check, commit, push the branch, and stop (see below). A GitHub Action opens the PR.
 
 ## Writing rules
 
@@ -43,17 +43,21 @@ to the matching page, so Google sees a clear match and can move the page up.
   `scripts/build-area-pages.py` (the `AREAS` data), then run
   `python3 scripts/build-area-pages.py`. Never hand-edit the generated HTML.
 
-## Before opening the PR
+## Before pushing
 
 - `python3 scripts/check_seo_tags_unchanged.py --base origin/main` passes.
 - Every phrase from the report is present on its page:
   re-run the report script; each page's "add" list should now be empty.
 - Pages still parse (open each changed page and check the edited section).
-- Commit message: `SEO: add striking-distance phrases (YYYY-MM)`.
+- Commit message: first line `SEO: add striking-distance phrases (YYYY-MM)`;
+  body = the report table (phrase, page, position, impressions) and, for each
+  page, the sentence(s) you added. This becomes the PR description.
 
-## Pull request
+## Push — the pull request opens automatically
 
-Open a PR into `main` titled `SEO striking-distance update – <Month YYYY>`.
-Body: the report table (phrase, page, position, impressions) and, for each
-page, the sentence(s) you added. **Do not merge it**: the owner reviews it.
-If the report has no phrases to add, open no PR; just report "nothing to add".
+`git push -u origin seo/striking-distance-YYYY-MM`. The workflow
+`.github/workflows/seo-auto-pr.yml` opens the PR into `main` on push, using the
+commit message as the description. Do **not** open a PR yourself (that would
+create a duplicate) and **never merge** — the owner reviews it.
+If the report has no phrases to add, make no branch and no commit; just report
+"nothing to add".
