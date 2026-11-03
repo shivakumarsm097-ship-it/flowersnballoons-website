@@ -207,7 +207,7 @@
       let valid = true;
 
       form.querySelectorAll('[data-required]').forEach(field => {
-        const err = form.querySelector('[data-err="' + field.name + '"]');
+        const err = form.querySelector('.field-err[data-err="' + field.name + '"]');
         const val = field.value.trim();
         let msg = '';
 
@@ -255,7 +255,7 @@
     form.querySelectorAll('[data-required]').forEach(field => {
       field.addEventListener('input', () => {
         field.classList.remove('is-error');
-        const err = form.querySelector('[data-err="' + field.name + '"]');
+        const err = form.querySelector('.field-err[data-err="' + field.name + '"]');
         if (err) { err.textContent = ''; err.classList.remove('show'); }
       });
     });

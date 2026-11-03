@@ -233,6 +233,7 @@ def area_form(form, a):
     f = f.replace('value="New Lead - Birthday Decoration Enquiry"', f'value="New Lead - {a["name"]} Decoration Enquiry"')
     f = f.replace('value="Flowers N Balloons - Birthday LP"', f'value="Flowers N Balloons - {a["name"]} page"')
     f = f.replace('<label for="lp-date">Birthday Date', '<label for="lp-date">Event Date')
+    f = f.replace('<option selected>Birthday Party</option>', '<option>Birthday Party</option>')  # area pages: no preselected occasion
     f = f.replace('<label for="lp-msg">Birthday Theme / Special Requests</label>', '<label for="lp-msg">Occasion, Theme &amp; Venue</label>')
     f = f.replace('placeholder="E.g. Unicorn theme for 5-year-old, venue: home terrace, 50 guests…"',
                   f'placeholder="E.g. 1st birthday, jungle theme, apartment clubhouse in {a["short"]}, 40 guests…"')
