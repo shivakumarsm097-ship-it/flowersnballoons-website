@@ -1,32 +1,34 @@
 /* ============================================================
    Flowers 'N' Balloons — "Graphite Glass" UI (glassmorphism)
    Charcoal-gray backdrop · warm orange glow and highlights
-   Frosted translucent panels · hairline borders · elegant serif type
+   Frosted translucent panels · hairline borders · geometric sans headings
    Loads AFTER css/style.min.css and css/theme.css and overrides both.
    Styling only: no content, markup or SEO depends on this file.
    ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&display=swap');
 
 /* ---- Tokens ---- */
 :root{
   color-scheme:dark;
 
-  --night:#131315;          /* page base                       */
-  --night-2:#1d1d20;
-  --ink-hi:#fafafa;         /* headings                         */
-  --ink:#e4e4e7;            /* body text                        */
-  --ink-mute:#a8a8b0;       /* secondary text (AA on --night)   */
+  --night:#1f2023;          /* page base                       */
+  --night-2:#232428;
+  --ink-hi:#f4f4f5;         /* headings                         */
+  --ink:#d4d5d8;            /* body text                        */
+  --ink-mute:#a3a5ab;       /* secondary text (AA on --night)   */
 
-  --coral:#ff7a1a;        /* orange highlight */
-  --coral-deep:#e8590c;
-  --gold:#ffb347;         /* amber             */
-  --gold-deep:#f08c00;
+  --coral:#f9832f;        /* orange highlight */
+  --coral-deep:#ea6a12;
+  --gold:#ffa25a;         /* amber             */
+  --gold-deep:#f07a1e;
   --violet:#71717a;       /* neutral zinc      */
 
-  --glass:rgba(255,255,255,.06);
+  --glass:rgba(255,255,255,.055);
   --glass-strong:rgba(255,255,255,.10);
   --glass-hover:rgba(255,255,255,.09);
-  --glass-line:rgba(255,255,255,.14);
-  --glass-line-hi:rgba(255,255,255,.28);
+  --glass-line:rgba(255,255,255,.10);
+  --glass-line-hi:rgba(255,255,255,.22);
   --blur:blur(18px) saturate(160%);
   --glass-shadow:
     inset 0 1px 0 rgba(255,255,255,.14),
@@ -52,7 +54,7 @@
   --radius:16px;
   --radius-lg:22px;
   --font:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  --serif:'Fraunces','Playfair Display',Georgia,serif;
+  --serif:'Space Grotesk','Inter',system-ui,sans-serif;
   --ring:rgba(255,179,71,.55);
   --shadow:var(--glass-shadow);
   --shadow-md:var(--glass-shadow-hover);
@@ -65,10 +67,10 @@ body{background:var(--night)!important;color:var(--ink);-webkit-font-smoothing:a
 body::before{
   content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:
-    radial-gradient(42rem 34rem at 88% 8%,  rgba(255,122,26,.30), transparent 62%),
-    radial-gradient(36rem 30rem at 6% 30%,  rgba(140,140,150,.26), transparent 62%),
-    radial-gradient(40rem 32rem at 70% 72%, rgba(255,179,71,.18), transparent 62%),
-    radial-gradient(34rem 30rem at 12% 96%, rgba(255,122,26,.20), transparent 62%),
+    radial-gradient(34rem 30rem at 92% 6%,  rgba(249,131,47,.34), transparent 62%),
+    radial-gradient(44rem 36rem at 4% 22%,  rgba(150,152,162,.22), transparent 64%),
+    radial-gradient(36rem 30rem at 78% 78%, rgba(249,131,47,.14), transparent 62%),
+    radial-gradient(40rem 32rem at 18% 100%, rgba(150,152,162,.14), transparent 64%),
     linear-gradient(180deg,var(--night) 0%,var(--night-2) 100%)!important;
 }
 /* fine grain so the gradients don't band */
@@ -451,3 +453,77 @@ body > footer a{color:var(--gold)!important;}
 .step-num,.author-av,.ty-check,.ty-step-num{color:#18181b!important;}
 .author-av.av2{color:#fff!important;}
 .btn-primary *{color:inherit;}
+
+/* ============================================================
+   Reference look: floating pill header, orange highlighter,
+   solid orange CTAs, eyebrow labels
+   ============================================================ */
+/* floating glass pill header */
+.header{
+  top:12px!important;left:50%!important;right:auto!important;transform:translateX(-50%);
+  width:min(1180px,calc(100% - 24px));border-radius:999px!important;
+  border:1px solid var(--glass-line)!important;
+  background:rgba(64,67,74,.55)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 14px 34px rgba(0,0,0,.35)!important;
+}
+.header.scrolled{background:rgba(52,54,60,.82)!important;}
+.header-inner{padding:0 10px 0 14px!important;}
+.hero,.page-hero{padding-top:calc(var(--header-h) + 36px)!important;}
+.mobile-nav{top:calc(var(--header-h) + 22px)!important;}
+.logo-wordmark{background:none!important;-webkit-text-fill-color:var(--ink-hi)!important;color:var(--ink-hi)!important;font-family:var(--serif)!important;}
+.logo-wordmark span{-webkit-text-fill-color:var(--coral)!important;color:var(--coral)!important;}
+.nav a{font-weight:500;color:var(--ink)!important;}
+.nav a.active,.nav a:hover{color:var(--coral)!important;}
+.nav a::after{display:none!important;}
+
+/* headings: tight geometric sans */
+h1,h2,h3,h4,.section-title,.hero h1{letter-spacing:-.02em;}
+h1,.hero h1{font-weight:700;}
+h2,.section-title{font-weight:700;}
+
+/* orange highlighter under section titles */
+.section-title::after{
+  width:88px!important;height:10px!important;margin:10px auto 0!important;border-radius:3px!important;
+  background:linear-gradient(90deg,var(--coral-deep),var(--gold))!important;
+  transform:skewX(-14deg);opacity:.9;box-shadow:0 6px 18px rgba(249,131,47,.35)!important;
+}
+.text-primary{color:var(--coral)!important;font-weight:700;letter-spacing:.16em!important;}
+
+/* eyebrow pill (hero badge, lp pills) */
+.hero-badge,.lp-pill{
+  background:rgba(255,255,255,.06)!important;border:1px solid var(--glass-line-hi)!important;
+  color:var(--coral)!important;font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.78rem!important;
+}
+
+/* solid orange CTAs with glow, dark ink */
+.btn-primary{
+  background:linear-gradient(180deg,#ff9a4d 0%,var(--coral) 55%,var(--coral-deep) 100%)!important;
+  color:#1b1b1d!important;border:0!important;
+  box-shadow:0 8px 26px rgba(249,131,47,.45),inset 0 1px 0 rgba(255,255,255,.35)!important;
+}
+.btn-primary:hover{box-shadow:0 12px 34px rgba(249,131,47,.6),inset 0 1px 0 rgba(255,255,255,.4)!important;}
+.btn-secondary,.btn-outline,.btn-outline-white,.btn-white,.btn-home{
+  background:rgba(255,255,255,.07)!important;border:1px solid var(--glass-line-hi)!important;color:var(--ink-hi)!important;
+}
+
+/* cards: solid-ish graphite like the reference */
+.usp-card,.service-card,.testi-card,.step,.form-card,.stat-card,.val-card,.trust-item,
+.svc-item,.lp-form-card,.ty-card,.quick-links{
+  background:rgba(46,47,51,.72)!important;border-radius:16px!important;
+}
+.info-card{background:linear-gradient(160deg,rgba(249,131,47,.14),rgba(46,47,51,.72))!important;border-radius:16px!important;}
+.usp-icon,.service-card-icon,.val-icon{background:rgba(249,131,47,.14)!important;border-color:rgba(249,131,47,.28)!important;box-shadow:none!important;}
+.stars{color:var(--coral)!important;text-shadow:none;}
+.trust-label{color:var(--ink-hi)!important;}
+
+@media (max-width:767px){
+  .header{top:8px!important;width:calc(100% - 16px);}
+}
+
+/* hero photo: neutral graphite wash, orange glow only in the top-right corner */
+.hero,.lp-hero{
+  background:
+    radial-gradient(30rem 22rem at 92% 0%, rgba(249,131,47,.38), transparent 70%),
+    linear-gradient(180deg, rgba(31,32,35,.62) 0%, rgba(31,32,35,.74) 60%, var(--night) 100%),
+    url('../images/hero-bg.webp?v=1c4ff491') center/cover no-repeat!important;
+}
