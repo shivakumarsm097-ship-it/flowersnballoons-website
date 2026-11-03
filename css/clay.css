@@ -1,0 +1,346 @@
+/* ============================================================
+   Flowers 'N' Balloons — "Candy Clay" UI (claymorphism)
+   Pastel candy palette · puffy rounded surfaces · inner highlights
+   Loads AFTER css/style.min.css and css/theme.css and overrides both.
+   Styling only: no content, markup or SEO depends on this file.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+
+/* ---- Tokens ---- */
+:root{
+  /* candy pastels (surfaces) */
+  --c-pink:#ffd3e2;   --c-pink-2:#ffbcd3;
+  --c-lilac:#e4d9ff;  --c-lilac-2:#d3c2ff;
+  --c-mint:#cdf3e3;   --c-mint-2:#b2ead2;
+  --c-peach:#ffe0c9;  --c-peach-2:#ffcca8;
+  --c-butter:#fff1b8; --c-butter-2:#ffe68a;
+  --c-sky:#d4ecff;    --c-sky-2:#b9dfff;
+  --c-cream:#fffaf6;
+
+  /* ink + interactive (kept dark enough for AA on pastels) */
+  --ink:#3a2a4d;
+  --ink-soft:#64577a;
+  --pop:#d6457e;        /* candy raspberry: primary actions   */
+  --pop-hi:#f27aa8;
+  --pop-dark:#b02f63;
+  --grape:#7a5bd6;      /* secondary actions                   */
+  --grape-dark:#5f42b8;
+
+  /* override the old theme tokens so base CSS follows along */
+  --primary:var(--pop);
+  --primary-dark:var(--pop-dark);
+  --secondary:var(--grape);
+  --secondary-dark:var(--grape-dark);
+  --accent:#e9a23b;
+  --accent-dark:#b97716;
+  --text:var(--ink);
+  --text-light:var(--ink-soft);
+  --bg:#f8f1ff;
+  --bg-light:#fff4f8;
+  --bg-purple:#f1eaff;
+  --border:rgba(58,42,77,.08);
+  --radius:22px;
+  --radius-lg:34px;
+  --font:'Nunito',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --serif:'Fredoka','Nunito',system-ui,sans-serif;
+  --ring:rgba(122,91,214,.45);
+
+  /* the clay recipe: inner light top-left, inner shade bottom-right, soft drop */
+  --clay:
+    inset 6px 6px 12px rgba(255,255,255,.75),
+    inset -6px -8px 14px rgba(58,42,77,.08),
+    10px 14px 28px rgba(122,91,214,.16),
+    -4px -4px 14px rgba(255,255,255,.65);
+  --clay-hover:
+    inset 6px 6px 12px rgba(255,255,255,.8),
+    inset -6px -8px 14px rgba(58,42,77,.08),
+    14px 22px 38px rgba(122,91,214,.22),
+    -4px -4px 14px rgba(255,255,255,.7);
+  --clay-sm:
+    inset 3px 3px 6px rgba(255,255,255,.7),
+    inset -3px -4px 8px rgba(58,42,77,.10),
+    5px 8px 16px rgba(122,91,214,.16);
+  --clay-pressed:
+    inset 4px 4px 10px rgba(58,42,77,.12),
+    inset -4px -4px 10px rgba(255,255,255,.85);
+
+  --shadow:var(--clay);
+  --shadow-md:var(--clay-hover);
+  --shadow-lg:var(--clay-hover);
+}
+
+/* ---- Base ---- */
+body{
+  background:var(--bg)!important;color:var(--ink);
+  font-family:var(--font);-webkit-font-smoothing:antialiased;
+}
+/* soft candy blobs behind everything */
+body::before{
+  background:
+    radial-gradient(38rem 38rem at 92% -6%, rgba(255,188,211,.55), transparent 60%),
+    radial-gradient(34rem 34rem at -8% 18%, rgba(211,194,255,.55), transparent 60%),
+    radial-gradient(30rem 30rem at 70% 55%, rgba(178,234,210,.35), transparent 60%),
+    radial-gradient(34rem 34rem at 10% 105%, rgba(255,204,168,.45), transparent 60%)!important;
+}
+h1,h2,h3,h4,.section-title,.hero h1{font-family:var(--serif)!important;letter-spacing:0;color:var(--ink);}
+h1,.hero h1{font-weight:700;}
+h2,.section-title{font-weight:600;}
+h3{font-weight:600;}
+p,li,a,button,input,select,textarea,label,.hero-sub,.hero-events{font-family:var(--font);}
+p{color:var(--ink-soft);}
+.text-primary{color:var(--pop)!important;}
+.section{padding:72px 0;}
+.bg-light,.bg-purple{background:transparent!important;}
+.section-sub{color:var(--ink-soft);}
+
+/* Section titles: clay pill underline */
+.section-title::after{
+  width:64px;height:10px;margin:16px auto 0;border-radius:999px;
+  background:linear-gradient(90deg,var(--c-pink-2),var(--c-lilac-2),var(--c-mint-2))!important;
+  box-shadow:var(--clay-sm);
+}
+
+/* ---- Promo bar ----
+   It sits under the fixed header (same as before this theme), so keep it
+   page-coloured: a candy fill would peek out as a stripe above the floating header. */
+.promo-bar{
+  background:var(--bg)!important;color:var(--ink)!important;font-weight:700;
+}
+.promo-bar a{color:var(--pop-dark)!important;}
+
+/* ---- Header: floating clay pill ---- */
+.header{
+  top:10px!important;left:12px!important;right:12px!important;
+  border-radius:28px;border:0!important;
+  background:rgba(255,250,253,.88)!important;
+  backdrop-filter:blur(12px) saturate(140%);-webkit-backdrop-filter:blur(12px) saturate(140%);
+  box-shadow:var(--clay)!important;
+}
+.header.scrolled{background:rgba(255,252,254,.96)!important;box-shadow:var(--clay-hover)!important;}
+.logo-wordmark{
+  font-family:var(--serif)!important;
+  background:linear-gradient(90deg,var(--pop) 0,var(--grape) 100%)!important;
+  -webkit-background-clip:text!important;background-clip:text!important;-webkit-text-fill-color:transparent!important;
+}
+.logo-tag{color:var(--ink-soft)!important;}
+.nav a{font-weight:700;color:var(--ink);padding:8px 14px;border-radius:999px;transition:background .2s ease,box-shadow .2s ease,color .2s ease;}
+.nav a::after{display:none!important;}
+.nav a:hover{background:var(--c-pink);color:var(--ink);box-shadow:var(--clay-sm);}
+.nav a.active{background:var(--c-lilac);color:var(--ink);box-shadow:var(--clay-sm);}
+.nav{gap:6px!important;}
+.hamburger{background:var(--c-lilac)!important;border-radius:16px;box-shadow:var(--clay-sm);padding:10px!important;}
+.hamburger span{background:var(--ink)!important;}
+.mobile-nav{
+  top:calc(var(--header-h) + 18px)!important;left:12px!important;right:12px!important;bottom:auto!important;
+  width:auto!important;max-height:calc(100vh - var(--header-h) - 30px);overflow-y:auto;
+  border-radius:28px;background:var(--c-cream)!important;box-shadow:var(--clay-hover)!important;padding:16px!important;
+}
+.mobile-nav:not(.open){transform:translateX(calc(100% + 40px))!important;box-shadow:none!important;}
+.mobile-nav a{border-radius:18px;font-weight:700;}
+.mobile-nav a:hover,.mobile-nav a.active{background:var(--c-pink)!important;color:var(--ink)!important;box-shadow:var(--clay-sm);}
+
+/* ---- Buttons: puffy candy ---- */
+.btn{
+  border-radius:999px!important;border:0!important;font-weight:800;letter-spacing:.01em;
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease,filter .2s ease;
+}
+.btn-primary{
+  background:linear-gradient(180deg,var(--pop-hi) 0%,var(--pop) 55%,var(--pop-dark) 100%)!important;
+  color:#fff!important;text-shadow:0 1px 1px rgba(120,20,60,.35);
+  box-shadow:
+    inset 3px 4px 8px rgba(255,255,255,.45),
+    inset -3px -5px 10px rgba(110,20,60,.30),
+    6px 10px 20px rgba(214,69,126,.35)!important;
+}
+.btn-secondary{
+  background:linear-gradient(180deg,#a58cf0 0%,var(--grape) 60%,var(--grape-dark) 100%)!important;
+  color:#fff!important;text-shadow:0 1px 1px rgba(40,20,90,.35);
+  box-shadow:
+    inset 3px 4px 8px rgba(255,255,255,.4),
+    inset -3px -5px 10px rgba(40,20,90,.3),
+    6px 10px 20px rgba(122,91,214,.35)!important;
+}
+.btn-outline,.btn-outline-white,.btn-white{
+  background:var(--c-cream)!important;color:var(--ink)!important;
+  box-shadow:var(--clay-sm)!important;backdrop-filter:none!important;
+}
+.btn:hover{transform:translateY(-3px) scale(1.02);filter:saturate(108%);}
+.btn-outline:hover,.btn-outline-white:hover,.btn-white:hover{background:#fff!important;color:var(--ink)!important;}
+.btn:active{transform:translateY(1px) scale(.97);filter:brightness(.97);}
+
+/* ---- Hero: rounded clay window over the photo ---- */
+.hero{
+  margin:0 12px;border-radius:0 0 44px 44px;
+  padding-top:calc(var(--header-h) + 20px)!important;
+  background:
+    linear-gradient(160deg, rgba(58,42,77,.62) 0%, rgba(122,91,214,.42) 50%, rgba(214,69,126,.45) 100%),
+    url('../images/hero-bg.webp?v=1c4ff491') center/cover no-repeat!important;
+  box-shadow:
+    inset 0 -10px 24px rgba(58,42,77,.25),
+    0 22px 44px rgba(122,91,214,.22);
+}
+.hero::after{display:none!important;}
+.hero-dots{opacity:.5;}
+.hero h1{color:#fff;text-shadow:0 4px 0 rgba(58,42,77,.25),0 10px 30px rgba(0,0,0,.25)!important;}
+.hero-sub,.hero-events{color:#fff!important;}
+.hero-badge{
+  background:var(--c-butter)!important;color:var(--ink)!important;border:0!important;font-weight:800;
+  backdrop-filter:none!important;box-shadow:var(--clay-sm)!important;
+}
+
+/* ---- Trust bar: four clay chips ---- */
+.trust-bar{background:transparent!important;box-shadow:none!important;padding:36px 0 8px!important;}
+.trust-grid{gap:18px!important;}
+.trust-item{
+  border-radius:28px;padding:20px 12px!important;box-shadow:var(--clay);
+  background:var(--c-pink);
+}
+.trust-item:nth-child(4n+2){background:var(--c-lilac);}
+.trust-item:nth-child(4n+3){background:var(--c-butter);}
+.trust-item:nth-child(4n+4){background:var(--c-mint);}
+.trust-label{color:var(--ink)!important;font-family:var(--serif);font-weight:600;font-size:1.02rem!important;}
+.trust-sub{color:var(--ink-soft)!important;font-weight:600;}
+
+/* ---- Card surfaces (shared) ---- */
+.usp-cards,.services-grid,.testimonials-grid,.stats-grid,.values-grid,.steps-wrap{perspective:none!important;}
+.usp-card,.service-card,.testi-card,.stat-card,.val-card,.step,.form-card,.info-card{
+  border:0!important;border-radius:var(--radius-lg)!important;
+  box-shadow:var(--clay)!important;
+  transition:opacity .7s ease,transform .45s cubic-bezier(.34,1.56,.64,1),box-shadow .25s ease!important;
+}
+/* occasion cards: keep the Explore buttons lined up along the bottom */
+.usp-card{display:flex;flex-direction:column;align-items:flex-start;}
+.usp-card > .btn{margin-top:auto!important;}
+.usp-card > p:has(+ .btn){margin-bottom:16px;}
+/* squish instead of tilt: wins over the inline tilt transform from main.js */
+.usp-card:hover,.service-card:hover,.testi-card:hover,.val-card:hover,.step:hover,.stat-card:hover{
+  transform:translateY(-6px)!important;box-shadow:var(--clay-hover)!important;
+}
+.usp-card:active,.service-card:active,.step:active{transform:translateY(-1px) scale(.99)!important;}
+
+/* candy colour rotation */
+.usp-card,.step,.testi-card{background:var(--c-pink)!important;}
+.usp-card:nth-child(6n+2),.step:nth-child(4n+2),.testi-card:nth-child(3n+2){background:var(--c-lilac)!important;}
+.usp-card:nth-child(6n+3),.step:nth-child(4n+3),.testi-card:nth-child(3n+3){background:var(--c-mint)!important;}
+.usp-card:nth-child(6n+4),.step:nth-child(4n+4){background:var(--c-peach)!important;}
+.usp-card:nth-child(6n+5){background:var(--c-butter)!important;}
+.usp-card:nth-child(6n+6){background:var(--c-sky)!important;}
+.usp-card{border-left:0!important;padding:24px!important;}
+.usp-card h3,.step-body h3,.service-card h3{color:var(--ink);font-size:1.15rem!important;}
+.usp-card p,.step-body p,.service-card p,.testi-text{color:var(--ink-soft)!important;}
+
+/* emoji icons sit in a white clay bubble */
+.usp-icon,.service-card-icon,.val-icon{
+  width:58px;height:58px;display:flex;align-items:center;justify-content:center;
+  border-radius:20px;background:rgba(255,255,255,.75);box-shadow:var(--clay-sm);
+  font-size:1.7rem!important;margin-bottom:14px!important;transform:none!important;
+}
+
+/* service cards: photo inset as a rounded window */
+.service-card{background:var(--c-cream)!important;padding:16px 16px 24px!important;}
+.service-card::before{display:none!important;}
+.service-card-img{
+  margin:0 0 18px 0!important;width:100%!important;border-radius:26px!important;
+  box-shadow:inset 0 0 0 4px rgba(255,255,255,.7),var(--clay-sm);
+}
+.service-card-img img{border-radius:26px;}
+.service-card h3,.service-card p{padding:0 8px;}
+.service-card .btn{margin-left:8px;}
+
+.svc-tag{
+  background:var(--c-cream)!important;border:0!important;color:var(--ink)!important;font-weight:700;
+  box-shadow:var(--clay-sm);transition:transform .18s cubic-bezier(.34,1.56,.64,1),background .2s ease;
+}
+.svc-tag:nth-child(4n+1):hover{background:var(--c-pink)!important;}
+.svc-tag:nth-child(4n+2):hover{background:var(--c-lilac)!important;}
+.svc-tag:nth-child(4n+3):hover{background:var(--c-mint)!important;}
+.svc-tag:nth-child(4n+4):hover{background:var(--c-butter)!important;}
+.svc-tag:hover{transform:translateY(-2px);}
+
+/* ---- How it works ---- */
+.step-num{
+  width:54px!important;height:54px!important;border-radius:20px!important;
+  background:linear-gradient(180deg,var(--pop-hi),var(--pop) 60%,var(--pop-dark))!important;
+  color:#fff!important;font-family:var(--serif);font-size:1.3rem!important;
+  box-shadow:inset 3px 4px 8px rgba(255,255,255,.45),inset -3px -5px 10px rgba(110,20,60,.3),4px 8px 14px rgba(214,69,126,.3);
+}
+
+/* ---- Testimonials ---- */
+.testi-card::before{color:rgba(255,255,255,.8)!important;font-family:var(--serif)!important;}
+.stars{color:#f0a020!important;}
+.author-av{
+  background:var(--c-butter)!important;color:var(--ink)!important;
+  box-shadow:var(--clay-sm);font-family:var(--serif);
+}
+.author-av.av2{background:var(--c-sky)!important;}
+.author-av.av3{background:var(--c-peach)!important;}
+.author-name{color:var(--ink)!important;font-weight:800;}
+.author-loc{color:var(--ink-soft)!important;}
+
+/* ---- Contact: form + info ---- */
+.form-card{background:var(--c-cream)!important;}
+.input{
+  border:0!important;border-radius:16px!important;background:#fff8fb!important;color:var(--ink)!important;
+  box-shadow:var(--clay-pressed)!important;padding:13px 16px!important;
+}
+.input:focus{box-shadow:var(--clay-pressed),0 0 0 3px var(--ring)!important;}
+.input.is-error{box-shadow:var(--clay-pressed),0 0 0 2px #d93636!important;}
+.input::placeholder{color:#a497b4!important;}
+label{color:var(--ink)!important;font-weight:800!important;}
+.req{color:var(--pop-dark)!important;}
+.field-err{color:#c62828!important;font-weight:700;}
+.form-success-msg{background:var(--c-mint)!important;color:var(--ink)!important;border-radius:20px;box-shadow:var(--clay-sm);}
+.info-card{background:var(--c-lilac)!important;color:var(--ink)!important;}
+.info-card h3,.info-card strong,.info-card p,.info-body,.info-body *,.info-card a:not(.btn):not(.wa-btn){color:var(--ink)!important;}
+.info-body strong{opacity:.7;}
+.info-icon{
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  border-radius:16px;background:rgba(255,255,255,.8);box-shadow:var(--clay-sm);
+}
+
+/* ---- Footer: deep grape slab with rounded top ---- */
+.footer{
+  background:#3a2a4d!important;border-radius:44px 44px 0 0;margin-top:40px;
+  box-shadow:inset 0 10px 24px rgba(255,255,255,.06),0 -10px 30px rgba(122,91,214,.15);
+}
+.footer p,.footer-desc,.footer-ci-text,.footer a{color:#e8def7;}
+.footer a:hover{color:var(--c-pink-2)!important;}
+.social-a{
+  background:rgba(255,255,255,.1)!important;border-radius:16px!important;
+  box-shadow:inset 2px 2px 6px rgba(255,255,255,.12),inset -2px -3px 6px rgba(0,0,0,.25);
+}
+.social-a:hover{background:var(--pop)!important;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08)!important;}
+
+/* WhatsApp buttons inside cards */
+.wa-btn{
+  border-radius:999px!important;border:0!important;
+  box-shadow:inset 3px 4px 8px rgba(255,255,255,.4),inset -3px -5px 10px rgba(0,80,40,.25),6px 10px 20px rgba(37,211,102,.3)!important;
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1);
+}
+.wa-btn:hover{transform:translateY(-3px);}
+
+/* ---- WhatsApp float: green clay bubble ---- */
+.wa-float{
+  border-radius:999px!important;
+  box-shadow:inset 3px 4px 8px rgba(255,255,255,.4),inset -3px -5px 10px rgba(0,80,40,.28),6px 10px 22px rgba(37,211,102,.35)!important;
+}
+
+/* ---- Focus ring ---- */
+a:focus-visible,button:focus-visible,.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:3px solid var(--ring)!important;outline-offset:3px;
+}
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion:reduce){
+  .btn,.usp-card,.service-card,.testi-card,.val-card,.step,.svc-tag{transition:none!important;}
+  .btn:hover,.usp-card:hover,.service-card:hover,.testi-card:hover,.val-card:hover,.step:hover{transform:none!important;}
+}
+
+@media (max-width:767px){
+  .header{left:8px!important;right:8px!important;top:8px!important;border-radius:22px;}
+  .hero{margin:0 8px;border-radius:0 0 32px 32px;}
+  .logo-img{width:46px!important;height:46px!important;}
+  .section{padding:56px 0;}
+}
