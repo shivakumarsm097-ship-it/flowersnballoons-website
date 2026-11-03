@@ -19,7 +19,7 @@ SITE = "https://flowersnballoons.com"
 PHONE = "+918867121207"
 PHONE_TXT = "+91 8867121207"
 
-# Starting prices are the ones already published on each occasion page.
+# Occasion pages linked from every area page (prices removed until the new packages are added).
 OCCASIONS = [
     ("lp-birthday", "🎂", "Birthday Decoration", "Balloon arches, themed backdrops, cake-table styling and photo booths.", "4,500"),
     ("lp-babyshower", "🍼", "Baby Shower Decoration", "Soft themes, welcome boards, props and a photo corner for the mom-to-be.", "5,000"),
@@ -260,7 +260,7 @@ def build():
             (f"Do you do balloon decoration at home in {name}?",
              f"Yes. We decorate apartments, independent homes, terraces, clubhouses and party halls across {name} and nearby areas. If you live in a gated community, share your society's rules on vendor entry and timings when you book and we'll plan around them."),
             (f"How much does birthday decoration cost in {name}?",
-             f"Birthday decoration packages start from ₹4,500, and our other occasion packages start from ₹4,000. Your exact price depends on the theme, venue size and add-ons. You get a detailed quote before booking — no hidden charges."),
+             f"It depends on the theme, venue size and add-ons you choose. Share your occasion, date and venue in {name} and we'll send a detailed, transparent quote within 2 hours — no hidden charges."),
             a["faq_local"],
             ("How quickly will I get a quote?",
              f"Fill in the form or call {PHONE_TXT} — we respond within 2 hours, 9 AM to 9 PM, all days. WhatsApp is the fastest way to share photos of your space and theme ideas."),
@@ -296,7 +296,6 @@ def build():
                     "name": f"{name}, Bangalore",
                     "geo": {"@type": "GeoCoordinates", "latitude": a["geo"][0], "longitude": a["geo"][1]},
                 },
-                "offers": {"@type": "Offer", "priceCurrency": "INR", "price": "4000", "availability": "https://schema.org/InStock"},
             },
             {
                 "@context": "https://schema.org",
@@ -321,7 +320,7 @@ def build():
         feats = "\n".join(
             f'''          <a class="lp-feat" href="/{p}">
             <span class="lp-feat-icon" aria-hidden="true">{ico}</span>
-            <span class="lp-feat-text"><strong>{label} in {name}</strong><small>{blurb} From ₹{price}.</small></span>
+            <span class="lp-feat-text"><strong>{label} in {name}</strong><small>{blurb}</small></span>
           </a>''' for p, ico, label, blurb, price in popular)
 
         rev_html = []
