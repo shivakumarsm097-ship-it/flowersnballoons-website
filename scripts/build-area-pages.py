@@ -173,7 +173,7 @@ AREAS = [
         ],
         "faq_local": ("Do you decorate engagements and weddings in Indiranagar?",
                       "Yes. We design engagement stages, ring-ceremony backdrops, floral entrances and full wedding décor in Indiranagar homes and venues, and coordinate setup and clear-up timings with the venue."),
-        "nearby": ["koramangala", "whitefield", "marathahalli", "jayanagar", "hsr-layout"],
+        "nearby": ["koramangala", "frazer-town", "kalyan-nagar", "whitefield", "hsr-layout"],
     },
     {
         "slug": "jayanagar", "name": "Jayanagar", "short": "Jayanagar",
@@ -193,7 +193,207 @@ AREAS = [
         ],
         "faq_local": ("Do you do traditional decorations for Griha Pravesh and pooja in Jayanagar?",
                       "Yes. We set up traditional décor with fresh marigold strings, mango-leaf torans, banana-stem entrances, lamps and rangoli, and arrange the pooja area and the pandit's seating around your muhurtham."),
-        "nearby": ["koramangala", "hsr-layout", "electronic-city", "indiranagar", "sarjapur-road"],
+        "nearby": ["jp-nagar", "bannerghatta-road", "koramangala", "hsr-layout", "rr-nagar"],
+    },
+    {
+        "slug": "yelahanka", "name": "Yelahanka", "short": "Yelahanka",
+        "geo": (13.1007, 77.5963), "local_reviews": False,
+        "desc": "Balloon, birthday and event decoration in Yelahanka, Bangalore — homes, villas, gated communities and resorts. Free quote in 2 hours. Call +91 8867121207.",
+        "intro": "From birthdays in Yelahanka New Town apartments to housewarmings in villa communities and outdoor functions at resorts towards Doddaballapur Road, we bring the balloons, flowers and setup team to north Bangalore.",
+        "about": [
+            "Yelahanka is north Bangalore's big residential hub, split into the older town and the planned Yelahanka New Town, with the Air Force station nearby and Ballari Road leading on to the international airport. New gated communities, villa projects and independent houses keep coming up across the area.",
+            "There's also more open space here than in central Bangalore, so many of our north Bangalore customers celebrate outdoors, in lawns, terraces, farmhouses and resorts. For open-air setups we plan for wind, sun and evening lighting, and we time travel from the south of the city so the setup is ready well before your guests arrive.",
+        ],
+        "localities": ["Yelahanka New Town", "Yelahanka Old Town", "Attur Layout", "Kogilu", "Puttenahalli", "Allalasandra", "Jakkur", "Doddaballapur Road"],
+        "popular": ["lp-birthday", "lp-housewarming", "lp-babyshower", "lp-wedding"],
+        "reviews": [
+            ("Sumanth R.", "Whitefield, Bangalore", "index"),
+            ("Lakshmi N.", "Whitefield", "lp-housewarming"),
+            ("Anand K., HR Manager", "Whitefield", "lp-corporate"),
+        ],
+        "faq_local": ("Do you decorate outdoor events and resorts around Yelahanka?",
+                      "Yes. Lawns, terraces, farmhouses and resort venues around Yelahanka and Doddaballapur Road are popular for birthdays, haldi and wedding functions. We plan open-air setups for wind and lighting, and coordinate setup timings with the venue."),
+        "nearby": ["hebbal", "kalyan-nagar", "sadashivanagar", "malleshwaram", "frazer-town"],
+    },
+    {
+        "slug": "hebbal", "name": "Hebbal", "short": "Hebbal",
+        "geo": (13.0358, 77.5970), "local_reviews": False,
+        "desc": "Balloon and event decoration in Hebbal, Bangalore — apartments, hotels and offices near Manyata and the airport road. Free quote in 2 hours.",
+        "intro": "Birthdays in Hebbal's apartment towers, engagements and receptions at hotels and convention venues along the airport road, and office celebrations near Manyata Tech Park — we decorate them all.",
+        "about": [
+            "Hebbal sits where the Outer Ring Road meets Ballari Road, the main road to the international airport, around the well-known Hebbal flyover and Hebbal lake. The area has filled with premium apartment complexes, business hotels and convention venues, with Manyata Tech Park just next door.",
+            "That mix shapes what customers here book: home and clubhouse birthdays, engagement and reception décor in hotel banquet halls, and corporate events for the tech parks nearby. For hotels and offices, share the venue name when you enquire and we'll coordinate entry, loading and setup windows with their team.",
+        ],
+        "localities": ["Kempapura", "Nagawara", "Sahakara Nagar", "RT Nagar", "Ganganagar", "Byatarayanapura", "Amruthahalli", "Manyata Tech Park"],
+        "popular": ["lp-birthday", "lp-engagement", "lp-corporate", "lp-wedding"],
+        "reviews": [
+            ("Priya M.", "Koramangala, Bangalore", "index"),
+            ("Shalini R., Admin Head", "Electronic City", "lp-corporate"),
+            ("Ravi M., RWA Secretary", "Sarjapur Road", "lp-community"),
+        ],
+        "faq_local": ("Can you decorate hotel banquet halls and offices in Hebbal?",
+                      "Yes. We set up engagement, reception and birthday décor in hotel and convention venues, and corporate event décor in offices and tech parks around Hebbal and Manyata. We coordinate access, loading and setup timings with the venue or your admin team."),
+        "nearby": ["yelahanka", "sadashivanagar", "kalyan-nagar", "malleshwaram", "frazer-town"],
+    },
+    {
+        "slug": "rr-nagar", "name": "RR Nagar", "short": "RR Nagar",
+        "geo": (12.9274, 77.5155), "local_reviews": False,
+        "desc": "Balloon, birthday and housewarming decoration in RR Nagar (Rajarajeshwari Nagar), Bangalore. Traditional and modern setups. Free quote in 2 hours.",
+        "intro": "We decorate homes, community halls and party venues across Rajarajeshwari Nagar — from balloon birthdays and baby showers to traditional Griha Pravesh and naming-ceremony setups.",
+        "about": [
+            "Rajarajeshwari Nagar, named after the Rajarajeshwari temple at its heart, is a large and fast-growing residential area in south-west Bangalore, just off Mysore Road. Its layouts are full of independent houses, newer apartment complexes and community halls, and many families here celebrate with tradition.",
+            "Our RR Nagar bookings lean towards family functions: housewarmings, naming ceremonies, baby showers and birthdays. For traditional functions we work with fresh marigold, jasmine and mango-leaf torans and plan around your muhurtham; for birthdays we bring balloon arches, themed backdrops and photo corners.",
+        ],
+        "localities": ["Ideal Homes Township", "BEML Layout", "Channasandra", "Pattanagere", "Halagevaderahalli", "Kengeri Satellite Town", "Uttarahalli", "Kenchanahalli"],
+        "popular": ["lp-housewarming", "lp-namingceremony", "lp-birthday", "lp-babyshower"],
+        "reviews": [
+            ("Vikram S.", "Jayanagar", "lp-housewarming"),
+            ("Meghana S.", "Jayanagar", "lp-haldi"),
+            ("Kavya S.", "Electronic City", "lp-namingceremony"),
+        ],
+        "faq_local": ("Do you do traditional Griha Pravesh and naming ceremony décor in RR Nagar?",
+                      "Yes. We set up traditional décor with fresh marigold and jasmine garlands, mango-leaf torans, banana-stem entrances and rangoli, plus cradle décor and name boards for naming ceremonies, timed around your muhurtham."),
+        "nearby": ["mysore-road", "jayanagar", "jp-nagar", "malleshwaram", "koramangala"],
+    },
+    {
+        "slug": "mysore-road", "name": "Mysore Road", "short": "Mysore Road",
+        "geo": (12.9452, 77.5260), "local_reviews": False,
+        "desc": "Balloon and event decoration along Mysore Road, Bangalore — homes, community halls and party venues from Nayandahalli to Kengeri. Free quote in 2 hours.",
+        "intro": "Along Mysore Road, from Nayandahalli out to Kengeri, we decorate homes, community halls and party venues for birthdays, weddings, housewarmings and every family function in between.",
+        "about": [
+            "Mysore Road is one of south-west Bangalore's main arteries, running out of the city towards Kengeri and on to Mysuru, with the Namma Metro Purple Line along much of the way. The neighbourhoods on either side mix older residential areas, new apartments and many community and party halls used for family functions.",
+            "Because the metro and the main road connect the whole stretch, we can reach venues from Nayandahalli to Kengeri easily. Share your venue and timing when you enquire, and we'll plan the setup so it's complete before the function starts, including for early-morning muhurthams.",
+        ],
+        "localities": ["Nayandahalli", "Deepanjali Nagar", "Bapuji Nagar", "Gnanabharathi", "Rajarajeshwari Nagar", "Kengeri", "Kumbalgodu", "Vijayanagar"],
+        "popular": ["lp-birthday", "lp-wedding", "lp-housewarming", "lp-haldi"],
+        "reviews": [
+            ("Sneha &amp; Vivek", "Jayanagar", "lp-wedding"),
+            ("Deepak &amp; Nithya", "Bannerghatta Road", "lp-babywelcome"),
+            ("Arjun R.", "Sarjapur Road", "lp-housewarming"),
+        ],
+        "faq_local": ("Can you set up early in the morning for a muhurtham on Mysore Road?",
+                      "Yes. Tell us your muhurtham time when you book and we'll schedule the setup so the décor is ready before the rituals begin. For very early timings we may set up the evening before, if the venue allows it."),
+        "nearby": ["rr-nagar", "jayanagar", "jp-nagar", "malleshwaram", "koramangala"],
+    },
+    {
+        "slug": "sadashivanagar", "name": "Sadashivanagar", "short": "Sadashivanagar",
+        "geo": (13.0068, 77.5813), "local_reviews": False,
+        "desc": "Premium flower and balloon decoration in Sadashivanagar, Bangalore — bungalows, intimate gatherings and grand celebrations. Free quote in 2 hours.",
+        "intro": "Elegant, detail-led décor for Sadashivanagar homes and venues: fresh-flower styling for engagements and anniversaries, sophisticated birthday setups and grand entrances for family celebrations.",
+        "about": [
+            "Sadashivanagar is one of Bangalore's most exclusive neighbourhoods: quiet, tree-lined roads around Sankey Tank, large independent bungalows, and the RMV Extension and Palace Orchards areas close by. Celebrations here often happen at home, in gardens and on porches, or at nearby venues such as Palace Grounds.",
+            "Customers here usually want a refined, premium look, so we lean on fresh flowers, elegant colour palettes, statement entrances and lighting rather than busy themes. We're happy to design around your home's architecture and existing décor, and to plan larger setups for garden or lawn celebrations.",
+        ],
+        "localities": ["Sankey Road", "RMV Extension", "Dollars Colony", "Palace Orchards", "Vyalikaval", "Armane Nagar", "Mekhri Circle"],
+        "popular": ["lp-engagement", "lp-wedding", "lp-birthday", "lp-haldi"],
+        "reviews": [
+            ("Aishwarya &amp; Kiran", "Indiranagar", "lp-wedding"),
+            ("Nikhil &amp; Shreya", "Indiranagar", "lp-engagement"),
+            ("Priyanka &amp; Rohan", "Koramangala", "lp-haldi"),
+        ],
+        "faq_local": ("Do you design premium, fresh-flower décor for homes in Sadashivanagar?",
+                      "Yes. We design elegant setups with fresh flowers, refined colour palettes, statement entrances and lighting for homes, gardens and venues, and plan the décor around your space rather than using a one-size-fits-all theme."),
+        "nearby": ["malleshwaram", "hebbal", "frazer-town", "indiranagar", "yelahanka"],
+    },
+    {
+        "slug": "malleshwaram", "name": "Malleshwaram", "short": "Malleshwaram",
+        "geo": (13.0031, 77.5643), "local_reviews": False,
+        "desc": "Traditional and modern decoration in Malleshwaram, Bangalore — Griha Pravesh, naming ceremonies, weddings and birthdays. Free quote in 2 hours.",
+        "intro": "Malleshwaram celebrates with tradition, and so do we: fresh-flower torans, marigold and jasmine garlands and rangoli for family functions, plus colourful balloon setups for birthdays.",
+        "about": [
+            "Malleshwaram is one of Bangalore's oldest and best-loved neighbourhoods, known for the Kadu Malleshwara temple, its flower and vegetable stalls along 8th Cross and Sampige Road, and long-established families in heritage homes. Festivals and family ceremonies are celebrated in a big way here.",
+            "Our Malleshwaram bookings lean towards traditional functions: Griha Pravesh, naming ceremonies, upanayanam-style family events, haldi and weddings. We work with fresh flowers and traditional elements, plan around your muhurtham and the pandit's requirements, and keep setups compact enough for older homes.",
+        ],
+        "localities": ["Sampige Road", "Margosa Road", "18th Cross", "Malleswaram West", "Seshadripuram", "Rajajinagar", "Kodandarampura", "Vyalikaval"],
+        "popular": ["lp-housewarming", "lp-namingceremony", "lp-wedding", "lp-haldi"],
+        "reviews": [
+            ("Vikram S.", "Jayanagar", "lp-housewarming"),
+            ("Ramya K.", "Indiranagar", "lp-babywelcome"),
+            ("Divya M.", "Marathahalli", "lp-namingceremony"),
+        ],
+        "faq_local": ("Can you fit traditional décor into older homes in Malleshwaram?",
+                      "Yes. Many homes here have compact halls, staircases and courtyards, so we scale the setup to the space: torans and garlands at the entrance, a decorated pooja area, and a backdrop or cradle where it fits, without crowding the room."),
+        "nearby": ["sadashivanagar", "hebbal", "rr-nagar", "frazer-town", "jayanagar"],
+    },
+    {
+        "slug": "jp-nagar", "name": "JP Nagar", "short": "JP Nagar",
+        "geo": (12.9063, 77.5857), "local_reviews": False,
+        "desc": "Balloon, birthday and event decoration in JP Nagar, Bangalore — every phase, homes and party halls. Transparent pricing, free quote in 2 hours.",
+        "intro": "Birthdays, baby showers, naming ceremonies and housewarmings across every phase of JP Nagar — we decorate independent homes, apartments, terraces and party halls.",
+        "about": [
+            "JP Nagar (Jayaprakash Narayan Nagar) is a large, well-established residential area in south Bangalore, laid out in phases that run from near Jayanagar out towards Bannerghatta Road. It has a mix of independent houses, apartment complexes, restaurants and party halls.",
+            "Families here book everything from kids' theme birthdays to traditional family functions. Tell us which phase and type of venue you're in when you enquire; for terraces and open spaces we plan the décor for wind and evening lighting.",
+        ],
+        "localities": ["JP Nagar 1st–3rd Phase", "JP Nagar 4th–6th Phase", "JP Nagar 7th–9th Phase", "Puttenahalli", "Sarakki", "Kothnur", "Dollars Layout"],
+        "popular": ["lp-birthday", "lp-babyshower", "lp-namingceremony", "lp-housewarming"],
+        "reviews": [
+            ("Ramesh &amp; Anjali", "Bannerghatta Road", "lp-namingceremony"),
+            ("Preethi &amp; Rohan", "Bannerghatta Road", "lp-wedding"),
+            ("Meghana S.", "Jayanagar", "lp-haldi"),
+        ],
+        "faq_local": ("Do you decorate terrace and rooftop parties in JP Nagar?",
+                      "Yes. Terrace birthdays and small functions are common in JP Nagar's independent houses. We plan open-air setups for wind and lighting, with sturdier balloon structures, secure fixing and fairy lights for evening events."),
+        "nearby": ["jayanagar", "bannerghatta-road", "koramangala", "hsr-layout", "rr-nagar"],
+    },
+    {
+        "slug": "bannerghatta-road", "name": "Bannerghatta Road", "short": "Bannerghatta Road",
+        "geo": (12.8930, 77.5970), "local_reviews": True,
+        "desc": "Balloon and event decoration on Bannerghatta Road, Bangalore — apartments, villas and party halls from Arekere to Gottigere. Free quote in 2 hours.",
+        "intro": "Welcome-home décor for new babies, naming ceremonies, weddings and birthdays — we decorate apartments, villas and party halls all along Bannerghatta Road.",
+        "about": [
+            "Bannerghatta Road runs south from Dairy Circle towards Bannerghatta National Park and has become one of south Bangalore's busiest residential corridors, lined with large apartment complexes, villa projects, malls and hospitals, with IIM Bangalore along the way.",
+            "Families on Bannerghatta Road book a lot of home and clubhouse celebrations: baby-welcome setups, naming ceremonies, birthdays and wedding functions. For gated communities, share your society's rules for vendor entry and timings when you book and we'll plan around them.",
+        ],
+        "localities": ["Arekere", "Hulimavu", "Bilekahalli", "Gottigere", "Kalena Agrahara", "BTM 4th Stage", "Meenakshi Layout", "Hongasandra"],
+        "popular": ["lp-babywelcome", "lp-namingceremony", "lp-wedding", "lp-birthday"],
+        "reviews": [
+            ("Deepak &amp; Nithya", "Bannerghatta Road", "lp-babywelcome"),
+            ("Ramesh &amp; Anjali", "Bannerghatta Road", "lp-namingceremony"),
+            ("Preethi &amp; Rohan", "Bannerghatta Road", "lp-wedding"),
+        ],
+        "faq_local": ("Can you set up a surprise welcome-home décor before we return from the hospital?",
+                      "Yes. Share your address, the time you expect to arrive home and how we'll get access, and we'll set up the welcome banner, balloons and nursery styling quietly so everything is ready when you walk in."),
+        "nearby": ["jp-nagar", "jayanagar", "hsr-layout", "koramangala", "electronic-city"],
+    },
+    {
+        "slug": "kalyan-nagar", "name": "Kalyan Nagar", "short": "Kalyan Nagar",
+        "geo": (13.0280, 77.6400), "local_reviews": False,
+        "desc": "Balloon, birthday and event decoration in Kalyan Nagar, HRBR and HBR Layout, Bangalore — homes, cafés and party venues. Free quote in 2 hours.",
+        "intro": "From kids' birthdays in HRBR Layout homes to engagements and baby welcomes in party venues around Kalyan Nagar, we bring the décor and the setup team to north-east Bangalore.",
+        "about": [
+            "Kalyan Nagar, together with HRBR Layout and HBR Layout, is one of north-east Bangalore's most popular neighbourhoods, close to the Outer Ring Road and known for its main-road cafés and restaurants, independent homes and growing number of apartment complexes.",
+            "Customers here book home birthdays and baby welcomes as well as engagement and anniversary décor at restaurants and party halls. If your event is at a café or restaurant, share the venue name and we'll check their décor rules and setup time with them.",
+        ],
+        "localities": ["HRBR Layout", "HBR Layout", "Banaswadi", "Kammanahalli", "Hennur", "Babusapalya", "Horamavu", "Lingarajapuram"],
+        "popular": ["lp-birthday", "lp-babywelcome", "lp-engagement", "lp-babyshower"],
+        "reviews": [
+            ("Ramya K.", "Indiranagar", "lp-babywelcome"),
+            ("Pooja &amp; Karthik", "Koramangala", "lp-engagement"),
+            ("Lalitha N., Committee Member", "Whitefield", "lp-community"),
+        ],
+        "faq_local": ("Can you decorate a café or restaurant for a party in Kalyan Nagar?",
+                      "Yes. Share the venue name when you enquire. We check the venue's rules on wall fixing, open flames and setup and clear-up windows, and coordinate with their team so the décor is ready before your guests arrive."),
+        "nearby": ["hebbal", "frazer-town", "indiranagar", "yelahanka", "whitefield"],
+    },
+    {
+        "slug": "frazer-town", "name": "Frazer Town", "short": "Frazer Town",
+        "geo": (12.9980, 77.6150), "local_reviews": False,
+        "desc": "Flower and balloon decoration in Frazer Town and Cox Town, Bangalore — homes, bungalows and venues for every celebration. Free quote in 2 hours.",
+        "intro": "Engagements, anniversaries, birthdays and family celebrations in Frazer Town and Cox Town — fresh-flower and balloon décor for homes, bungalows and nearby venues.",
+        "about": [
+            "Frazer Town and neighbouring Cox Town are among Bangalore's older, character-filled neighbourhoods, with colonial-era bungalows, quiet residential streets and the famous Mosque Road food street. Families here celebrate everything from intimate anniversaries to large engagement and Eid gatherings.",
+            "Many homes here have porches, gardens and high-ceilinged rooms that make great décor spaces. We design entrance décor, floral backdrops and balloon setups around your home, and coordinate with nearby venues for larger celebrations.",
+        ],
+        "localities": ["Cox Town", "Mosque Road", "Cooke Town", "Richards Town", "Pulikeshi Nagar", "Benson Town", "Wheeler Road"],
+        "popular": ["lp-engagement", "lp-birthday", "lp-wedding", "lp-babyshower"],
+        "reviews": [
+            ("Nikhil &amp; Shreya", "Indiranagar", "lp-engagement"),
+            ("Sumanth R.", "Whitefield, Bangalore", "index"),
+            ("Meera K.", "Koramangala", "lp-birthday"),
+        ],
+        "faq_local": ("Can you decorate an independent house or bungalow in Frazer Town?",
+                      "Yes. We design around your home's porch, garden and rooms: entrance arches and garlands, a floral or balloon backdrop for photos, and table and stair décor, scaled to the space and the number of guests."),
+        "nearby": ["kalyan-nagar", "indiranagar", "sadashivanagar", "hebbal", "koramangala"],
     },
 ]
 
@@ -343,6 +543,10 @@ def build():
             </div>
           </article>''')
 
+        if a.get("local_reviews", True):
+            rev_title, rev_sub = f"What {name} Customers Say", f"Real reviews from families and teams in {name}"
+        else:
+            rev_title, rev_sub = "What Our Bangalore Customers Say", "Real reviews from families across Bangalore"
         faq_html = "\n".join(
             f'''          <details style="background:var(--bg-light);border-radius:12px;padding:20px;">
             <summary style="font-weight:600;cursor:pointer;font-size:.975rem;list-style:none;display:flex;justify-content:space-between;align-items:center;">{q} <span aria-hidden="true">＋</span></summary>
@@ -437,8 +641,8 @@ def build():
     <!-- ===== REVIEWS ===== -->
     <section class="section bg-light" aria-labelledby="reviews-heading">
       <div class="container">
-        <h2 class="section-title" id="reviews-heading">What {name} Customers Say</h2>
-        <p class="section-sub">Real reviews from families and teams in {name}</p>
+        <h2 class="section-title" id="reviews-heading">{rev_title}</h2>
+        <p class="section-sub">{rev_sub}</p>
         <div class="testimonials-grid">
 {chr(10).join(rev_html)}
         </div>
