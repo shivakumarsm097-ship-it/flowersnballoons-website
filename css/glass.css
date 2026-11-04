@@ -407,3 +407,11 @@ body > footer a{color:var(--magenta)!important;}
 
 /* small logo in the 404 / thank-you footers */
 .footer-mini-logo{display:block;margin:0 auto 8px;width:40px;height:40px;}
+
+/* occasion cards with a real photo: full-bleed banner at the top of the card */
+.usp-card .occasion-photo{
+  margin:-22px -22px 16px;width:calc(100% + 44px);aspect-ratio:4/3;overflow:hidden;
+  border-radius:16px 16px 0 0;background:var(--magenta-soft);
+}
+.usp-card .occasion-photo img,.usp-card .occasion-photo picture{display:block;width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
+.usp-card:hover .occasion-photo img{transform:scale(1.04);}
